@@ -18,7 +18,9 @@ jobs:
       with:
         dotnet-version: 5.0.100
     - name: publish
-      run: dotnet publish EleccionesPeru2021/WebApp/WebApp.csproj --configuration Release    
+      run: dotnet publish EleccionesPeru2021/WebApp/WebApp.csproj --configuration Release   
+    - name: .nojekyll
+      run: touch /home/runner/work/eleccionesperu2021/eleccionesperu2021/EleccionesPeru2021/WebApp/bin/Release/net5.0/wwwroot/.nojekyll
     - uses: maxheld83/ghpages@master
       name: gh-pages publish
       env:
