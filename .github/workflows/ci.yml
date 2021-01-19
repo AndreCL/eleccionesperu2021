@@ -23,4 +23,4 @@ jobs:
       name: gh-pages publish
       env:
         BUILD_DIR: /home/runner/work/eleccionesperu2021/eleccionesperu2021/EleccionesPeru2021/WebApp/bin/Release/net5.0/wwwroot
-        GH_PAT: ${{ secrets.PERSONAL_ACCESS_TOKEN }}
+        GH_PAT: ${{ secrets.PUBLISH_TOKEN }}
