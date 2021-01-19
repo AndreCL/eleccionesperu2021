@@ -12,11 +12,7 @@ jobs:
         - name: Setup .NET Core
           uses: actions/setup-dotnet@v1
           with:
-            dotnet-version: 5.0.2
-
-        # Run tests (commented out both below)
-        #- name: Test
-        #  run: dotnet test
+            dotnet-version: 5.0.100
 
         # Generate the website
         - name: Publish
