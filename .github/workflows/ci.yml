@@ -16,7 +16,7 @@ jobs:
 
         # Generate the website
         - name: Publish
-          run: dotnet publish WebApp.csproj --configuration Release
+          run: dotnet publish EleccionesPeru2021/WebApp/WebApp.csproj --configuration Release
 
         # Publish the website
         - name: GitHub Pages action
