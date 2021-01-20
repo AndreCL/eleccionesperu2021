@@ -7,6 +7,9 @@
 		/// </summary>
 		public static string PresidentialURL = "https://plataformaelectoral.jne.gob.pe/Candidato/GetExpedientesLista/110-1-------0-";
 
-
+		public static string PresidentialDetails (int idSolicitudLista, int idExpediente)
+		{
+			return $"";
+		}
 	}
 }
