@@ -1,0 +1,44 @@
+﻿@page "/alldata"
+@inject HttpClient Http
+
+<h1>Información electoral</h1>
+
+<p>Lista presidencial actualizada 20/01/2021</p>
+
+@if (partidosPoliticos == null)
+{
+    <p><em>Cargando...</em></p>
+}
+else
+{
+    <table class="table">
+        <thead>
+            <tr>
+                <th>Partido político</th>
+                <th>Estado</th>
+                <th># Candidatos hombres</th>
+				<th># Candidatos mujeres</th>
+            </tr>
+        </thead>
+        <tbody>
+            @foreach (var partidoPolitico in partidosPoliticos)
+            {
+                <tr>
+                    <td>@partidoPolitico.strOrganizacionPolitica</td>
+                    <td>@partidoPolitico.strEstadoLista</td>
+                    <td>@partidoPolitico.intCandHombres</td>
+                    <td>@partidoPolitico.intCandMujeres</td>
+                </tr>
+            }
+        </tbody>
+    </table>
+}
+
+@code {
+	private PartidoPolitico[] partidosPoliticos;
+
+	protected override async Task OnInitializedAsync()
+	{
+		partidosPoliticos = await Http.GetFromJsonAsync<PartidoPolitico[]>("sample-data/presidentialList0.json");
+	}
+}
