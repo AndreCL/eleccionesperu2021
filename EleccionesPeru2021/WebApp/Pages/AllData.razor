@@ -13,22 +13,25 @@ else
 {
     <table class="table">
         <thead>
-            <tr>
-                <th>Partido político</th>
-                <th>Estado</th>
-                <th># Candidatos hombres</th>
+			<tr>
+				<th>Partido político</th>
+				<th>Estado</th>
+				<th># Candidatos hombres</th>
 				<th># Candidatos mujeres</th>
-            </tr>
+				<th># Candidatos mujeres</th>
+			</tr>
         </thead>
         <tbody>
             @foreach (var partidoPolitico in partidosPoliticos)
             {
-                <tr>
-                    <td>@partidoPolitico.strOrganizacionPolitica</td>
-                    <td>@partidoPolitico.strEstadoLista</td>
-                    <td>@partidoPolitico.intCandHombres</td>
-                    <td>@partidoPolitico.intCandMujeres</td>
-                </tr>
+			<tr>
+				<td>@partidoPolitico.strOrganizacionPolitica</td>
+				<td>@partidoPolitico.strEstadoLista</td>
+				<td>@partidoPolitico.intCandHombres</td>
+				<td>@partidoPolitico.intCandMujeres</td>
+
+				https://declara.jne.gob.pe/
+			</tr>
             }
         </tbody>
     </table>
