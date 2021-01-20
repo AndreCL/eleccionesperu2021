@@ -1,6 +1,8 @@
 # Elecciones generales de Perú de 2021
 Simple herramienta para facilitar la selección de candidatos
 
+![Deployment](https://github.com/AndreCL/eleccionesperu2021/workflows/Deployment/badge.svg)
+
 Falta implementar:
 * Congreso
     * Obtener data de partidos de JNE
