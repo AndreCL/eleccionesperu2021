@@ -9,7 +9,7 @@
 
 		public static string PresidentialDetails (int idSolicitudLista, int idExpediente)
 		{
-			return $"";
+			return $"https://plataformaelectoral.jne.gob.pe/Candidato/GetCandidatos/1-110-{idSolicitudLista}-{idExpediente}";
 		}
 	}
 }
