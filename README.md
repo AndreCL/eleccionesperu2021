@@ -9,8 +9,8 @@ Falta implementar:
     * Obtener data de candidatos de JNE
     * Obtener data de hoja de vida de JNE
 * Presidencial
-    * Obtener data de partidos de JNE
-    * Obtener data de candidatos de JNE
+    * ~~Obtener data de partidos de JNE~~
+    * ~~Obtener data de candidatos de JNE~~
     * Obtener data de hoja de vida de JNE
 * Parlamento andino
     * Obtener data de partidos de JNE
