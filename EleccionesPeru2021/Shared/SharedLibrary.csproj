@@ -1,0 +1,9 @@
+<Project Sdk="Microsoft.NET.Sdk">
+
+  <PropertyGroup>
+    <TargetFramework>net5.0</TargetFramework>
+    <AssemblyName>SharedLibrary</AssemblyName>
+    <RootNamespace>SharedLibrary</RootNamespace>
+  </PropertyGroup>
+
+</Project>

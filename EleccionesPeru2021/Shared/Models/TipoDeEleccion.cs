@@ -1,4 +1,4 @@
-﻿namespace WebApp.Models
+﻿namespace SharedLibrary.Models
 {
 	public enum TipoDeEleccion
 	{

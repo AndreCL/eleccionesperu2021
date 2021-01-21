@@ -18,9 +18,6 @@ namespace WebApp
 				BaseAddress = new Uri(builder.HostEnvironment.BaseAddress)
 			});
 
-			builder.Services.AddHttpClient("JNEAPI", client =>
-				client.BaseAddress = new Uri("https://plataformaelectoral.jne.gob.pe"));
-
 			await builder.Build().RunAsync();
 		}
 	}

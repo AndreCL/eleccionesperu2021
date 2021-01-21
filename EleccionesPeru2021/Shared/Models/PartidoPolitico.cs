@@ -1,6 +1,4 @@
-﻿using System.Collections.Generic;
-
-namespace WebApp.Models
+﻿namespace SharedLibrary.Models
 {
 	public class PartidoPolitico
 	{

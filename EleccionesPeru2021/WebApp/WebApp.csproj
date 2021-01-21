@@ -12,9 +12,7 @@
   </ItemGroup>
 
   <ItemGroup>
-    <Content Update="wwwroot\sample-data\presidentialList0.json">
-      <CopyToOutputDirectory>Never</CopyToOutputDirectory>
-    </Content>
+    <ProjectReference Include="..\Shared\SharedLibrary.csproj" />
   </ItemGroup>
 
 </Project>

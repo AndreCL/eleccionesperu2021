@@ -7,42 +7,81 @@
 
 @if (partidosPoliticos == null)
 {
-    <p><em>Cargando...</em></p>
+	<p><em>Cargando...</em></p>
 }
 else
 {
-    <table class="table">
-        <thead>
+	<table class="table">
+		<thead>
 			<tr>
 				<th>Partido político</th>
 				<th>Estado</th>
-				<th># Candidatos hombres</th>
-				<th># Candidatos mujeres</th>
+				<th># hombres</th>
+				<th># mujeres</th>
 				<th>Plan de gobierno</th>
+				<th>Presidente de la República</th>
 			</tr>
-        </thead>
-        <tbody>
-            @foreach (var partidoPolitico in partidosPoliticos)
-            {
-			<tr>
-				<td>@partidoPolitico.strOrganizacionPolitica</td>
-				<td>@partidoPolitico.strEstadoLista</td>
-				<td>@partidoPolitico.intCandHombres</td>
-				<td>@partidoPolitico.intCandMujeres</td>
-				<td><a target="_blank" href="https://declara.jne.gob.pe/@(partidoPolitico.strCarpeta+partidoPolitico.idPlanGobierno+".pdf")">link</a></td>
-				
+		</thead>
 
-			</tr>
-            }
-        </tbody>
-    </table>
+		<tbody>
+			@foreach (var partidoPolitico in partidosPoliticos)
+			{
+				var president = candidatosPoliticos.FirstOrDefault(x => x.idSolicitudLista == partidoPolitico.idSolicitudLista && x.idCargoEleccion == 1);
+				<tr>
+					<td>@partidoPolitico.strOrganizacionPolitica</td>
+					<td class="@partidoPolitico.strEstadoLista">@partidoPolitico.strEstadoLista</td>
+					<td>@partidoPolitico.intCandHombres</td>
+					<td>@partidoPolitico.intCandMujeres</td>
+					<td><a target="_blank" href="https://declara.jne.gob.pe/@(partidoPolitico.strCarpeta+partidoPolitico.idPlanGobierno+".pdf")">link</a></td>
+					<td>
+						<table>
+							<tr>
+								<td rowspan="5"><img style="display:block;" width="100%" src="https://declara.jne.gob.pe/@president.strRutaArchivo" alt="@president.strCandidato" /></td>
+								<td>Nombre: @president.strCandidato</td>
+							</tr>
+							<tr>
+								<td>DNI: @president.strDocumentoIdentidad</td>
+							</tr>
+							<tr>
+								<td>Fecha de Nacimiento: @president.strFechaNacimiento.Substring(0, 10)</td>
+							</tr>
+							<tr>
+								<td>Genero: @(president.strSexo=="1"?"M":"F")</td>
+							</tr>
+							<tr>
+								<td class="@president.strEstadoExp">Estado: @(president.strEstadoExp)</td>
+							</tr>
+						</table>								
+					</td>
+
+				</tr>
+			}
+		</tbody>
+	</table>
+
+	<style type="text/css">
+		.INSCRITO {
+			background-color: palegreen;
+		}
+		.IMPROCEDENTE {
+			background-color: palevioletred;
+		}
+		.APELACIÓN {
+			background-color: lightyellow;
+		}
+	</style>
+
 }
 
 @code {
 	private PartidoPolitico[] partidosPoliticos;
+	private CandidatoGeneral[] candidatosPoliticos;
 
 	protected override async Task OnInitializedAsync()
 	{
 		partidosPoliticos = await Http.GetFromJsonAsync<PartidoPolitico[]>("sample-data/presidentialList0.json");
+		candidatosPoliticos = await Http.GetFromJsonAsync<CandidatoGeneral[]>("sample-data/presidentialList1.json");
 	}
+
+
 }
