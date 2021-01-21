@@ -3,7 +3,7 @@
 
 <h1>Información electoral</h1>
 
-<p>Lista presidencial actualizada 20/01/2021</p>
+<p>Lista presidencial actualizada 21/01/2021</p>
 
 @if (partidosPoliticos == null)
 {
@@ -32,7 +32,9 @@ else
 					<td class="@partidoPolitico.strEstadoLista">@partidoPolitico.strEstadoLista</td>
 					<td>@partidoPolitico.intCandHombres</td>
 					<td>@partidoPolitico.intCandMujeres</td>
-					<td><a target="_blank" href="https://declara.jne.gob.pe/@(partidoPolitico.strCarpeta+partidoPolitico.idPlanGobierno+".pdf")">link</a></td>
+					<td><a target="_blank" href="sample-data/@(partidoPolitico.strCarpeta+partidoPolitico.idPlanGobierno+".pdf")">link</a></td>
+
+
 					<td>
 						<table>
 							<tr>
@@ -51,7 +53,7 @@ else
 							<tr>
 								<td class="@president.strEstadoExp">Estado: @(president.strEstadoExp)</td>
 							</tr>
-						</table>								
+						</table>
 					</td>
 
 				</tr>
@@ -63,9 +65,11 @@ else
 		.INSCRITO {
 			background-color: palegreen;
 		}
+
 		.IMPROCEDENTE {
 			background-color: palevioletred;
 		}
+
 		.APELACIÓN {
 			background-color: lightyellow;
 		}

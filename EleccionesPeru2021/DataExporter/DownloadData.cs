@@ -13,10 +13,11 @@ namespace DataExporter
 		private List<CandidatoGeneral> CandidatoGeneralData = new List<CandidatoGeneral>();
 
 		private string path = "sample-data";
+		private string path2 = "sample-data\\ASSETS\\PLANGOBIERNO\\FILEPLANGOBIERNO";
 
 		public DownloadData()
 		{
-			CreateDirectory(path);
+			CreateDirectory(path2);
 			DownloadPresidentialPartyData();
 			DownloadPresidentialCandidateData();
 		}
@@ -30,7 +31,7 @@ namespace DataExporter
 				var data = loadPresidentialCandidateData(i.idSolicitudLista, i.idExpediente);
 				CandidatoGeneralData.AddRange(DeSerializePresidentialCandidateData(data));		
 			}
-			System.Console.WriteLine($"Download & DeSerialize presidential list level 1. Found: {CandidatoGeneralData.Count}");
+			System.Console.WriteLine($"Download & DeSerialize presidential list and files level 1. Found: {CandidatoGeneralData.Count}");
 
 			SaveJsonFile(path, "presidentialList1", JsonSerializer.Serialize(CandidatoGeneralData));
 			System.Console.WriteLine("Saved presidential list level 1");
@@ -60,6 +61,11 @@ namespace DataExporter
 
 			SaveJsonFile(path, "presidentialList0", JsonSerializer.Serialize(PresidentialPartyData));
 			System.Console.WriteLine("Saved presidential list level 0");
+
+			foreach(var i in PresidentialPartyData)
+			{
+				DownloadFile(path, $"{i.strCarpeta}{i.idPlanGobierno}.pdf", $@"https://declara.jne.gob.pe/{i.strCarpeta}{i.idPlanGobierno}.pdf");
+			}
 			
 		}
 
