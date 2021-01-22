@@ -2,6 +2,9 @@
 {
 	public enum TipoDeEleccion
 	{
-		Presidencial = 2
+		Presidencial = 1,
+		Congresal = 2,
+		Andino = 3
+
 	}
 }

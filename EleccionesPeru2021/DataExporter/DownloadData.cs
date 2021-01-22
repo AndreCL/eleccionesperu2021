@@ -54,7 +54,7 @@ namespace DataExporter
 		{
 			using (WebClient wc = new WebClient())
 			{
-				return wc.DownloadString(APIOverview.PresidentialDetails(idSolicitudLista, idExpediente));
+				return wc.DownloadString(APIOverview.ListaCandidatos(TipoDeEleccion.Presidencial,idSolicitudLista, idExpediente));
 			}
 		}
 
@@ -87,7 +87,7 @@ namespace DataExporter
 		{
 			using (WebClient wc = new WebClient())
 			{
-				return wc.DownloadString(APIOverview.PresidentialURL);
+				return wc.DownloadString(APIOverview.ListaPartidos(TipoDeEleccion.Presidencial));
 			}			
 		}
 

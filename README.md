@@ -4,20 +4,34 @@ Simple herramienta para facilitar la selección de candidatos
 ![Deployment](https://github.com/AndreCL/eleccionesperu2021/workflows/Deployment/badge.svg)
 
 Falta implementar:
-* Congreso
-    * Obtener data de partidos de JNE
-    * Obtener data de candidatos de JNE
-    * Obtener data de hoja de vida de JNE
-* Presidencial
-    * ~~Obtener data de partidos de JNE~~
-    * ~~Obtener data de candidatos de JNE~~
-    * Obtener data de hoja de vida de JNE
-* Parlamento andino
-    * Obtener data de partidos de JNE
-    * Obtener data de candidatos de JNE
-    * Obtener data de hoja de vida de JNE
-* Crear views para ver información
-* Crear filtros...
-
+* DataExporter
+    * ~~ApiOveview~~
+	* Data Models & extract
+		* Presidencial
+			* ~~Partidos~~
+			* ~~Logos~~
+			* ~~Plan de gobierno~~
+			* Resumen plan de gobierno
+			* ~~Candidatos~~
+			* ~~Imagenes~~
+			* Hoja de vida
+		* Congreso
+			* Partidos
+			* Candidatos
+			* Imagenes
+			* Hoja de vida		
+		* Parlamento andino
+			* Partidos
+			* Candidatos
+			* Imagenes
+			* Hoja de vida
+* WebApp
+	* Modulo de preguntas
+	* Modulo de resultados
+	* Detalles de resultados
+	* Test presidencial
+	* Test congreso
+	* Test parlamento andino
+	
 ## Contribuciones
 Haz un push request
