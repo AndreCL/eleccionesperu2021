@@ -1,0 +1,138 @@
+﻿@page "/datapresidencial"
+@inject HttpClient Http
+
+<h1>Información electoral</h1>
+
+<p>Lista presidencial actualizada 22/01/2021</p>
+
+@if (partidosPoliticos == null || candidatosPoliticos == null)
+{
+	<p><em>Cargando...</em></p>
+}
+else
+{
+	<table class="table">
+		<thead>
+			<tr>
+				<th>Partido político</th>
+				<th>Estado</th>
+				<th># hombres</th>
+				<th># mujeres</th>
+				<th>Plan de gobierno</th>
+				<th>Presidente de la República</th>
+				<th>Primer Vicepresidente de la República</th>
+				<th>Segundo Vicepresidente de la República</th>
+			</tr>
+		</thead>
+
+		<tbody>
+			@foreach (var partidoPolitico in partidosPoliticos)
+			{
+				var president = candidatosPoliticos.FirstOrDefault(x => x.idSolicitudLista == partidoPolitico.idSolicitudLista && x.idCargoEleccion == 1);
+				var vicepres1 = candidatosPoliticos.FirstOrDefault(x => x.idSolicitudLista == partidoPolitico.idSolicitudLista && x.idCargoEleccion == 2);
+				var vicepres2 = candidatosPoliticos.FirstOrDefault(x => x.idSolicitudLista == partidoPolitico.idSolicitudLista && x.idCargoEleccion == 3);
+
+			<tr>
+				<td>@partidoPolitico.strOrganizacionPolitica  
+					<br />
+					<img height="100px" width="100px" src="@($"sample-data/Logo/{@partidoPolitico.idOrganizacionPolitica}.png")" alt="Logo" />
+				</td>
+				<td class="@partidoPolitico.strEstadoLista">@partidoPolitico.strEstadoLista</td>
+				<td>@partidoPolitico.intCandHombres</td>
+				<td>@partidoPolitico.intCandMujeres</td>
+				<td><a target="_blank" href="sample-data/@(partidoPolitico.strCarpeta+partidoPolitico.idPlanGobierno+".pdf")">link</a></td>
+
+				<td>
+					<table>
+						<tr>
+							<td rowspan="5"><img style="display:block;" max-width="50px" width="90%" height="auto" src="sample-data/@president.strRutaArchivo" alt="@president.strCandidato" /></td>
+							<td>Nombre: @president.strCandidato</td>
+						</tr>
+						<tr>
+							<td>DNI: @president.strDocumentoIdentidad</td>
+						</tr>
+						<tr>
+							<td>Fecha de Nacimiento: @president.strFechaNacimiento.Substring(0, 10)</td>
+						</tr>
+						<tr>
+							<td>Genero: @(president.strSexo=="1"?"M":"F")</td>
+						</tr>
+						<tr>
+							<td class="@president.strEstadoExp">Estado: @(president.strEstadoExp)</td>
+						</tr>
+					</table>
+				</td>
+
+				<td>
+					<table>
+						<tr>
+							<td rowspan="5"><img style="display:block;" max-width="50px" width="90%" height="auto" src="sample-data/@vicepres1.strRutaArchivo" alt="@vicepres1.strCandidato" /></td>
+							<td>Nombre: @vicepres1.strCandidato</td>
+						</tr>
+						<tr>
+							<td>DNI: @vicepres1.strDocumentoIdentidad</td>
+						</tr>
+						<tr>
+							<td>Fecha de Nacimiento: @vicepres1.strFechaNacimiento.Substring(0, 10)</td>
+						</tr>
+						<tr>
+							<td>Genero: @(vicepres1.strSexo=="1"?"M":"F")</td>
+						</tr>
+						<tr>
+							<td class="@vicepres1.strEstadoExp">Estado: @(vicepres1.strEstadoExp)</td>
+						</tr>
+					</table>
+				</td>
+
+				<td>
+					<table>
+						<tr>
+							<td rowspan="5"><img style="display:block;" max-width="50px" width="90%" height="auto" src="sample-data/@vicepres2.strRutaArchivo" alt="@vicepres2.strCandidato" /></td>
+							<td>Nombre: @vicepres2.strCandidato</td>
+						</tr>
+						<tr>
+							<td>DNI: @vicepres2.strDocumentoIdentidad</td>
+						</tr>
+						<tr>
+							<td>Fecha de Nacimiento: @vicepres2.strFechaNacimiento.Substring(0, 10)</td>
+						</tr>
+						<tr>
+							<td>Genero: @(vicepres2.strSexo=="1"?"M":"F")</td>
+						</tr>
+						<tr>
+							<td class="@vicepres2.strEstadoExp">Estado: @(vicepres2.strEstadoExp)</td>
+						</tr>
+					</table>
+				</td>
+
+			</tr>
+			}
+		</tbody>
+	</table>
+
+	<style type="text/css">
+		.INSCRITO {
+			background-color: palegreen;
+		}
+
+		.IMPROCEDENTE {
+			background-color: palevioletred;
+		}
+
+		.APELACIÓN {
+			background-color: lightyellow;
+		}
+	</style>
+
+}
+
+@code {
+	private PartidoPolitico[] partidosPoliticos;
+	private CandidatoGeneral[] candidatosPoliticos;
+
+	protected override async Task OnInitializedAsync()
+	{
+		partidosPoliticos = await Http.GetFromJsonAsync<PartidoPolitico[]>("sample-data/presidentialList0.json");
+		candidatosPoliticos = await Http.GetFromJsonAsync<CandidatoGeneral[]>("sample-data/presidentialList1.json");
+	}
+}

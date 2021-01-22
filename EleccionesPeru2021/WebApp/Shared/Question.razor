@@ -1,0 +1,35 @@
+﻿<link href="css/card.css" rel="stylesheet" />
+
+<div id="card-container">
+	<div id="card-content">
+		<h1>
+			@QuestionTitle
+		</h1>
+		<div class="description">
+			description todo
+		</div>
+
+		<form>
+			@foreach (var option in Options)
+			{
+				<input type="radio" id="@option" name="option" value="@option">
+				<label for="@option">@option</label><br>
+			}
+
+			<input type="radio" id="sin-importancia" name="option" value="sin-importancia">
+			<label for="sin-importancia">Sin importancia</label><br>
+		</form>
+
+	</div>
+</div>
+
+
+@code {
+	[Parameter]
+	public string QuestionTitle { get; set; }
+
+	[Parameter]
+	public List<string> Options { get; set; }
+
+	//Todo: For action see: https://stackoverflow.com/questions/2082615/pass-method-as-parameter-using-c-sharp
+}

@@ -3,7 +3,6 @@ using System.Net;
 using SharedLibrary;
 using System.Text.Json;
 using System.Collections.Generic;
-using SharedLibrary.ApiCall;
 
 namespace DataExporter
 {
@@ -14,10 +13,12 @@ namespace DataExporter
 
 		private string path = "sample-data";
 		private string path2 = "sample-data\\ASSETS\\PLANGOBIERNO\\FILEPLANGOBIERNO";
+		private string path3 = "sample-data\\Assets\\Fotos-HojaVida";
 
 		public DownloadData()
 		{
 			CreateDirectory(path2);
+			CreateDirectory(path3);
 			DownloadPresidentialPartyData();
 			DownloadPresidentialCandidateData();
 		}
@@ -29,17 +30,23 @@ namespace DataExporter
 			foreach(var i in PresidentialPartyData)
 			{
 				var data = loadPresidentialCandidateData(i.idSolicitudLista, i.idExpediente);
-				CandidatoGeneralData.AddRange(DeSerializePresidentialCandidateData(data));		
+				CandidatoGeneralData.AddRange(DeSerializePresidentialCandidateData(data));
 			}
-			System.Console.WriteLine($"Download & DeSerialize presidential list and files level 1. Found: {CandidatoGeneralData.Count}");
+			System.Console.WriteLine($"Download & DeSerialize presidential list level 1. Found: {CandidatoGeneralData.Count}");
 
 			SaveJsonFile(path, "presidentialList1", JsonSerializer.Serialize(CandidatoGeneralData));
 			System.Console.WriteLine("Saved presidential list level 1");
+
+			foreach(var i in CandidatoGeneralData)
+			{
+				DownloadFile(path, $"{i.strRutaArchivo}", $@"https://declara.jne.gob.pe/{i.strRutaArchivo}");
+			}
+			System.Console.WriteLine("Downloaded presidential candidate images");
 		}
 
 		private List<CandidatoGeneral> DeSerializePresidentialCandidateData(string data)
 		{
-			var requestData = JsonSerializer.Deserialize<APICallCandidatoGeneral>(data);
+			var requestData = JsonSerializer.Deserialize<APICall<CandidatoGeneral>>(data);
 			return requestData.data;
 		}
 
@@ -66,12 +73,13 @@ namespace DataExporter
 			{
 				DownloadFile(path, $"{i.strCarpeta}{i.idPlanGobierno}.pdf", $@"https://declara.jne.gob.pe/{i.strCarpeta}{i.idPlanGobierno}.pdf");
 			}
-			
+			System.Console.WriteLine("Saved presidential plan de gobierno level 0");
+
 		}
 
 		private List<PartidoPolitico> DeSerializePresidentialPartyData(string data)
 		{
-			var requestData = JsonSerializer.Deserialize<APICallPartidoPolitico>(data);
+			var requestData = JsonSerializer.Deserialize<APICall<PartidoPolitico>>(data);
 			return requestData.data;
 		}
 

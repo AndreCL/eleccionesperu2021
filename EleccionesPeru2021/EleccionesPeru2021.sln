@@ -5,9 +5,9 @@ VisualStudioVersion = 16.0.30907.101
 MinimumVisualStudioVersion = 10.0.40219.1
 Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "WebApp", "WebApp\WebApp.csproj", "{4FB7FB9F-D7CB-4D77-ABF1-63886452AB8C}"
 EndProject
-Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "SharedLibrary", "Shared\SharedLibrary.csproj", "{6F91FA12-C439-42BB-A617-61EBC06BF0A0}"
+Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "SharedLibrary", "Shared\SharedLibrary.csproj", "{6F91FA12-C439-42BB-A617-61EBC06BF0A0}"
 EndProject
-Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "DataExporter", "DataExporter\DataExporter.csproj", "{3CB11EEA-5699-4364-86CC-27D3AB7B5859}"
+Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "DataExporter", "DataExporter\DataExporter.csproj", "{3CB11EEA-5699-4364-86CC-27D3AB7B5859}"
 EndProject
 Global
 	GlobalSection(SolutionConfigurationPlatforms) = preSolution

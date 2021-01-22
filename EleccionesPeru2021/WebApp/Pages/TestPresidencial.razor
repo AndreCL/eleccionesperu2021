@@ -1,0 +1,57 @@
+﻿@page "/testpresidencial"
+@inject HttpClient Http
+
+<Question QuestionTitle="Ejemplo" Options="@(new List<string> { "Opción 1", "Opción 2" })"></Question>
+
+<table class="table" style=" position: fixed; bottom: 0; left: 100; right: 0; height: 100px; background-color:whitesmoke">
+	<tbody>
+		<tr>
+			@if (results == null)
+			{
+				<td>Cargando...</td>
+			}
+			else
+			{
+				@foreach (var result in results)
+				{
+					<td width="10%">
+						@if (result.Agree)
+						{
+							<span class="oi oi-check" style="color:darkgreen" aria-hidden="true"></span>
+						}
+						else
+						{
+							<p>@result.Percentage %</p>
+						}
+						<img height="50px" width="50px" src="@result.ImageRoute" alt="Logo" />
+						<p style="font-size:10px">@result.Name</p>
+					</td>
+				}
+			}
+		</tr>
+	</tbody>
+</table>
+
+@code {
+	private PartidoPolitico[] partidosPoliticos;
+	private CandidatoGeneral[] candidatosPoliticos;
+	private List<Result> results = new List<Result> { };
+
+	protected override async Task OnInitializedAsync()
+	{
+		partidosPoliticos = await Http.GetFromJsonAsync<PartidoPolitico[]>("sample-data/presidentialList0.json");
+		candidatosPoliticos = await Http.GetFromJsonAsync<CandidatoGeneral[]>("sample-data/presidentialList1.json");
+
+		foreach (var i in partidosPoliticos)
+		{
+			results.Add(new Result()
+			{
+				Id = i.idOrganizacionPolitica,
+				ImageRoute = $"sample-data/Logo/{i.idOrganizacionPolitica}.png",
+				Name = i.strOrganizacionPolitica
+			});
+		}
+	}
+
+
+}
