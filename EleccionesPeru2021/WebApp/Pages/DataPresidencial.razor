@@ -45,7 +45,7 @@ else
 				<td>
 					<table>
 						<tr>
-							<td rowspan="5"><img style="display:block;" max-width="50px" width="90%" height="auto" src="sample-data/@president.strRutaArchivo" alt="@president.strCandidato" /></td>
+							<td rowspan="5"><img style="display:block;" max-width="50px" width="90%" height="auto" src="@($"sample-data{president.strRutaArchivo.Replace("Assets","ASSETS")}")" alt="@president.strCandidato" /></td>
 							<td>Nombre: @president.strCandidato</td>
 						</tr>
 						<tr>
@@ -66,7 +66,7 @@ else
 				<td>
 					<table>
 						<tr>
-							<td rowspan="5"><img style="display:block;" max-width="50px" width="90%" height="auto" src="sample-data/@vicepres1.strRutaArchivo" alt="@vicepres1.strCandidato" /></td>
+							<td rowspan="5"><img style="display:block;" max-width="50px" width="90%" height="auto" src="@($"sample-data{vicepres1.strRutaArchivo.Replace("Assets","ASSETS")}")" alt="@vicepres1.strCandidato" /></td>
 							<td>Nombre: @vicepres1.strCandidato</td>
 						</tr>
 						<tr>
@@ -87,7 +87,7 @@ else
 				<td>
 					<table>
 						<tr>
-							<td rowspan="5"><img style="display:block;" max-width="50px" width="90%" height="auto" src="sample-data/@vicepres2.strRutaArchivo" alt="@vicepres2.strCandidato" /></td>
+							<td rowspan="5"><img style="display:block;" max-width="50px" width="90%" height="auto" src="@($"sample-data{vicepres2.strRutaArchivo.Replace("Assets","ASSETS")}")" alt="@vicepres2.strCandidato" /></td>
 							<td>Nombre: @vicepres2.strCandidato</td>
 						</tr>
 						<tr>
