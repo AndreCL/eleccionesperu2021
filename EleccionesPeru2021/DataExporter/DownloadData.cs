@@ -1,15 +1,15 @@
 ﻿using SharedLibrary.Models;
-using System.Net;
-using SharedLibrary;
+using SharedLibrary.Api;
 using System.Text.Json;
 using System.Collections.Generic;
 
 namespace DataExporter
 {
-	public class DownloadData : Parser
+	public class DownloadData : JneParser
 	{
 		private List<PartidoPolitico> PresidentialPartyData = new List<PartidoPolitico>();
 		private List<CandidatoGeneral> CandidatoGeneralData = new List<CandidatoGeneral>();
+		private List<PlanDeGobierno> ResumenPlanDeGobierno = new List<PlanDeGobierno>();
 
 		private string path = "sample-data";
 		private string path2 = "sample-data\\ASSETS\\PLANGOBIERNO\\FILEPLANGOBIERNO";
@@ -20,79 +20,84 @@ namespace DataExporter
 			CreateDirectory(path2);
 			CreateDirectory(path3);
 			DownloadPresidentialPartyData();
+			DownloadPresidentialPlanDeGobiernoFiles();
+			DownloadPresidentialPlanDeGobiernoResumen();
 			DownloadPresidentialCandidateData();
-		}
-
-		private void DownloadPresidentialCandidateData()
-
-		{
-
-			foreach(var i in PresidentialPartyData)
-			{
-				var data = loadPresidentialCandidateData(i.idSolicitudLista, i.idExpediente);
-				CandidatoGeneralData.AddRange(DeSerializePresidentialCandidateData(data));
-			}
-			System.Console.WriteLine($"Download & DeSerialize presidential list level 1. Found: {CandidatoGeneralData.Count}");
-
-			SaveJsonFile(path, "presidentialList1", JsonSerializer.Serialize(CandidatoGeneralData));
-			System.Console.WriteLine("Saved presidential list level 1");
-
-			foreach(var i in CandidatoGeneralData)
-			{
-				DownloadFile(path, $"{i.strRutaArchivo}", $@"https://declara.jne.gob.pe/{i.strRutaArchivo}");
-			}
-			System.Console.WriteLine("Downloaded presidential candidate images");
-		}
-
-		private List<CandidatoGeneral> DeSerializePresidentialCandidateData(string data)
-		{
-			var requestData = JsonSerializer.Deserialize<APICall<CandidatoGeneral>>(data);
-			return requestData.data;
-		}
-
-		private string loadPresidentialCandidateData(int idSolicitudLista, int idExpediente)
-		{
-			using (WebClient wc = new WebClient())
-			{
-				return wc.DownloadString(APIOverview.ListaCandidatos(TipoDeEleccion.Presidencial,idSolicitudLista, idExpediente));
-			}
+			DownloadPresidentialCandidatePictures();
 		}
 
 		private void DownloadPresidentialPartyData()
 		{
-			var data = loadPresidentialPartyData();
+			var data = LoadPartyData(TipoDeEleccion.Presidencial);
 			System.Console.WriteLine("Download presidential list level 0");
 
 			PresidentialPartyData = DeSerializePresidentialPartyData(data);
 			System.Console.WriteLine($"DeSerialize presidential list level 0. Found: {PresidentialPartyData.Count}");
 
 			SaveJsonFile(path, "presidentialList0", JsonSerializer.Serialize(PresidentialPartyData));
-			System.Console.WriteLine("Saved presidential list level 0");
-
-			foreach(var i in PresidentialPartyData)
-			{
-				DownloadFile(path, $"{i.strCarpeta}{i.idPlanGobierno}.pdf", $@"https://declara.jne.gob.pe/{i.strCarpeta}{i.idPlanGobierno}.pdf");
-			}
-			System.Console.WriteLine("Saved presidential plan de gobierno level 0");
-
+			System.Console.WriteLine("Saved presidential list level 0");			
 		}
 
 		private List<PartidoPolitico> DeSerializePresidentialPartyData(string data)
 		{
-			var requestData = JsonSerializer.Deserialize<APICall<PartidoPolitico>>(data);
-			return requestData.data;
+			var requestData = JsonSerializer.Deserialize<APICallList<PartidoPolitico>>(data);
+			return requestData.Data;
 		}
 
-		private string loadPresidentialPartyData()
+		private void DownloadPresidentialPlanDeGobiernoFiles()
 		{
-			using (WebClient wc = new WebClient())
+			foreach (var i in PresidentialPartyData)
 			{
-				return wc.DownloadString(APIOverview.ListaPartidos(TipoDeEleccion.Presidencial));
-			}			
+				DownloadFile(path, $"{i.strCarpeta}{i.idPlanGobierno}.pdf", APIOverview.PlanDeGobiernoFile(i.strCarpeta, i.idPlanGobierno));
+			}
+			System.Console.WriteLine("Saved presidential plan de gobierno level 0");
 		}
 
-		
+		private void DownloadPresidentialPlanDeGobiernoResumen()
+		{
+			foreach (var i in PresidentialPartyData)
+			{
+				var data = LoadPlanDeGobiernoResumenData(i.idPlanGobierno);
+				ResumenPlanDeGobierno.Add(DeSerializePlanDeGobiernoData(data));
+			}
+			System.Console.WriteLine($"Download & DeSerialize plandegobierno resumen. Found: {ResumenPlanDeGobierno.Count}");
 
+			SaveJsonFile(path, "planDeGobierno0", JsonSerializer.Serialize(ResumenPlanDeGobierno));
+			System.Console.WriteLine("Saved planDeGobierno0");
+		}
 
+		private static PlanDeGobierno DeSerializePlanDeGobiernoData(string data)
+		{
+			var requestData = JsonSerializer.Deserialize<APICallItem<PlanDeGobierno>>(data);
+			return requestData.Data;
+		}
+
+		private void DownloadPresidentialCandidateData()
+		{
+			foreach (var i in PresidentialPartyData)
+			{
+				var data = LoadCandidateData(i.idSolicitudLista, i.idExpediente, TipoDeEleccion.Presidencial);
+				CandidatoGeneralData.AddRange(DeSerializePresidentialCandidateData(data));
+			}
+			System.Console.WriteLine($"Download & DeSerialize presidential list level 1. Found: {CandidatoGeneralData.Count}");
+
+			SaveJsonFile(path, "presidentialList1", JsonSerializer.Serialize(CandidatoGeneralData));
+			System.Console.WriteLine("Saved presidential list level 1");
+		}		
+
+		private List<CandidatoGeneral> DeSerializePresidentialCandidateData(string data)
+		{
+			var requestData = JsonSerializer.Deserialize<APICallList<CandidatoGeneral>>(data);
+			return requestData.Data;
+		}
+
+		private void DownloadPresidentialCandidatePictures()
+		{
+			foreach (var i in CandidatoGeneralData)
+			{
+				DownloadFile(path, $"{i.strRutaArchivo}", APIOverview.ImageCandidatos(i.strRutaArchivo));
+			}
+			System.Console.WriteLine("Downloaded presidential candidate images");
+		}
 	}
 }

@@ -5,7 +5,7 @@ namespace DataExporter
 {
 	public class Parser
 	{
-		protected void CreateDirectory(string path)
+		protected static  void CreateDirectory(string path)
 		{
 			Directory.CreateDirectory(path);
 		}
@@ -16,12 +16,12 @@ namespace DataExporter
 		/// <param name="path"></param>
 		/// <param name="filename">without .json extension</param>
 		/// <param name="content"></param>
-		protected void SaveJsonFile(string path, string filename, string content)
+		protected static void SaveJsonFile(string path, string filename, string content)
 		{
 			File.WriteAllText(@$"{path}\{filename}.json", content);
 		}
 
-		protected void DownloadFile(string path, string filename, string url)
+		protected static void DownloadFile(string path, string filename, string url)
 		{
 			using (var client = new WebClient())
 			{

@@ -1,6 +1,6 @@
 ﻿using SharedLibrary.Models;
 
-namespace SharedLibrary
+namespace SharedLibrary.Api
 {
 	public static class APIOverview
 	{
@@ -21,9 +21,19 @@ namespace SharedLibrary
 			return $"https://plataformaelectoral.jne.gob.pe/HojaVida/GetHVConsolidado?param={idHojaVida}-0-{idOrganizacionPolitica}-{_nrEleccion}";
 		}
 
-		public static string PlanDeGobierno(int idPlanDeGobierno)
+		public static string PlanDeGobiernoResumen(int idPlanGobierno)
 		{
-			return $"https://plataformaelectoral.jne.gob.pe/Candidato/GetPlanGobiernoById/{idPlanDeGobierno}";
+			return $"https://plataformaelectoral.jne.gob.pe/Candidato/GetPlanGobiernoById/{idPlanGobierno}";
+		}
+
+		public static string PlanDeGobiernoFile(string strCarpeta, int idPlanGobierno)
+		{
+			return $"https://declara.jne.gob.pe/{strCarpeta}{idPlanGobierno}.pdf";
+		}
+
+		public static string ImageCandidatos(string strRutaArchivo)
+		{
+			return $"https://declara.jne.gob.pe/{strRutaArchivo}";
 		}
 	}
 }
