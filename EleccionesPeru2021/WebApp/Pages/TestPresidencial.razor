@@ -12,19 +12,10 @@
 			}
 			else
 			{
-				@foreach (var result in results)
+				@foreach (var result in results.OrderByDescending(x => x.Agree).ThenByDescending(x => x.AgreePercentage))
 				{
-					<td width="10%">
-						@if (result.Agree)
-						{
-							<span class="oi oi-check" style="color:darkgreen" aria-hidden="true"></span>
-						}
-						else
-						{
-							<p>@result.Percentage %</p>
-						}
-						<img height="50px" width="50px" src="@result.ImageRoute" alt="Logo" />
-						<p style="font-size:10px">@result.Name</p>
+					<td>
+						<SingleResult Result="@result"></SingleResult>
 					</td>
 				}
 			}
@@ -51,6 +42,12 @@
 				Name = i.strOrganizacionPolitica
 			});
 		}
+
+		//for testing purposes
+		//results[0].AddCounter(true);
+		//results[1].AddCounter(false);
+		//results[2].AddCounter(true);
+		//results[2].AddCounter(false);
 	}
 
 

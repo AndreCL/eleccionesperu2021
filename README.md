@@ -11,7 +11,7 @@ Falta implementar:
 			* ~~Partidos~~
 			* ~~Logos~~
 			* ~~Plan de gobierno~~
-			* Resumen plan de gobierno
+			* ~~Resumen plan de gobierno~~
 			* ~~Candidatos~~
 			* ~~Imagenes~~
 			* Hoja de vida

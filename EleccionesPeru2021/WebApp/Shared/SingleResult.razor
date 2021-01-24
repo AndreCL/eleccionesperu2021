@@ -1,0 +1,51 @@
+﻿<div style="text-align:center;" height="300" width="50">
+	@if (Result == null)
+	{
+		<p>Cargando...</p>
+	}
+	else
+	{
+		@if (Result.Agree)
+		{
+			<div height="50" width="100%" class="oi oi-check" style="color:darkgreen" aria-hidden="true"></div> <br />
+		}
+		else
+		{
+			<div height="50" class="paragraphContainer">
+				<p class="paragraph" height="100%" width="100%" style="font-size: 20px;">@(Result.AgreePercentage)%</p>
+			</div>
+		}
+
+		<img class="Logo" src="@Result.ImageRoute" alt="Logo" />
+		<div height="150" class="paragraphContainer">
+			<p class="paragraph" height="100%" width="100%" style="font-size: 10px;">@Result.Name</p>
+		</div>
+
+	}
+</div>
+
+<style>
+	.Logo {
+		height: 50px;
+		width: 50px;
+	}
+
+	.paragraph {
+		text-align: center;
+		word-wrap: break-word;
+		padding: 0;
+		margin: 0;
+	}
+
+	.paragraphContainer {
+		display: flex;
+		justify-content: center;
+		align-items: center;
+	}
+</style>
+
+@code {
+	[Parameter]
+	public Result Result { get; set; }
+}
+

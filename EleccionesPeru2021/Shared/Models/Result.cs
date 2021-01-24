@@ -10,7 +10,7 @@
 
 		public bool Agree { get; set; } = true;
 
-		public double Percentage { 
+		public double AgreePercentage { 
 			get 
 			{
 				return ((_totalcounter - _disagreecounter) / _totalcounter) * 100;
