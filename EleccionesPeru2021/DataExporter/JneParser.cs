@@ -29,5 +29,13 @@ namespace DataExporter
 				return wc.DownloadString(APIOverview.PlanDeGobiernoResumen(idPlanGobierno));
 			}
 		}
+
+		protected static string LoadHojaDeVidaData(int idHojaVida, int idOrganizacionPolitica)
+		{
+			using (WebClient wc = new WebClient())
+			{
+				return wc.DownloadString(APIOverview.HojaDeVidaCandidato(idHojaVida, idOrganizacionPolitica));
+			}
+		}
 	}
 }

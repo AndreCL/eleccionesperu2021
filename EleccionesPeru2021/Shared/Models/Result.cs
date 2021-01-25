@@ -17,6 +17,12 @@
 			} 
 		}
 
+		public void Disqualify()
+		{
+			_totalcounter += 100;
+			_disagreecounter += 100;
+		}
+
 		private double _totalcounter;
 
 		private double _disagreecounter;

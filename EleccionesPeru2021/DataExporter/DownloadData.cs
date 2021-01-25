@@ -10,6 +10,7 @@ namespace DataExporter
 		private List<PartidoPolitico> PresidentialPartyData = new List<PartidoPolitico>();
 		private List<CandidatoGeneral> CandidatoGeneralData = new List<CandidatoGeneral>();
 		private List<PlanDeGobierno> ResumenPlanDeGobierno = new List<PlanDeGobierno>();
+		private List<HojaDeVida> HojasDeVida = new List<HojaDeVida>();
 
 		private string path = "sample-data";
 		private string path2 = "sample-data\\ASSETS\\PLANGOBIERNO\\FILEPLANGOBIERNO";
@@ -24,7 +25,8 @@ namespace DataExporter
 			DownloadPresidentialPlanDeGobiernoResumen();
 			DownloadPresidentialCandidateData();
 			DownloadPresidentialCandidatePictures();
-		}
+			DownloadHojaDeVida();
+		}		
 
 		private void DownloadPresidentialPartyData()
 		{
@@ -77,7 +79,16 @@ namespace DataExporter
 			foreach (var i in PresidentialPartyData)
 			{
 				var data = LoadCandidateData(i.idSolicitudLista, i.idExpediente, TipoDeEleccion.Presidencial);
-				CandidatoGeneralData.AddRange(DeSerializePresidentialCandidateData(data));
+
+				var candidates = DeSerializePresidentialCandidateData(data);
+
+				//fix because dataset has 0 here always
+				foreach(var candidate in candidates)
+				{
+					candidate.idOrganizacionPolitica = i.idOrganizacionPolitica;
+				}
+
+				CandidatoGeneralData.AddRange(candidates);
 			}
 			System.Console.WriteLine($"Download & DeSerialize presidential list level 1. Found: {CandidatoGeneralData.Count}");
 
@@ -98,6 +109,28 @@ namespace DataExporter
 				DownloadFile(path, $"{i.strRutaArchivo}", APIOverview.ImageCandidatos(i.strRutaArchivo));
 			}
 			System.Console.WriteLine("Downloaded presidential candidate images");
+		}
+
+		private void DownloadHojaDeVida()
+		{
+			foreach (var i in CandidatoGeneralData)
+			{
+				var data = LoadHojaDeVidaData(i.idHojaVida, i.idOrganizacionPolitica);
+				if (!string.IsNullOrEmpty(data))
+				{
+					HojasDeVida.Add(DeSerializeHojasDeVidaData(data));
+				}					
+			}
+			System.Console.WriteLine($"Download & DeSerialize hojas de vida. Found: {HojasDeVida.Count}");
+
+			SaveJsonFile(path, "presidentialList2", JsonSerializer.Serialize(HojasDeVida));
+			System.Console.WriteLine("Saved presidential hojas de vida (presidentialList2)");
+		}
+
+		private HojaDeVida DeSerializeHojasDeVidaData(string data)
+		{
+			var requestData = JsonSerializer.Deserialize<APICallItem<HojaDeVida>>(data);
+			return requestData.Data;
 		}
 	}
 }

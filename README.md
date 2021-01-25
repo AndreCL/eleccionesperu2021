@@ -14,7 +14,7 @@ Falta implementar:
 			* ~~Resumen plan de gobierno~~
 			* ~~Candidatos~~
 			* ~~Imagenes~~
-			* Hoja de vida
+			* Hoja de vida - Partial
 		* Congreso
 			* Partidos
 			* Candidatos
