@@ -1,4 +1,5 @@
-﻿using System.Text.Json.Serialization;
+﻿using SharedLibrary.Models.HojaDeVidaModels;
+using System.Text.Json.Serialization;
 
 namespace SharedLibrary.Models
 {
@@ -13,23 +14,61 @@ namespace SharedLibrary.Models
 		[JsonPropertyName("oEduBasica")]
 		public EducacionBasica EduBasica { get; set; }
 
-		//todo: Got to here
-		//public object oEduTecnico { get; set; }
-		//public object oEduNoUniversitaria { get; set; }
-		//public object[] lEduUniversitaria { get; set; }
-		//public object oEduPosgrago { get; set; }
-		//public object[] lCargoPartidario { get; set; }
-		//public object[] lCargoEleccion { get; set; }
-		//public object[] lRenunciaOP { get; set; }
-		//public object[] lSentenciaPenal { get; set; }
-		//public object[] lSentenciaObliga { get; set; }
-		//public object oIngresos { get; set; }
-		//public object[] lBienInmueble { get; set; }
-		//public object[] lBienMueble { get; set; }
-		//public object[] lBienMuebleOtro { get; set; }
-		//public object oInfoAdicional { get; set; }
-		//public object[] lCargoElecPostula { get; set; }
-		//public object[] lCargoElecHistorico { get; set; }
-		//public object[] lAnotacionMarginal { get; set; }
+		[JsonPropertyName("oEduTecnico")]
+		public EducacionTecnica EduTecnico { get; set; }
+
+		[JsonPropertyName("oEduNoUniversitaria")]
+		public EducacionNoUniversitaria EduNoUniversitaria { get; set; }
+
+		[JsonPropertyName("lEduUniversitaria")]
+		public EducacionUniversitaria[] EduUniversitaria { get; set; }
+
+		[JsonPropertyName("oEduPosgrago")]
+		public EducacionPostGrado EduPosgrado { get; set; }
+
+		[JsonPropertyName("lCargoPartidario")]
+		public CargoPartidario[] CargoPartidario { get; set; }
+
+		[JsonPropertyName("lCargoEleccion")]
+		public CargoEleccion[] CargoEleccion { get; set; }
+
+		/// <summary>
+		/// MENCIÓN DE LAS RENUNCIAS EFECTUADAS A OTROS PARTIDOS, 
+		/// MOVIMIENTOS DE ALCANCE REGIONAL O DEPARTAMENTAL U 
+		/// ORGANIZACIONES POLÍTICAS DE ALCANCE PROVINCIAL Y DISTRITAL DE SER EL CASO
+		/// </summary>
+		[JsonPropertyName("lRenunciaOP")]
+		public RenunciaOP[] RenunciaOP { get; set; }
+
+		[JsonPropertyName("lSentenciaPenal")]
+		public SentenciaPenal[] SentenciaPenal { get; set; }
+
+		[JsonPropertyName("lSentenciaObliga")]
+		public SentenciaObliga[] SentenciaObliga { get; set; }
+
+		[JsonPropertyName("oIngresos")]
+		public Ingresos Ingresos { get; set; }
+
+		[JsonPropertyName("lBienInmueble")]
+		public BienInmueble[] BienInmueble { get; set; }
+
+		[JsonPropertyName("lBienMueble")]
+		public BienMueble[] BienMueble { get; set; }
+
+		[JsonPropertyName("lBienMuebleOtro")]
+		public object[] BienMuebleOtro { get; set; }
+		//todo: que es?
+
+		[JsonPropertyName("oInfoAdicional")]
+		public InfoAdicional InfoAdicional { get; set; }
+
+		[JsonPropertyName("lCargoElecPostula")]
+		public CargoEleccion2[] CargoElecPostula { get; set; }
+
+		[JsonPropertyName("lCargoElecHistorico")]
+		public CargoEleccion2[] CargoElecHistorico { get; set; }
+
+		public object[] lAnotacionMarginal { get; set; }
+		//todo: que es?
 	}
 }

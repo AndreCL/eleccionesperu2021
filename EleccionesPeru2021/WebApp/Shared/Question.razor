@@ -6,14 +6,14 @@
 			@QuestionTitle
 		</h1>
 		<div class="description">
-			description todo
+			@QuestionDescription
 		</div>
 
 		<form>
 			@foreach (var option in Options)
 			{
-				<input type="radio" id="@option" name="option" value="@option">
-				<label for="@option">@option</label><br>
+				<input type="radio" id="@option.Name" name="option" value="@option.Name">
+				<label for="@option.Name">@option.Title</label><br>
 			}
 
 			<input type="radio" id="sin-importancia" name="option" value="sin-importancia">
@@ -29,7 +29,10 @@
 	public string QuestionTitle { get; set; }
 
 	[Parameter]
-	public List<string> Options { get; set; }
+	public string QuestionDescription { get; set; }
+
+	[Parameter]
+	public List<QuestionOption> Options { get; set; }
 
 	//Todo: For action see: https://stackoverflow.com/questions/2082615/pass-method-as-parameter-using-c-sharp
 }

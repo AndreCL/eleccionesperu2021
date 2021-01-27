@@ -1,4 +1,4 @@
-﻿namespace SharedLibrary.Models
+﻿namespace SharedLibrary.Models.UIModels
 {
 	public class Result
 	{

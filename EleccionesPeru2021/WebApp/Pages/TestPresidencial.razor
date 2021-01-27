@@ -1,37 +1,28 @@
 ﻿@page "/testpresidencial"
 @inject HttpClient Http
 
-<Question QuestionTitle="Ejemplo" Options="@(new List<string> { "Opción 1", "Opción 2" })"></Question>
+<Question QuestionTitle="@questionText" Options="@questionOptions" QuestionDescription="@questionDescription"></Question>
 
-<table class="table" style=" position: fixed; bottom: 0; left: 100; right: 0; height: 100px; background-color:whitesmoke">
-	<tbody>
-		<tr>
-			@if (results == null)
-			{
-				<td>Cargando...</td>
-			}
-			else
-			{
-				@foreach (var result in results.OrderByDescending(x => x.Agree).ThenByDescending(x => x.AgreePercentage))
-				{
-					<td>
-						<SingleResult Result="@result"></SingleResult>
-					</td>
-				}
-			}
-		</tr>
-	</tbody>
-</table>
+<ResultsCompoent Results="@results"></ResultsCompoent>
 
 @code {
-	private PartidoPolitico[] partidosPoliticos;
-	private CandidatoGeneral[] candidatosPoliticos;
+	private List<PartidoPolitico> partidosPoliticos;
+	private List<CandidatoGeneral> candidatosPoliticos;
 	private List<Result> results = new List<Result> { };
+	private List<QuestionOption> questionOptions = new List<QuestionOption> { };
+	private string questionText;
+	private string questionDescription;
 
 	protected override async Task OnInitializedAsync()
 	{
-		partidosPoliticos = await Http.GetFromJsonAsync<PartidoPolitico[]>("sample-data/presidentialList0.json");
-		candidatosPoliticos = await Http.GetFromJsonAsync<CandidatoGeneral[]>("sample-data/presidentialList1.json");
+		var temp = await Http.GetFromJsonAsync<PartidoPolitico[]>("sample-data/presidentialList0.json");
+
+		//Filter out improsedente
+		partidosPoliticos = temp.ToList().Where(x => !x.strEstadoLista.Equals("IMPROCEDENTE", StringComparison.InvariantCultureIgnoreCase)).ToList();
+
+		//Filter out improsedente
+		var temp2 = await Http.GetFromJsonAsync<CandidatoGeneral[]>("sample-data/presidentialList1.json");
+		candidatosPoliticos = temp2.ToList().Where(x => !x.strEstadoExp.Equals("IMPROCEDENTE", StringComparison.InvariantCultureIgnoreCase)).ToList();
 
 		foreach (var i in partidosPoliticos)
 		{
@@ -43,11 +34,41 @@
 			});
 		}
 
+		questionText = "Distribución por genero";
+		questionDescription = "Presidencia, 1a vicepresidencia y 2a vicepresidencia";
+		QuestionOption qo = new QuestionOption
+		{
+			Name = "Fem",
+			Title = "Mayoría femenina",
+		};
+		questionOptions.Add(qo);
+		qo = new QuestionOption
+		{
+			Name = "Mas",
+			Title = "Mayoría masculina",
+		};
+		questionOptions.Add(qo);
+
 		//for testing purposes
 		//results[0].AddCounter(true);
 		//results[1].AddCounter(false);
 		//results[2].AddCounter(true);
 		//results[2].AddCounter(false);
+
+
+	}
+
+	public string filterByGender(bool female)
+	{
+		if (female)
+		{
+			partidosPoliticos = partidosPoliticos.Where(x => x.intCandMujeres > x.intCandHombres).ToList();
+		}
+		else
+		{
+			partidosPoliticos = partidosPoliticos.Where(x => x.intCandHombres > x.intCandMujeres).ToList();
+		}
+		return "Done";
 	}
 
 

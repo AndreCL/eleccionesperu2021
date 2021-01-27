@@ -1,4 +1,4 @@
-﻿namespace SharedLibrary.Models
+﻿namespace SharedLibrary.Models.HojaDeVidaModels
 {
 	public class EducacionBasica
 	{
