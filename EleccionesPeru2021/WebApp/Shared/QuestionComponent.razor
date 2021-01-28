@@ -1,6 +1,6 @@
 ﻿<link href="css/card.css" rel="stylesheet" />
 
-<div id="card-container">
+<div id="card-container" hidden="@Hide">
 	@if (Questions != null && Questions.Count > 0)
 	{
 		<div id="card-content">
@@ -35,16 +35,26 @@
 
 	private int CurrentQuestion = 0;
 
-	string selectedAnswer = "";
+	private string selectedAnswer = "";
 
-	void SelectionChanged(ChangeEventArgs args)
+	private bool Hide = false;
+
+	private void SelectionChanged(ChangeEventArgs args)
 	{
 		selectedAnswer = args.Value.ToString();
 	}
 
-	public void OnNext()
+	private void OnNext()
 	{
 		Questions[CurrentQuestion].Next(selectedAnswer);
-		Questions[CurrentQuestion].Title = $"Answered {selectedAnswer}";
+		if((CurrentQuestion + 1) < Questions.Count)
+		{
+			CurrentQuestion++;
+		}
+		else
+		{
+			Hide = true;
+		}
+
 	}
 }

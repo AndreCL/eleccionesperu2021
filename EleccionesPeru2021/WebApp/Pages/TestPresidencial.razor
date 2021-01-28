@@ -1,24 +1,22 @@
 ﻿@page "/testpresidencial"
 @inject HttpClient Http
 
-<QuestionComponent Questions="Questions"></QuestionComponent>
-
-<p>@debug</p>
+<QuestionComponent Questions="questions"></QuestionComponent>
 
 <ResultsComponent Results="@results"></ResultsComponent>
 
 
 
 @code {
-	public List<PartidoPolitico> partidosPoliticos;
-	public List<CandidatoGeneral> candidatosPoliticos;
-	public List<Result> results = new List<Result> { };
-	public List<Question> Questions = new List<Question> { };
-	public string debug = "";
+	private List<PartidoPolitico> partidosPoliticos;
+	private List<CandidatoGeneral> candidatosPoliticos;
+	private List<HojaDeVida> hojasDeVida;
+	private List<Result> results = new List<Result> { };
+	private List<Question> questions = new List<Question> { };
+
 
 	protected override async Task OnInitializedAsync()
 	{
-		#region hide
 		var temp = await Http.GetFromJsonAsync<PartidoPolitico[]>("sample-data/presidentialList0.json");
 
 		//Filter out improsedente
@@ -28,45 +26,47 @@
 		var temp2 = await Http.GetFromJsonAsync<CandidatoGeneral[]>("sample-data/presidentialList1.json");
 		candidatosPoliticos = temp2.ToList().Where(x => !x.strEstadoExp.Equals("IMPROCEDENTE", StringComparison.InvariantCultureIgnoreCase)).ToList();
 
+		var temp3 = await Http.GetFromJsonAsync<HojaDeVida[]>("sample-data/presidentialList2.json");
+		hojasDeVida = temp3.ToList();
+
 		LoadResults();
 
 		Question question = new Question
 		{
 			Title = "Distribución por genero",
-			Description = "Presidencia, 1a vicepresidencia y 2a vicepresidencia",
+			Description = "Presidencia, 1a vicepresidencia y 2a vicepresidencia. Todos los partidos tienen al menos 1 de cada genero en la lista.",
 			Options = new List<string> { "Mayoría femenina", "Mayoría masculina" },
 			OnNext = filterByGender
 		};
-		Questions.Add(question);
+		questions.Add(question);
 
-		#endregion
+		Question question2 = new Question
+		{
+			Title = "Test 2",
+			Description = "Text",
+			Options = new List<string> { "Option" },
+			OnNext = filterByGender
+		};
+		questions.Add(question2);
 
-		//below works fine
-		//filterByGender("femenina");
 	}
 
-	//Works when coming from OnInitializedAsync() but not QuestionComponent.razor doing Next(). 
-	//Debugging shows it goes into the method and does all the computing, but nothing happens in UI. 
 	public void filterByGender(string option)
 	{
-		debug = option;
-
 		List<PartidoPolitico> failed = new List<PartidoPolitico>();
 
 		if (option.Contains("femenina"))
 		{
 			failed = partidosPoliticos.Where(x => x.intCandHombres > x.intCandMujeres).ToList();
-			debug = $"found {failed.Count} failed fem";
 		}
 		else if (option.Contains("masculina"))
 		{
 			failed = partidosPoliticos.Where(x => x.intCandMujeres > x.intCandHombres).ToList();
-			debug = $"found {failed.Count} failed masc";
 		}
 
 		foreach (var i in partidosPoliticos)
 		{
-			if (failed.Exists(x => x.idOrganizacionPolitica == i.idOrganizacionPolitica))
+			if (failed.Count > 0 && failed.Exists(x => x.idOrganizacionPolitica == i.idOrganizacionPolitica))
 			{
 				results.Where(x => x.Id == i.idOrganizacionPolitica).FirstOrDefault().AddCounter(false);
 			}
@@ -75,6 +75,8 @@
 				results.Where(x => x.Id == i.idOrganizacionPolitica).FirstOrDefault().AddCounter(true);
 			}
 		}
+
+		StateHasChanged();
 	}
 
 	public void LoadResults()

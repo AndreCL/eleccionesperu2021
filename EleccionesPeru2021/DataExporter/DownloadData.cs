@@ -60,7 +60,11 @@ namespace DataExporter
 			foreach (var i in PresidentialPartyData)
 			{
 				var data = LoadPlanDeGobiernoResumenData(i.idPlanGobierno);
-				ResumenPlanDeGobierno.Add(DeSerializePlanDeGobiernoData(data));
+				if (!string.IsNullOrEmpty(data) && !data.StartsWith("{\"data\":null"))
+				{
+					ResumenPlanDeGobierno.Add(DeSerializePlanDeGobiernoData(data));
+				}
+				
 			}
 			System.Console.WriteLine($"Download & DeSerialize plandegobierno resumen. Found: {ResumenPlanDeGobierno.Count}");
 
@@ -115,11 +119,18 @@ namespace DataExporter
 		{
 			foreach (var i in CandidatoGeneralData)
 			{
-				var data = LoadHojaDeVidaData(i.idHojaVida, i.idOrganizacionPolitica);
-				if (!string.IsNullOrEmpty(data))
+				if(i.idHojaVida != 0)
 				{
-					HojasDeVida.Add(DeSerializeHojasDeVidaData(data));
-				}					
+					var data = LoadHojaDeVidaData(i.idHojaVida, i.idOrganizacionPolitica);
+					if (!string.IsNullOrEmpty(data) && !data.StartsWith("{\"data\":null"))
+					{
+						HojasDeVida.Add(DeSerializeHojasDeVidaData(data));
+					}
+				}
+				else
+				{
+					System.Console.WriteLine($"{i.strCandidato} has no hoja de vida");
+				}
 			}
 			System.Console.WriteLine($"Download & DeSerialize hojas de vida. Found: {HojasDeVida.Count}");
 

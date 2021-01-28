@@ -3,9 +3,9 @@
 
 <h1>Información electoral</h1>
 
-<p>Lista presidencial actualizada 27/01/2021</p>
+<p>Lista presidencial actualizada 28/01/2021</p>
 
-@if (partidosPoliticos == null || candidatosPoliticos == null)
+@if (partidosPoliticos == null || candidatosPoliticos == null || hojasDeVida == null)
 {
 	<p><em>Cargando...</em></p>
 }
@@ -52,7 +52,13 @@ else
 							<td>DNI: @president.strDocumentoIdentidad</td>
 						</tr>
 						<tr>
-							<td>Fecha de Nacimiento: @president.strFechaNacimiento.Substring(0, 10)</td>
+							<td>Nacimiento: @president.strFechaNacimiento.Substring(0, 10)
+							@if (president != null && president.idHojaVida != 0)
+							{
+								@hojasDeVida.Where(i => i?.DatosPersonales?.idHojaVida == president.idHojaVida)?.FirstOrDefault()?.DatosPersonales?.strPaisNacimiento
+							}
+							//todo: was doing this
+							</td>
 						</tr>
 						<tr>
 							<td>Genero: @(president.strSexo=="1"?"M":"F")</td>
@@ -73,7 +79,7 @@ else
 							<td>DNI: @vicepres1.strDocumentoIdentidad</td>
 						</tr>
 						<tr>
-							<td>Fecha de Nacimiento: @vicepres1.strFechaNacimiento.Substring(0, 10)</td>
+							<td>Nacimiento: @vicepres1.strFechaNacimiento.Substring(0, 10) @vicepres1.idHojaVida</td>
 						</tr>
 						<tr>
 							<td>Genero: @(vicepres1.strSexo=="1"?"M":"F")</td>
@@ -94,7 +100,7 @@ else
 							<td>DNI: @vicepres2.strDocumentoIdentidad</td>
 						</tr>
 						<tr>
-							<td>Fecha de Nacimiento: @vicepres2.strFechaNacimiento.Substring(0, 10)</td>
+							<td>Nacimiento: @vicepres2.strFechaNacimiento.Substring(0, 10) @vicepres2.idHojaVida</td>
 						</tr>
 						<tr>
 							<td>Genero: @(vicepres2.strSexo=="1"?"M":"F")</td>
@@ -129,10 +135,12 @@ else
 @code {
 	private PartidoPolitico[] partidosPoliticos;
 	private CandidatoGeneral[] candidatosPoliticos;
+	private HojaDeVida[] hojasDeVida;
 
 	protected override async Task OnInitializedAsync()
 	{
 		partidosPoliticos = await Http.GetFromJsonAsync<PartidoPolitico[]>("sample-data/presidentialList0.json");
 		candidatosPoliticos = await Http.GetFromJsonAsync<CandidatoGeneral[]>("sample-data/presidentialList1.json");
+		hojasDeVida = await Http.GetFromJsonAsync<HojaDeVida[]>("sample-data/presidentialList2.json");
 	}
 }
