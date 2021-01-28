@@ -1,0 +1,50 @@
+﻿<link href="css/card.css" rel="stylesheet" />
+
+<div id="card-container">
+	@if (Questions != null && Questions.Count > 0)
+	{
+		<div id="card-content">
+			<h1>
+				@Questions[CurrentQuestion].Title
+			</h1>
+			<div class="description">
+				@Questions[CurrentQuestion].Description
+			</div>
+
+			<form>
+				@foreach (var option in Questions[CurrentQuestion].Options)
+				{
+					<input type="radio" id="@option" name="option" value="@option" @onchange="SelectionChanged">
+					<label for="@option">@option</label><br>
+				}
+
+				<input type="radio" id="sin-importancia" name="option" value="sin-importancia" @onchange="SelectionChanged">
+				<label for="sin-importancia">Sin importancia</label><br>
+			</form>
+
+			<button class="btn btn-primary" @onclick="OnNext">Siguiente</button>
+
+		</div>
+	}
+</div>
+
+
+@code {
+	[Parameter]
+	public List<Question> Questions { get; set; }
+
+	private int CurrentQuestion = 0;
+
+	string selectedAnswer = "";
+
+	void SelectionChanged(ChangeEventArgs args)
+	{
+		selectedAnswer = args.Value.ToString();
+	}
+
+	public void OnNext()
+	{
+		Questions[CurrentQuestion].Next(selectedAnswer);
+		Questions[CurrentQuestion].Title = $"Answered {selectedAnswer}";
+	}
+}
