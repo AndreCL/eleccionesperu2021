@@ -5,8 +5,6 @@
 
 <ResultsComponent Results="@results"></ResultsComponent>
 
-
-
 @code {
 	private List<PartidoPolitico> partidosPoliticos;
 	private List<CandidatoGeneral> candidatosPoliticos;
@@ -33,33 +31,73 @@
 
 		Question question = new Question
 		{
-			Title = "Distribución por genero",
-			Description = "Presidencia, 1a vicepresidencia y 2a vicepresidencia. Todos los partidos tienen al menos 1 de cada genero en la lista.",
-			Options = new List<string> { "Mayoría femenina", "Mayoría masculina" },
+			Title = "Conformación por sexo",
+			Description = "Todos los partidos tienen al menos 1 persona de cada genero en la lista para presidencia, " +
+			"1a vicepresidencia y 2a vicepresidencia. ¿Cual es tu conformación preferida?",
+			Options = new List<string> { "2 mujeres y 1 hombre", "2 hombres y 1 mujer" },
 			OnNext = filterByGender
 		};
 		questions.Add(question);
 
 		Question question2 = new Question
 		{
-			Title = "Test 2",
-			Description = "Text",
-			Options = new List<string> { "Option" },
-			OnNext = filterByGender
+			Title = "País de nacimiento",
+			Description = "¿En qué país nacieron los candidatos a la presidencia, 1ra vicepresidencia y 2da vicepresidencia",
+			Options = new List<string> { "Perú" },
+			OnNext = filterByBirthplace
 		};
 		questions.Add(question2);
+	}
 
+	public void filterByBirthplace(string option)
+	{
+		List<PartidoPolitico> failed = new List<PartidoPolitico>();
+
+		if (option.Contains("Perú"))
+		{
+			foreach(var i in partidosPoliticos)
+			{
+				var president = candidatosPoliticos.FirstOrDefault(x => x.idSolicitudLista == i.idSolicitudLista && x.idCargoEleccion == 1);
+				var vicepres1 = candidatosPoliticos.FirstOrDefault(x => x.idSolicitudLista == i.idSolicitudLista && x.idCargoEleccion == 2);
+				var vicepres2 = candidatosPoliticos.FirstOrDefault(x => x.idSolicitudLista == i.idSolicitudLista && x.idCargoEleccion == 3);
+				var preshoja = hojasDeVida.Where(x => x.DatosPersonales.idHojaVida == president?.idHojaVida).FirstOrDefault()?.DatosPersonales?.strPaisNacimiento;
+				var vice1hoja = hojasDeVida.Where(x => x.DatosPersonales.idHojaVida == vicepres1?.idHojaVida).FirstOrDefault()?.DatosPersonales?.strPaisNacimiento;
+				var vice2hoja = hojasDeVida.Where(x => x.DatosPersonales.idHojaVida == vicepres2?.idHojaVida).FirstOrDefault()?.DatosPersonales?.strPaisNacimiento;
+
+				if ((preshoja != null && !preshoja.Equals("PERÚ", StringComparison.InvariantCultureIgnoreCase)) ||
+					(vice1hoja != null && !vice1hoja.Equals("PERÚ", StringComparison.InvariantCultureIgnoreCase)) ||
+					(vice2hoja != null && !vice2hoja.Equals("PERÚ", StringComparison.InvariantCultureIgnoreCase)) 
+					)
+				{
+					failed.Add(i);
+				}
+			}
+		}
+
+		foreach (var i in partidosPoliticos)
+		{
+			if (failed.Count > 0 && failed.Exists(x => x.idOrganizacionPolitica == i.idOrganizacionPolitica))
+			{
+				results.Where(x => x.Id == i.idOrganizacionPolitica).FirstOrDefault().AddCounter(false);
+			}
+			else
+			{
+				results.Where(x => x.Id == i.idOrganizacionPolitica).FirstOrDefault().AddCounter(true);
+			}
+		}
+
+		StateHasChanged();
 	}
 
 	public void filterByGender(string option)
 	{
 		List<PartidoPolitico> failed = new List<PartidoPolitico>();
 
-		if (option.Contains("femenina"))
+		if (option.Contains("2 mujeres"))
 		{
 			failed = partidosPoliticos.Where(x => x.intCandHombres > x.intCandMujeres).ToList();
 		}
-		else if (option.Contains("masculina"))
+		else if (option.Contains("2 hombres"))
 		{
 			failed = partidosPoliticos.Where(x => x.intCandMujeres > x.intCandHombres).ToList();
 		}
