@@ -18,7 +18,7 @@
 		public string strEduPrimaria { get; set; }
 
 		/// <summary>
-		/// Ejemplo: "1"
+		/// "1":si "0":no
 		/// </summary>
 		public string strConcluidoEduPrimaria { get; set; }
 
@@ -28,7 +28,7 @@
 		public string strEduSecundaria { get; set; }
 
 		/// <summary>
-		/// Ejemplo: "1"
+		/// "1":si "0":no
 		/// </summary>
 		public string strConcluidoEduSecundaria { get; set; }
 

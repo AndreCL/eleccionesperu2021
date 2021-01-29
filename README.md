@@ -7,7 +7,7 @@ Falta implementar:
 * DataExporter
     * ~~ApiOveview~~
 	* Data Models & extract
-		* Presidencial
+		* ~~Presidencial~~
 			* ~~Partidos~~
 			* ~~Logos~~
 			* ~~Plan de gobierno~~
@@ -26,10 +26,10 @@ Falta implementar:
 			* Imagenes
 			* Hoja de vida
 * WebApp
-	* Modulo de preguntas
+	* ~~Modulo de preguntas~~
 	* Modulo de resultados
 	* Detalles de resultados
-	* Test presidencial
+	* Test presidencial - En progreso
 	* Test congreso
 	* Test parlamento andino
 	

@@ -32,103 +32,140 @@ else
 				var vicepres1 = candidatosPoliticos.FirstOrDefault(x => x.idSolicitudLista == partidoPolitico.idSolicitudLista && x.idCargoEleccion == 2);
 				var vicepres2 = candidatosPoliticos.FirstOrDefault(x => x.idSolicitudLista == partidoPolitico.idSolicitudLista && x.idCargoEleccion == 3);
 
-			<tr>
-				<td>@partidoPolitico.strOrganizacionPolitica  
-					<br />
-					<img height="100px" width="100px" src="@($"sample-data/Logo/{@partidoPolitico.idOrganizacionPolitica}.png")" alt="Logo" />
-				</td>
-				<td class="@partidoPolitico.strEstadoLista">@partidoPolitico.strEstadoLista</td>
-				<td>@partidoPolitico.intCandHombres</td>
-				<td>@partidoPolitico.intCandMujeres</td>
-				<td><a target="_blank" href="sample-data/@(partidoPolitico.strCarpeta+partidoPolitico.idPlanGobierno+".pdf")">link</a></td>
+				<tr>
+					<td>
+						@partidoPolitico.strOrganizacionPolitica
+						<br />
+						<img height="100px" width="100px" src="@($"sample-data/Logo/{@partidoPolitico.idOrganizacionPolitica}.png")" alt="Logo" />
+					</td>
+					<td class="@partidoPolitico.strEstadoLista">@partidoPolitico.strEstadoLista</td>
+					<td>@partidoPolitico.intCandHombres</td>
+					<td>@partidoPolitico.intCandMujeres</td>
+					<td><a target="_blank" href="sample-data/@(partidoPolitico.strCarpeta+partidoPolitico.idPlanGobierno+".pdf")">link</a></td>
 
-				<td>
-					<table>
-						<tr>
-							<td rowspan="5"><img style="display:block;" max-width="50px" width="90%" height="auto" src="@($"sample-data{president.strRutaArchivo.Replace("Assets","ASSETS")}")" alt="@president.strCandidato" /></td>
-							<td>Nombre: @president.strCandidato</td>
-						</tr>
-						<tr>
-							<td>DNI: @president.strDocumentoIdentidad</td>
-						</tr>
-						<tr>
-							<td>Nacimiento: @president.strFechaNacimiento.Substring(0, 10) | 
-							@if (president != null && president.idHojaVida != 0)
-							{
-								@hojasDeVida.Where(i => i?.DatosPersonales?.idHojaVida == president.idHojaVida)?.FirstOrDefault()?.DatosPersonales?.strPaisNacimiento
-							}
-							</td>
-						</tr>
-						<tr>
-							<td>Genero: @(president.strSexo=="1"?"M":"F")</td>
-						</tr>
-						<tr>
-							<td class="@president.strEstadoExp">Estado: @(president.strEstadoExp)</td>
-						</tr>
-					</table>
-				</td>
+					<td>
+						<table>
+							<tr>
+								<td rowspan="5"><img style="display:block;" max-width="50px" width="90%" height="auto" src="@($"sample-data{president.strRutaArchivo.Replace("Assets","ASSETS")}")" alt="@president.strCandidato" /></td>
+								<td>Nombre: @president.strCandidato</td>
+							</tr>
+							<tr>
+								<td>DNI: @president.strDocumentoIdentidad</td>
+							</tr>
+							<tr>
+								<td>
+									Nacimiento: @president.strFechaNacimiento.Substring(0, 10) |
+									@if (president != null && president.idHojaVida != 0)
+									{
+										@hojasDeVida.Where(i => i?.DatosPersonales?.idHojaVida == president.idHojaVida)?.FirstOrDefault()?.DatosPersonales?.strPaisNacimiento
 
-				<td>
-					<table>
-						<tr>
-							<td rowspan="5"><img style="display:block;" max-width="50px" width="90%" height="auto" src="@($"sample-data{vicepres1.strRutaArchivo.Replace("Assets","ASSETS")}")" alt="@vicepres1.strCandidato" /></td>
-							<td>Nombre: @vicepres1.strCandidato</td>
-						</tr>
-						<tr>
-							<td>DNI: @vicepres1.strDocumentoIdentidad</td>
-						</tr>
-						<tr>
-							<td>
-								Nacimiento: @vicepres1.strFechaNacimiento.Substring(0, 10) @vicepres1.idHojaVida |
-								@if (vicepres1 != null && vicepres1.idHojaVida != 0)
-								{
-									@hojasDeVida.Where(i => i?.DatosPersonales?.idHojaVida == vicepres1.idHojaVida)?.FirstOrDefault()?.DatosPersonales?.strPaisNacimiento
-								}
-							</td>
-						</tr>
-						<tr>
-							<td>Genero: @(vicepres1.strSexo=="1"?"M":"F")</td>
-						</tr>
-						<tr>
-							<td class="@vicepres1.strEstadoExp">Estado: @(vicepres1.strEstadoExp)</td>
-						</tr>
-					</table>
-				</td>
+										@:Primaria concluida:
 
-				<td>
-					<table>
-						<tr>
-							<td rowspan="5"><img style="display:block;" max-width="50px" width="90%" height="auto" src="@($"sample-data{vicepres2.strRutaArchivo.Replace("Assets","ASSETS")}")" alt="@vicepres2.strCandidato" /></td>
-							<td>Nombre: @vicepres2.strCandidato</td>
-						</tr>
-						<tr>
-							<td>DNI: @vicepres2.strDocumentoIdentidad</td>
-						</tr>
-						<tr>
-							<td>
-								Nacimiento: @vicepres2.strFechaNacimiento.Substring(0, 10) @vicepres2.idHojaVida |
-								@if (vicepres2 != null && vicepres2.idHojaVida != 0)
-								{
-									@hojasDeVida.Where(i => i?.DatosPersonales?.idHojaVida == vicepres2.idHojaVida)?.FirstOrDefault()?.DatosPersonales?.strPaisNacimiento
-								}
-							</td>
-						</tr>
-						<tr>
-							<td>Genero: @(vicepres2.strSexo=="1"?"M":"F")</td>
-						</tr>
-						<tr>
-							<td class="@vicepres2.strEstadoExp">Estado: @(vicepres2.strEstadoExp)</td>
-						</tr>
-					</table>
-				</td>
+										@hojasDeVida.Where(i => i?.DatosPersonales?.idHojaVida == president.idHojaVida)?.FirstOrDefault()?.EduBasica?.strConcluidoEduPrimaria
 
-			</tr>
+										@:Secundaria concluida:
+
+										@hojasDeVida.Where(i => i?.DatosPersonales?.idHojaVida == president.idHojaVida)?.FirstOrDefault()?.EduBasica?.strConcluidoEduSecundaria
+
+										@:Universitario concluido:
+
+										@hojasDeVida.Where(i => i?.DatosPersonales?.idHojaVida == president.idHojaVida)?.FirstOrDefault()?.EduUniversitaria?.Any(x=> x.strConcluidoEduUni != null && x.strConcluidoEduUni == "1")
+									}
+								</td>
+							</tr>
+							<tr>
+								<td>Genero: @(president.strSexo=="1"?"M":"F")</td>
+							</tr>
+							<tr>
+								<td class="@president.strEstadoExp">Estado: @(president.strEstadoExp)</td>
+							</tr>
+						</table>
+					</td>
+
+					<td>
+						<table>
+							<tr>
+								<td rowspan="5"><img style="display:block;" max-width="50px" width="90%" height="auto" src="@($"sample-data{vicepres1.strRutaArchivo.Replace("Assets","ASSETS")}")" alt="@vicepres1.strCandidato" /></td>
+								<td>Nombre: @vicepres1.strCandidato</td>
+							</tr>
+							<tr>
+								<td>DNI: @vicepres1.strDocumentoIdentidad</td>
+							</tr>
+							<tr>
+								<td>
+									Nacimiento: @vicepres1.strFechaNacimiento.Substring(0, 10) @vicepres1.idHojaVida |
+									@if (vicepres1 != null && vicepres1.idHojaVida != 0)
+									{
+										@hojasDeVida.Where(i => i?.DatosPersonales?.idHojaVida == vicepres1.idHojaVida)?.FirstOrDefault()?.DatosPersonales?.strPaisNacimiento
+
+										@:Primaria concluida:
+
+										@hojasDeVida.Where(i => i?.DatosPersonales?.idHojaVida == vicepres1.idHojaVida)?.FirstOrDefault()?.EduBasica?.strConcluidoEduPrimaria
+
+
+										@:Secundaria concluida:
+
+										@hojasDeVida.Where(i => i?.DatosPersonales?.idHojaVida == vicepres1.idHojaVida)?.FirstOrDefault()?.EduBasica?.strConcluidoEduSecundaria
+
+									}
+								</td>
+							</tr>
+							<tr>
+								<td>Genero: @(vicepres1.strSexo=="1"?"M":"F")</td>
+							</tr>
+							<tr>
+								<td class="@vicepres1.strEstadoExp">Estado: @(vicepres1.strEstadoExp)</td>
+							</tr>
+						</table>
+					</td>
+
+					<td>
+						<table>
+							<tr>
+								<td rowspan="5"><img style="display:block;" max-width="50px" width="90%" height="auto" src="@($"sample-data{vicepres2.strRutaArchivo.Replace("Assets","ASSETS")}")" alt="@vicepres2.strCandidato" /></td>
+								<td>Nombre: @vicepres2.strCandidato</td>
+							</tr>
+							<tr>
+								<td>DNI: @vicepres2.strDocumentoIdentidad</td>
+							</tr>
+							<tr>
+								<td>
+									Nacimiento: @vicepres2.strFechaNacimiento.Substring(0, 10) @vicepres2.idHojaVida |
+									@if (vicepres2 != null && vicepres2.idHojaVida != 0)
+									{
+										@hojasDeVida.Where(i => i?.DatosPersonales?.idHojaVida == vicepres2.idHojaVida)?.FirstOrDefault()?.DatosPersonales?.strPaisNacimiento
+										@:Primaria concluida:
+
+										@hojasDeVida.Where(i => i?.DatosPersonales?.idHojaVida == vicepres2.idHojaVida)?.FirstOrDefault()?.EduBasica?.strConcluidoEduPrimaria
+
+
+										@:Secundaria concluida:
+
+										@hojasDeVida.Where(i => i?.DatosPersonales?.idHojaVida == vicepres2.idHojaVida)?.FirstOrDefault()?.EduBasica?.strConcluidoEduSecundaria
+
+									}
+								</td>
+							</tr>
+							<tr>
+								<td>Genero: @(vicepres2.strSexo=="1"?"M":"F")</td>
+							</tr>
+							<tr>
+								<td class="@vicepres2.strEstadoExp">Estado: @(vicepres2.strEstadoExp)</td>
+							</tr>
+						</table>
+					</td>
+
+				</tr>
 			}
 		</tbody>
 	</table>
 
 	<style type="text/css">
 		.INSCRITO {
+			background-color: palegreen;
+		}
+
+		.ADMITIDO {
 			background-color: palegreen;
 		}
 

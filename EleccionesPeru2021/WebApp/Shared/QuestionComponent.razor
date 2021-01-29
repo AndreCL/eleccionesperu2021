@@ -4,7 +4,7 @@
 	@if (Questions != null && Questions.Count > 0)
 	{
 		<div id="card-content">
-			<h1>
+			<h1 class="cardTitle">
 				@Questions[CurrentQuestion].Title
 			</h1>
 			<div class="description">
@@ -14,15 +14,21 @@
 			<form>
 				@foreach (var option in Questions[CurrentQuestion].Options)
 				{
-					<input type="radio" id="@option" name="option" value="@option" @onchange="SelectionChanged">
+					<input type="radio" id="@option" name="option" value="@option" 
+						   @onchange="SelectionChanged" 
+						   checked=@(selectedValue == (Questions[CurrentQuestion].Options.IndexOf(option)+1).ToString())
+						   @onclick=@(() => selectedValue = (Questions[CurrentQuestion].Options.IndexOf(option)+1).ToString())>
 					<label for="@option">@option</label><br>
 				}
 
-				<input type="radio" id="sin-importancia" name="option" value="sin-importancia" @onchange="SelectionChanged">
+				<input type="radio" id="sin-importancia" name="option" value="sin-importancia" 
+					   @onchange="SelectionChanged" 
+					   checked=@(selectedValue == "0")
+					   @onclick=@(() => selectedValue = "0")>
 				<label for="sin-importancia">Sin importancia</label><br>
 			</form>
 
-			<button class="btn btn-primary" @onclick="OnNext">Siguiente</button>
+			<button class="questionButton" @onclick="OnNext" disabled="@(selectedValue == "")">Siguiente</button>
 
 		</div>
 	}
@@ -37,6 +43,8 @@
 
 	private string selectedAnswer = "";
 
+	private string selectedValue = "";
+
 	private bool Hide = false;
 
 	private void SelectionChanged(ChangeEventArgs args)
@@ -46,8 +54,11 @@
 
 	private void OnNext()
 	{
-		Questions[CurrentQuestion].Next(selectedAnswer);
-		if((CurrentQuestion + 1) < Questions.Count)
+		Questions[CurrentQuestion].Next(selectedValue);
+
+		selectedValue = "";
+
+		if ((CurrentQuestion + 1) < Questions.Count)
 		{
 			CurrentQuestion++;
 		}

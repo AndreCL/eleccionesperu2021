@@ -28,7 +28,7 @@
 		public string strEspecialidadPosgrado { get; set; }
 
 		/// <summary>
-		/// ejemplo: "2"
+		/// "0":Nada "1":Concluidos "2":No Concluidos
 		/// </summary>
 		public string strConcluidoPosgrado { get; set; }
 
