@@ -77,7 +77,12 @@ else
 
 										@:Cargo eleccion:
 
-										@hojasDeVida.Where(i => i?.DatosPersonales?.idHojaVida == president.idHojaVida)?.FirstOrDefault()?.CargoEleccion?.Where(x=> x.strCargoEleccion.Equals("1", StringComparison.InvariantCultureIgnoreCase)).Count();
+										@hojasDeVida.Where(i => i?.DatosPersonales?.idHojaVida == president.idHojaVida)?.FirstOrDefault()?.CargoEleccion?.Where(x => x.strCargoEleccion.Equals("1", StringComparison.InvariantCultureIgnoreCase)).Count();
+
+										@:Renuncias:
+
+										@hojasDeVida.Where(i => i?.DatosPersonales?.idHojaVida == president.idHojaVida)?.FirstOrDefault()?.RenunciaOP?.Where(x => x.strTengoRenunciaOP.Equals("1", StringComparison.InvariantCultureIgnoreCase)).Count();
+
 
 									}
 								</td>
@@ -123,6 +128,11 @@ else
 										@:Cargo eleccion:
 
 										@hojasDeVida.Where(i => i?.DatosPersonales?.idHojaVida == vicepres1.idHojaVida)?.FirstOrDefault()?.CargoEleccion?.Where(x => x.strCargoEleccion.Equals("1", StringComparison.InvariantCultureIgnoreCase)).Count();
+
+										@:Renuncias:
+
+										@hojasDeVida.Where(i => i?.DatosPersonales?.idHojaVida == vicepres1.idHojaVida)?.FirstOrDefault()?.RenunciaOP?.Where(x => x.strTengoRenunciaOP.Equals("1", StringComparison.InvariantCultureIgnoreCase)).Count();
+
 									}
 								</td>
 							</tr>
@@ -167,6 +177,11 @@ else
 										@:Cargo eleccion:
 
 										@hojasDeVida.Where(i => i?.DatosPersonales?.idHojaVida == vicepres2.idHojaVida)?.FirstOrDefault()?.CargoEleccion?.Where(x => x.strCargoEleccion.Equals("1", StringComparison.InvariantCultureIgnoreCase)).Count();
+
+										@:Renuncias:
+
+										@hojasDeVida.Where(i => i?.DatosPersonales?.idHojaVida == vicepres2.idHojaVida)?.FirstOrDefault()?.RenunciaOP?.Where(x => x.strTengoRenunciaOP.Equals("1", StringComparison.InvariantCultureIgnoreCase)).Count();
+
 									}
 								</td>
 							</tr>
