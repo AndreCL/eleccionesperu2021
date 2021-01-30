@@ -56,6 +56,107 @@
 			OnNext = filterByEduLevel
 		};
 		questions.Add(question3);
+
+		Question question4 = new Question
+		{
+			Title = "Cargos Partidarios",
+			Description = "Los candidatos a la presidencia, 1ra vicepresidencia y 2da vicepresidencia deben haber desempeñado un cargo partidario en su trayectoria política (cargo en organización política)",
+			Options = new List<string> { "Si"},
+			OnNext = filterByCargoPartidario
+		};
+		questions.Add(question4);
+
+		Question question5 = new Question
+		{
+			Title = "Cargos de Elección Popular",
+			Description = "Los candidatos a la presidencia, 1ra vicepresidencia y 2da vicepresidencia deben haber desempeñado un cargo de elección popular (ejemplo alcalde, regidor, congresista, etc.)",
+			Options = new List<string> { "Si" },
+			OnNext = filterByCargoElecto
+		};
+		questions.Add(question5);
+
+
+	}
+
+	#region actions
+	public void filterByCargoElecto(string option)
+	{
+		List<PartidoPolitico> failed = new List<PartidoPolitico>();
+
+		if (option.Equals("1", StringComparison.InvariantCultureIgnoreCase))
+		{
+			foreach (var i in partidosPoliticos)
+			{
+				var president = candidatosPoliticos.FirstOrDefault(x => x.idSolicitudLista == i.idSolicitudLista && x.idCargoEleccion == 1);
+				var vicepres1 = candidatosPoliticos.FirstOrDefault(x => x.idSolicitudLista == i.idSolicitudLista && x.idCargoEleccion == 2);
+				var vicepres2 = candidatosPoliticos.FirstOrDefault(x => x.idSolicitudLista == i.idSolicitudLista && x.idCargoEleccion == 3);
+				var preshoja = hojasDeVida.Where(x => x.DatosPersonales.idHojaVida == president?.idHojaVida).FirstOrDefault()?.CargoEleccion;
+				var vice1hoja = hojasDeVida.Where(x => x.DatosPersonales.idHojaVida == vicepres1?.idHojaVida).FirstOrDefault()?.CargoEleccion;
+				var vice2hoja = hojasDeVida.Where(x => x.DatosPersonales.idHojaVida == vicepres2?.idHojaVida).FirstOrDefault()?.CargoEleccion;
+
+				if ((preshoja != null && preshoja.Where(x => x.strCargoEleccion.Equals("1", StringComparison.InvariantCultureIgnoreCase)).Count() == 0) ||
+		(vice1hoja != null && vice1hoja.Where(x => x.strCargoEleccion.Equals("1", StringComparison.InvariantCultureIgnoreCase)).Count() == 0) ||
+		(vice2hoja != null && vice2hoja.Where(x => x.strCargoEleccion.Equals("1", StringComparison.InvariantCultureIgnoreCase)).Count() == 0)
+		)
+				{
+					failed.Add(i);
+				}
+			}
+		}
+
+		foreach (var i in partidosPoliticos)
+		{
+			if (failed.Count > 0 && failed.Exists(x => x.idOrganizacionPolitica == i.idOrganizacionPolitica))
+			{
+				results.Where(x => x.Id == i.idOrganizacionPolitica).FirstOrDefault().AddCounter(false);
+			}
+			else
+			{
+				results.Where(x => x.Id == i.idOrganizacionPolitica).FirstOrDefault().AddCounter(true);
+			}
+		}
+
+		StateHasChanged();
+	}
+
+	public void filterByCargoPartidario(string option)
+	{
+		List<PartidoPolitico> failed = new List<PartidoPolitico>();
+
+		if (option.Equals("1", StringComparison.InvariantCultureIgnoreCase))
+		{
+			foreach (var i in partidosPoliticos)
+			{
+				var president = candidatosPoliticos.FirstOrDefault(x => x.idSolicitudLista == i.idSolicitudLista && x.idCargoEleccion == 1);
+				var vicepres1 = candidatosPoliticos.FirstOrDefault(x => x.idSolicitudLista == i.idSolicitudLista && x.idCargoEleccion == 2);
+				var vicepres2 = candidatosPoliticos.FirstOrDefault(x => x.idSolicitudLista == i.idSolicitudLista && x.idCargoEleccion == 3);
+				var preshoja = hojasDeVida.Where(x => x.DatosPersonales.idHojaVida == president?.idHojaVida).FirstOrDefault()?.CargoPartidario;
+				var vice1hoja = hojasDeVida.Where(x => x.DatosPersonales.idHojaVida == vicepres1?.idHojaVida).FirstOrDefault()?.CargoPartidario;
+				var vice2hoja = hojasDeVida.Where(x => x.DatosPersonales.idHojaVida == vicepres2?.idHojaVida).FirstOrDefault()?.CargoPartidario;
+
+				if ((preshoja != null && preshoja.Where(x => x.strTengoCargoPartidario.Equals("1", StringComparison.InvariantCultureIgnoreCase)).Count() == 0) ||
+		(vice1hoja != null && vice1hoja.Where(x => x.strTengoCargoPartidario.Equals("1", StringComparison.InvariantCultureIgnoreCase)).Count() == 0) ||
+		(vice2hoja != null && vice2hoja.Where(x => x.strTengoCargoPartidario.Equals("1", StringComparison.InvariantCultureIgnoreCase)).Count() == 0)
+		)
+				{
+					failed.Add(i);
+				}
+			}
+		}
+
+		foreach (var i in partidosPoliticos)
+		{
+			if (failed.Count > 0 && failed.Exists(x => x.idOrganizacionPolitica == i.idOrganizacionPolitica))
+			{
+				results.Where(x => x.Id == i.idOrganizacionPolitica).FirstOrDefault().AddCounter(false);
+			}
+			else
+			{
+				results.Where(x => x.Id == i.idOrganizacionPolitica).FirstOrDefault().AddCounter(true);
+			}
+		}
+
+		StateHasChanged();
 	}
 
 	public void filterByEduLevel(string option)
@@ -225,6 +326,8 @@
 
 		StateHasChanged();
 	}
+
+	#endregion
 
 	public void LoadResults()
 	{

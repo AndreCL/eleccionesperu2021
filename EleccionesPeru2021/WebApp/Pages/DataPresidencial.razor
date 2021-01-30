@@ -69,7 +69,16 @@ else
 
 										@:Universitario concluido:
 
-										@hojasDeVida.Where(i => i?.DatosPersonales?.idHojaVida == president.idHojaVida)?.FirstOrDefault()?.EduUniversitaria?.Any(x=> x.strConcluidoEduUni != null && x.strConcluidoEduUni == "1")
+										@hojasDeVida.Where(i => i?.DatosPersonales?.idHojaVida == president.idHojaVida)?.FirstOrDefault()?.EduUniversitaria?.Any(x => x.strConcluidoEduUni != null && x.strConcluidoEduUni == "1")
+
+										@:Cargo Partidario:
+
+										@hojasDeVida.Where(i => i?.DatosPersonales?.idHojaVida == president.idHojaVida)?.FirstOrDefault()?.CargoPartidario?.Where(x => x.strTengoCargoPartidario.Equals("1", StringComparison.InvariantCultureIgnoreCase)).Count();
+
+										@:Cargo eleccion:
+
+										@hojasDeVida.Where(i => i?.DatosPersonales?.idHojaVida == president.idHojaVida)?.FirstOrDefault()?.CargoEleccion?.Where(x=> x.strCargoEleccion.Equals("1", StringComparison.InvariantCultureIgnoreCase)).Count();
+
 									}
 								</td>
 							</tr>
@@ -107,6 +116,13 @@ else
 
 										@hojasDeVida.Where(i => i?.DatosPersonales?.idHojaVida == vicepres1.idHojaVida)?.FirstOrDefault()?.EduBasica?.strConcluidoEduSecundaria
 
+										@:Cargo Partidario:
+
+										@hojasDeVida.Where(i => i?.DatosPersonales?.idHojaVida == vicepres1.idHojaVida)?.FirstOrDefault()?.CargoPartidario?.Where(x => x.strTengoCargoPartidario.Equals("1", StringComparison.InvariantCultureIgnoreCase)).Count();
+
+										@:Cargo eleccion:
+
+										@hojasDeVida.Where(i => i?.DatosPersonales?.idHojaVida == vicepres1.idHojaVida)?.FirstOrDefault()?.CargoEleccion?.Where(x => x.strCargoEleccion.Equals("1", StringComparison.InvariantCultureIgnoreCase)).Count();
 									}
 								</td>
 							</tr>
@@ -143,6 +159,14 @@ else
 
 										@hojasDeVida.Where(i => i?.DatosPersonales?.idHojaVida == vicepres2.idHojaVida)?.FirstOrDefault()?.EduBasica?.strConcluidoEduSecundaria
 
+
+										@:Cargo Partidario:
+
+										@hojasDeVida.Where(i => i?.DatosPersonales?.idHojaVida == vicepres2.idHojaVida)?.FirstOrDefault()?.CargoPartidario?.Where(x => x.strTengoCargoPartidario.Equals("1", StringComparison.InvariantCultureIgnoreCase)).Count();
+
+										@:Cargo eleccion:
+
+										@hojasDeVida.Where(i => i?.DatosPersonales?.idHojaVida == vicepres2.idHojaVida)?.FirstOrDefault()?.CargoEleccion?.Where(x => x.strCargoEleccion.Equals("1", StringComparison.InvariantCultureIgnoreCase)).Count();
 									}
 								</td>
 							</tr>

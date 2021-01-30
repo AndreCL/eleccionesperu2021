@@ -8,7 +8,7 @@
 		public int idHVCargoEleccion { get; set; }
 
 		/// <summary>
-		/// Ejemplo: "2"
+		/// 1: Si, 2: No ha llenado
 		/// </summary>
 		public string strCargoEleccion { get; set; }
 
