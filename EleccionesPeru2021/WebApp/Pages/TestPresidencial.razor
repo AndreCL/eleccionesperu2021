@@ -95,13 +95,114 @@
 		{
 			Title = "Relación de sentencias",
 			Description = "Los candidatos a la presidencia, 1ra vicepresidencia y 2da vicepresidencia",
-			Options = new List<string> { "Candidatos sin sentencias"},
+			Options = new List<string> { "Candidatos sin sentencias" },
 			OnNext = filterBySentencias
 		};
 		questions.Add(question7);
+
+		Question question8 = new Question
+		{
+			Title = "Ingresos anuales",
+			Description = "Los candidatos a la presidencia, 1ra vicepresidencia y 2da vicepresidencia",
+			Options = new List<string> { "Menor de 1 millón de soles", "Mayor a 100 000 soles" },
+			OnNext = filterByIngresos
+		};
+		questions.Add(question8);
 	}
 
 	#region actions
+	public void filterByIngresos(string option)
+	{
+		List<PartidoPolitico> failed = new List<PartidoPolitico>();
+
+		if (option.Equals("1", StringComparison.InvariantCultureIgnoreCase))
+		{
+			foreach (var i in partidosPoliticos)
+			{
+				var president = candidatosPoliticos.FirstOrDefault(x => x.idSolicitudLista == i.idSolicitudLista && x.idCargoEleccion == 1);
+				var vicepres1 = candidatosPoliticos.FirstOrDefault(x => x.idSolicitudLista == i.idSolicitudLista && x.idCargoEleccion == 2);
+				var vicepres2 = candidatosPoliticos.FirstOrDefault(x => x.idSolicitudLista == i.idSolicitudLista && x.idCargoEleccion == 3);
+				var preshoja =
+					hojasDeVida.Where(x => x.DatosPersonales.idHojaVida == president?.idHojaVida).FirstOrDefault()?.Ingresos?.decOtroIngresoPrivado +
+							hojasDeVida.Where(x => x?.DatosPersonales?.idHojaVida == president?.idHojaVida)?.FirstOrDefault()?.Ingresos?.decOtroIngresoPublico +
+							hojasDeVida.Where(x => x?.DatosPersonales?.idHojaVida == president?.idHojaVida)?.FirstOrDefault()?.Ingresos?.decRemuBrutaPrivado +
+							hojasDeVida.Where(x => x?.DatosPersonales?.idHojaVida == president?.idHojaVida)?.FirstOrDefault()?.Ingresos?.decRemuBrutaPublico +
+							hojasDeVida.Where(x => x?.DatosPersonales?.idHojaVida == president?.idHojaVida)?.FirstOrDefault()?.Ingresos?.decRentaIndividualPrivado +
+							hojasDeVida.Where(x => x?.DatosPersonales?.idHojaVida == president?.idHojaVida)?.FirstOrDefault()?.Ingresos?.decRentaIndividualPublico;
+				var vice1hoja =
+					hojasDeVida.Where(x => x.DatosPersonales.idHojaVida == vicepres1?.idHojaVida).FirstOrDefault()?.Ingresos?.decOtroIngresoPrivado +
+							hojasDeVida.Where(x => x?.DatosPersonales?.idHojaVida == vicepres1?.idHojaVida)?.FirstOrDefault()?.Ingresos?.decOtroIngresoPublico +
+							hojasDeVida.Where(x => x?.DatosPersonales?.idHojaVida == vicepres1?.idHojaVida)?.FirstOrDefault()?.Ingresos?.decRemuBrutaPrivado +
+							hojasDeVida.Where(x => x?.DatosPersonales?.idHojaVida == vicepres1?.idHojaVida)?.FirstOrDefault()?.Ingresos?.decRemuBrutaPublico +
+							hojasDeVida.Where(x => x?.DatosPersonales?.idHojaVida == vicepres1?.idHojaVida)?.FirstOrDefault()?.Ingresos?.decRentaIndividualPrivado +
+							hojasDeVida.Where(x => x?.DatosPersonales?.idHojaVida == vicepres1?.idHojaVida)?.FirstOrDefault()?.Ingresos?.decRentaIndividualPublico;
+				var vice2hoja =
+					hojasDeVida.Where(x => x.DatosPersonales.idHojaVida == vicepres2?.idHojaVida).FirstOrDefault()?.Ingresos?.decOtroIngresoPrivado +
+							hojasDeVida.Where(x => x?.DatosPersonales?.idHojaVida == vicepres2?.idHojaVida)?.FirstOrDefault()?.Ingresos?.decOtroIngresoPublico +
+							hojasDeVida.Where(x => x?.DatosPersonales?.idHojaVida == vicepres2?.idHojaVida)?.FirstOrDefault()?.Ingresos?.decRemuBrutaPrivado +
+							hojasDeVida.Where(x => x?.DatosPersonales?.idHojaVida == vicepres2?.idHojaVida)?.FirstOrDefault()?.Ingresos?.decRemuBrutaPublico +
+							hojasDeVida.Where(x => x?.DatosPersonales?.idHojaVida == vicepres2?.idHojaVida)?.FirstOrDefault()?.Ingresos?.decRentaIndividualPrivado +
+							hojasDeVida.Where(x => x?.DatosPersonales?.idHojaVida == vicepres2?.idHojaVida)?.FirstOrDefault()?.Ingresos?.decRentaIndividualPublico;
+
+				if ((preshoja != null && preshoja >= 1000000) || (vice1hoja != null && vice1hoja >= 1000000) || (vice2hoja != null && vice2hoja >= 1000000) )
+				{
+					failed.Add(i);
+				}
+			}
+		}
+		else if (option.Equals("2", StringComparison.InvariantCultureIgnoreCase))
+		{
+			foreach (var i in partidosPoliticos)
+			{
+				var president = candidatosPoliticos.FirstOrDefault(x => x.idSolicitudLista == i.idSolicitudLista && x.idCargoEleccion == 1);
+				var vicepres1 = candidatosPoliticos.FirstOrDefault(x => x.idSolicitudLista == i.idSolicitudLista && x.idCargoEleccion == 2);
+				var vicepres2 = candidatosPoliticos.FirstOrDefault(x => x.idSolicitudLista == i.idSolicitudLista && x.idCargoEleccion == 3);
+				var preshoja =
+					hojasDeVida.Where(x => x.DatosPersonales.idHojaVida == president?.idHojaVida).FirstOrDefault()?.Ingresos?.decOtroIngresoPrivado +
+							hojasDeVida.Where(x => x?.DatosPersonales?.idHojaVida == president?.idHojaVida)?.FirstOrDefault()?.Ingresos?.decOtroIngresoPublico +
+							hojasDeVida.Where(x => x?.DatosPersonales?.idHojaVida == president?.idHojaVida)?.FirstOrDefault()?.Ingresos?.decRemuBrutaPrivado +
+							hojasDeVida.Where(x => x?.DatosPersonales?.idHojaVida == president?.idHojaVida)?.FirstOrDefault()?.Ingresos?.decRemuBrutaPublico +
+							hojasDeVida.Where(x => x?.DatosPersonales?.idHojaVida == president?.idHojaVida)?.FirstOrDefault()?.Ingresos?.decRentaIndividualPrivado +
+							hojasDeVida.Where(x => x?.DatosPersonales?.idHojaVida == president?.idHojaVida)?.FirstOrDefault()?.Ingresos?.decRentaIndividualPublico;
+				var vice1hoja =
+					hojasDeVida.Where(x => x.DatosPersonales.idHojaVida == vicepres1?.idHojaVida).FirstOrDefault()?.Ingresos?.decOtroIngresoPrivado +
+							hojasDeVida.Where(x => x?.DatosPersonales?.idHojaVida == vicepres1?.idHojaVida)?.FirstOrDefault()?.Ingresos?.decOtroIngresoPublico +
+							hojasDeVida.Where(x => x?.DatosPersonales?.idHojaVida == vicepres1?.idHojaVida)?.FirstOrDefault()?.Ingresos?.decRemuBrutaPrivado +
+							hojasDeVida.Where(x => x?.DatosPersonales?.idHojaVida == vicepres1?.idHojaVida)?.FirstOrDefault()?.Ingresos?.decRemuBrutaPublico +
+							hojasDeVida.Where(x => x?.DatosPersonales?.idHojaVida == vicepres1?.idHojaVida)?.FirstOrDefault()?.Ingresos?.decRentaIndividualPrivado +
+							hojasDeVida.Where(x => x?.DatosPersonales?.idHojaVida == vicepres1?.idHojaVida)?.FirstOrDefault()?.Ingresos?.decRentaIndividualPublico;
+				var vice2hoja =
+					hojasDeVida.Where(x => x.DatosPersonales.idHojaVida == vicepres2?.idHojaVida).FirstOrDefault()?.Ingresos?.decOtroIngresoPrivado +
+							hojasDeVida.Where(x => x?.DatosPersonales?.idHojaVida == vicepres2?.idHojaVida)?.FirstOrDefault()?.Ingresos?.decOtroIngresoPublico +
+							hojasDeVida.Where(x => x?.DatosPersonales?.idHojaVida == vicepres2?.idHojaVida)?.FirstOrDefault()?.Ingresos?.decRemuBrutaPrivado +
+							hojasDeVida.Where(x => x?.DatosPersonales?.idHojaVida == vicepres2?.idHojaVida)?.FirstOrDefault()?.Ingresos?.decRemuBrutaPublico +
+							hojasDeVida.Where(x => x?.DatosPersonales?.idHojaVida == vicepres2?.idHojaVida)?.FirstOrDefault()?.Ingresos?.decRentaIndividualPrivado +
+							hojasDeVida.Where(x => x?.DatosPersonales?.idHojaVida == vicepres2?.idHojaVida)?.FirstOrDefault()?.Ingresos?.decRentaIndividualPublico;
+
+				if ((preshoja != null && preshoja <= 100000) || (vice1hoja != null && vice1hoja <= 100000) || (vice2hoja != null && vice2hoja <= 100000))
+				{
+					failed.Add(i);
+				}
+			}
+		}
+
+
+		foreach (var i in partidosPoliticos)
+		{
+			if (failed.Count > 0 && failed.Exists(x => x.idOrganizacionPolitica == i.idOrganizacionPolitica))
+			{
+				results.Where(x => x.Id == i.idOrganizacionPolitica).FirstOrDefault().AddCounter(false);
+			}
+			else
+			{
+				results.Where(x => x.Id == i.idOrganizacionPolitica).FirstOrDefault().AddCounter(true);
+			}
+		}
+
+		StateHasChanged();
+	}
+
+
 	public void filterBySentencias(string option)
 	{
 		List<PartidoPolitico> failed = new List<PartidoPolitico>();

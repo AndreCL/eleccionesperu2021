@@ -88,6 +88,14 @@ else
 										@(hojasDeVida.Where(i => i?.DatosPersonales?.idHojaVida == president.idHojaVida)?.FirstOrDefault()?.SentenciaObliga.Where(x => x.strTengoSentenciaObliga.Equals("1", StringComparison.InvariantCultureIgnoreCase)).Count()
 										+ hojasDeVida.Where(i => i?.DatosPersonales?.idHojaVida == president.idHojaVida)?.FirstOrDefault()?.SentenciaPenal.Where(x => x.strTengoSentenciaPenal.Equals("1", StringComparison.InvariantCultureIgnoreCase)).Count())
 
+										@:Ingresos:
+										@(hojasDeVida.Where(i => i?.DatosPersonales?.idHojaVida == president.idHojaVida)?.FirstOrDefault()?.Ingresos?.decOtroIngresoPrivado +
+							hojasDeVida.Where(i => i?.DatosPersonales?.idHojaVida == president.idHojaVida)?.FirstOrDefault()?.Ingresos?.decOtroIngresoPublico +
+							hojasDeVida.Where(i => i?.DatosPersonales?.idHojaVida == president.idHojaVida)?.FirstOrDefault()?.Ingresos?.decRemuBrutaPrivado +
+							hojasDeVida.Where(i => i?.DatosPersonales?.idHojaVida == president.idHojaVida)?.FirstOrDefault()?.Ingresos?.decRemuBrutaPublico +
+							hojasDeVida.Where(i => i?.DatosPersonales?.idHojaVida == president.idHojaVida)?.FirstOrDefault()?.Ingresos?.decRentaIndividualPrivado +
+							hojasDeVida.Where(i => i?.DatosPersonales?.idHojaVida == president.idHojaVida)?.FirstOrDefault()?.Ingresos?.decRentaIndividualPublico )
+
 
 									}
 								</td>
@@ -143,6 +151,13 @@ else
 										@(hojasDeVida.Where(i => i?.DatosPersonales?.idHojaVida == vicepres1.idHojaVida)?.FirstOrDefault()?.SentenciaObliga.Where(x => x.strTengoSentenciaObliga.Equals("1", StringComparison.InvariantCultureIgnoreCase)).Count()
 										+ hojasDeVida.Where(i => i?.DatosPersonales?.idHojaVida == vicepres1.idHojaVida)?.FirstOrDefault()?.SentenciaPenal.Where(x => x.strTengoSentenciaPenal.Equals("1", StringComparison.InvariantCultureIgnoreCase)).Count())
 
+										@:Ingresos:
+										@(hojasDeVida.Where(i => i?.DatosPersonales?.idHojaVida == vicepres1.idHojaVida)?.FirstOrDefault()?.Ingresos?.decOtroIngresoPrivado +
+							hojasDeVida.Where(i => i?.DatosPersonales?.idHojaVida == vicepres1.idHojaVida)?.FirstOrDefault()?.Ingresos?.decOtroIngresoPublico +
+							hojasDeVida.Where(i => i?.DatosPersonales?.idHojaVida == vicepres1.idHojaVida)?.FirstOrDefault()?.Ingresos?.decRemuBrutaPrivado +
+							hojasDeVida.Where(i => i?.DatosPersonales?.idHojaVida == vicepres1.idHojaVida)?.FirstOrDefault()?.Ingresos?.decRemuBrutaPublico +
+							hojasDeVida.Where(i => i?.DatosPersonales?.idHojaVida == vicepres1.idHojaVida)?.FirstOrDefault()?.Ingresos?.decRentaIndividualPrivado +
+							hojasDeVida.Where(i => i?.DatosPersonales?.idHojaVida == vicepres1.idHojaVida)?.FirstOrDefault()?.Ingresos?.decRentaIndividualPublico )
 
 									}
 								</td>
@@ -198,6 +213,13 @@ else
 										@(hojasDeVida.Where(i => i?.DatosPersonales?.idHojaVida == vicepres2.idHojaVida)?.FirstOrDefault()?.SentenciaObliga.Where(x => x.strTengoSentenciaObliga.Equals("1", StringComparison.InvariantCultureIgnoreCase)).Count()
 										+ hojasDeVida.Where(i => i?.DatosPersonales?.idHojaVida == vicepres2.idHojaVida)?.FirstOrDefault()?.SentenciaPenal.Where(x => x.strTengoSentenciaPenal.Equals("1", StringComparison.InvariantCultureIgnoreCase)).Count())
 
+										@:Ingresos:
+										@(hojasDeVida.Where(i => i?.DatosPersonales?.idHojaVida == vicepres2.idHojaVida)?.FirstOrDefault()?.Ingresos?.decOtroIngresoPrivado +
+							hojasDeVida.Where(i => i?.DatosPersonales?.idHojaVida == vicepres2.idHojaVida)?.FirstOrDefault()?.Ingresos?.decOtroIngresoPublico +
+							hojasDeVida.Where(i => i?.DatosPersonales?.idHojaVida == vicepres2.idHojaVida)?.FirstOrDefault()?.Ingresos?.decRemuBrutaPrivado +
+							hojasDeVida.Where(i => i?.DatosPersonales?.idHojaVida == vicepres2.idHojaVida)?.FirstOrDefault()?.Ingresos?.decRemuBrutaPublico +
+							hojasDeVida.Where(i => i?.DatosPersonales?.idHojaVida == vicepres2.idHojaVida)?.FirstOrDefault()?.Ingresos?.decRentaIndividualPrivado +
+							hojasDeVida.Where(i => i?.DatosPersonales?.idHojaVida == vicepres2.idHojaVida)?.FirstOrDefault()?.Ingresos?.decRentaIndividualPublico )
 									}
 								</td>
 							</tr>
