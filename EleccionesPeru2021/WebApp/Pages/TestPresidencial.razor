@@ -33,7 +33,7 @@
 
 		Question question = new Question
 		{
-			Title = "1. Conformación por sexo",
+			Title = "Conformación por sexo",
 			Description = "Todos los partidos tienen al menos 1 persona de cada genero en la lista para presidencia, " +
 			"1a vicepresidencia y 2a vicepresidencia. ¿Cual es tu conformación preferida?",
 			Options = new List<string> { "2 mujeres y 1 hombre", "2 hombres y 1 mujer" },
@@ -43,7 +43,7 @@
 
 		Question question2 = new Question
 		{
-			Title = "2. País de nacimiento",
+			Title = "País de nacimiento",
 			Description = "¿En qué país nacieron los candidatos a la presidencia, 1ra vicepresidencia y 2da vicepresidencia?",
 			Options = new List<string> { "Perú" },
 			OnNext = filterByBirthplace
@@ -52,7 +52,7 @@
 
 		Question question3 = new Question
 		{
-			Title = "3. Minimo nivel de educación concluída",
+			Title = "Minimo nivel de educación concluída",
 			Description = "¿Cual es el minimo nivel de educacíon concluída de los candidatos a la presidencia, 1ra " +
 			"vicepresidencia y 2da vicepresidencia?",
 			Options = new List<string> { "Primaria", "Secundaria", "Estudio universitario", "Postgrado" },
@@ -62,7 +62,7 @@
 
 		Question question4 = new Question
 		{
-			Title = "4. Cargos Partidarios",
+			Title = "Cargos Partidarios",
 			Description = "Los candidatos a la presidencia, 1ra vicepresidencia y 2da vicepresidencia deben haber desempeñado " +
 			"un cargo partidario en su trayectoria política (cargo en organización política)",
 			Options = new List<string> { "Si", "No" },
@@ -72,7 +72,7 @@
 
 		Question question5 = new Question
 		{
-			Title = "5. Cargos de Elección Popular",
+			Title = "Cargos de Elección Popular",
 			Description = "Los candidatos a la presidencia, 1ra vicepresidencia y 2da vicepresidencia deben haber desempeñado " +
 			"un cargo de elección popular (ejemplo alcalde, regidor, congresista, etc.)",
 			Options = new List<string> { "Si", "No" },
@@ -82,7 +82,7 @@
 
 		Question question6 = new Question
 		{
-			Title = "6. Renuncias a otros partidos",
+			Title = "Renuncias a otros partidos",
 			Description = "Los candidatos a la presidencia, 1ra vicepresidencia y 2da vicepresidencia pueden " +
 			"haber renunciado a otros partidos, movimientos de alcance regional o departamental u organizaciones políticas de alcance " +
 			"provincial y distrital",
@@ -90,9 +90,67 @@
 			OnNext = filterByRenuncias
 		};
 		questions.Add(question6);
+
+		Question question7 = new Question
+		{
+			Title = "Relación de sentencias",
+			Description = "Los candidatos a la presidencia, 1ra vicepresidencia y 2da vicepresidencia",
+			Options = new List<string> { "Candidatos sin sentencias"},
+			OnNext = filterBySentencias
+		};
+		questions.Add(question7);
 	}
 
 	#region actions
+	public void filterBySentencias(string option)
+	{
+		List<PartidoPolitico> failed = new List<PartidoPolitico>();
+
+		if (option.Equals("1", StringComparison.InvariantCultureIgnoreCase))
+		{
+			foreach (var i in partidosPoliticos)
+			{
+				var president = candidatosPoliticos.FirstOrDefault(x => x.idSolicitudLista == i.idSolicitudLista && x.idCargoEleccion == 1);
+				var vicepres1 = candidatosPoliticos.FirstOrDefault(x => x.idSolicitudLista == i.idSolicitudLista && x.idCargoEleccion == 2);
+				var vicepres2 = candidatosPoliticos.FirstOrDefault(x => x.idSolicitudLista == i.idSolicitudLista && x.idCargoEleccion == 3);
+				var preshoja = hojasDeVida.Where(x => x.DatosPersonales.idHojaVida == president?.idHojaVida).FirstOrDefault();
+				var vice1hoja = hojasDeVida.Where(x => x.DatosPersonales.idHojaVida == vicepres1?.idHojaVida).FirstOrDefault();
+				var vice2hoja = hojasDeVida.Where(x => x.DatosPersonales.idHojaVida == vicepres2?.idHojaVida).FirstOrDefault();
+
+				if ((preshoja != null &&
+					(preshoja.SentenciaPenal.Where(x => x.strTengoSentenciaPenal.Equals("1", StringComparison.InvariantCultureIgnoreCase)).Count() > 0 ||
+					preshoja.SentenciaObliga.Where(x => x.strTengoSentenciaObliga.Equals("1", StringComparison.InvariantCultureIgnoreCase)).Count() > 0)
+					) ||
+		(vice1hoja != null &&
+					(vice1hoja.SentenciaPenal.Where(x => x.strTengoSentenciaPenal.Equals("1", StringComparison.InvariantCultureIgnoreCase)).Count() > 0 ||
+					vice1hoja.SentenciaObliga.Where(x => x.strTengoSentenciaObliga.Equals("1", StringComparison.InvariantCultureIgnoreCase)).Count() > 0)
+					) ||
+		(vice2hoja != null &&
+					(vice2hoja.SentenciaPenal.Where(x => x.strTengoSentenciaPenal.Equals("1", StringComparison.InvariantCultureIgnoreCase)).Count() > 0 ||
+					vice2hoja.SentenciaObliga.Where(x => x.strTengoSentenciaObliga.Equals("1", StringComparison.InvariantCultureIgnoreCase)).Count() > 0)
+					)
+		)
+				{
+					failed.Add(i);
+				}
+			}
+		}
+
+		foreach (var i in partidosPoliticos)
+		{
+			if (failed.Count > 0 && failed.Exists(x => x.idOrganizacionPolitica == i.idOrganizacionPolitica))
+			{
+				results.Where(x => x.Id == i.idOrganizacionPolitica).FirstOrDefault().AddCounter(false);
+			}
+			else
+			{
+				results.Where(x => x.Id == i.idOrganizacionPolitica).FirstOrDefault().AddCounter(true);
+			}
+		}
+
+		StateHasChanged();
+	}
+
 	public void filterByRenuncias(string option)
 	{
 		List<PartidoPolitico> failed = new List<PartidoPolitico>();
