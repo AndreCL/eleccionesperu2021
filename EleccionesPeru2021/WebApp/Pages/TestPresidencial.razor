@@ -47,36 +47,6 @@
 		};
 		questions.Add(question7);
 
-		Question question8 = new Question
-		{
-			Title = "Ingresos anuales declarados",
-			Description = "Los ingresos medios de los candidatos a la presidencia, 1ra vicepresidencia y 2da vicepresidencia son entre 100 000 y 400 000 soles.",
-			Options = new List<string> { "<strong>Excluir</strong> ingresos mayores a 1 millón de soles", "<strong>Excluir</strong> ingresos menores a 100 000 soles" },
-			OnNext = filterByIngresos
-		};
-		questions.Add(question8);
-
-		Question question9 = new Question
-		{
-			Title = "Valor de bienes inmuebles, muebles y vehículos declarados",
-			Description = "Los candidatos a la presidencia, 1ra vicepresidencia y 2da vicepresidencia",
-			Options = new List<string> { "<strong>Excluir</strong> valor de bienes mayor de 1 millón de soles",
-				"<strong>Excluir</strong> valor de bienes menor a 100 000 soles" },
-			OnNext = filterByBienes
-		};
-		questions.Add(question9);
-
-		Question question6 = new Question
-		{
-			Title = "Renuncias a otros partidos",
-			Description = "Los candidatos a la presidencia, 1ra vicepresidencia y 2da vicepresidencia pueden " +
-			"haber renunciado a otros partidos, movimientos de alcance regional o departamental u organizaciones políticas de alcance " +
-			"provincial y distrital",
-			Options = new List<string> { "Candidatos han renunciado a otros partidos", "Candidatos <strong>no</strong> han renunciado a otros partidos" },
-			OnNext = filterByRenuncias
-		};
-		questions.Add(question6);
-
 		Question question4 = new Question
 		{
 			Title = "Cargos Partidarios",
@@ -86,6 +56,18 @@
 			OnNext = filterByCargoPartidario
 		};
 		questions.Add(question4);
+
+		Question question6 = new Question
+		{
+			Title = "Renuncias a otros partidos",
+			Description = "Los candidatos a la presidencia, 1ra vicepresidencia y 2da vicepresidencia pueden " +
+		"haber renunciado a otros partidos, movimientos de alcance regional o departamental u organizaciones políticas de alcance " +
+		"provincial y distrital",
+			Options = new List<string> { "Candidatos que han renunciado a otros partidos",
+				"Candidatos que <strong>no</strong> han renunciado a otros partidos" },
+			OnNext = filterByRenuncias
+		};
+		questions.Add(question6);
 
 		Question question5 = new Question
 		{
@@ -108,7 +90,7 @@
 
 		Question question3 = new Question
 		{
-			Title = "Minimo nivel de educación concluída",
+			Title = "Nivel de educación concluída",
 			Description = "¿Cual es el minimo nivel de educacíon concluída de los candidatos a la presidencia, 1ra " +
 			"vicepresidencia y 2da vicepresidencia?",
 			Options = new List<string> { "Primaria", "Secundaria", "Estudio universitario", "Postgrado" },
@@ -126,6 +108,26 @@
 		};
 		questions.Add(question);
 
+		Question question8 = new Question
+		{
+			Title = "Ingresos anuales declarados",
+			Description = "Entre 100 000 y 400 000 soles son los ingresos medios de los candidatos a la presidencia, 1ra vicepresidencia " +
+			"y 2da vicepresidencia.",
+			Options = new List<string> { "<strong>Excluir</strong> candidatos con ingresos mayores a 1 millón de soles",
+				"<strong>Excluir</strong> candidatos con ingresos menores a 100 000 soles" },
+			OnNext = filterByIngresos
+		};
+		questions.Add(question8);
+
+		Question question9 = new Question
+		{
+			Title = "Valor de bienes declarados",
+			Description = "Valor de bienes inmuebles, muebles y vehículos declarados por los candidatos a la presidencia, 1ra vicepresidencia y 2da vicepresidencia",
+			Options = new List<string> { "<strong>Excluir</strong> candidatos cuyo valor de bienes es mayor de 1 millón de soles",
+				"<strong>Excluir</strong> candidatos cuyo valor de bienes es menor a 100 000 soles" },
+			OnNext = filterByBienes
+		};
+		questions.Add(question9);
 
 	}
 
