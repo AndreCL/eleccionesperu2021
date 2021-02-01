@@ -18,7 +18,7 @@
 					   @onchange="SelectionChanged"
 					   checked=@(selectedValue == (Questions[CurrentQuestion].Options.IndexOf(option)+1).ToString())
 					   @onclick=@(() => selectedValue = (Questions[CurrentQuestion].Options.IndexOf(option)+1).ToString())>
-				<label for="@option">@option</label><br>
+				<label for="@option">@((MarkupString)option)</label><br>
 			}
 
 			<input type="radio" id="sin-importancia" name="option" value="sin-importancia"

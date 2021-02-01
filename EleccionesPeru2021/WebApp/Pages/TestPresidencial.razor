@@ -40,7 +40,7 @@
 
 		Question question7 = new Question
 		{
-			Title = "Relación de sentencias",
+			Title = "Sentencias",
 			Description = "Los candidatos a la presidencia, 1ra vicepresidencia y 2da vicepresidencia",
 			Options = new List<string> { "Candidatos sin sentencias" },
 			OnNext = filterBySentencias
@@ -50,8 +50,8 @@
 		Question question8 = new Question
 		{
 			Title = "Ingresos anuales declarados",
-			Description = "Los candidatos a la presidencia, 1ra vicepresidencia y 2da vicepresidencia",
-			Options = new List<string> { "Menor de 1 millón de soles", "Mayor a 100 000 soles" },
+			Description = "Los ingresos medios de los candidatos a la presidencia, 1ra vicepresidencia y 2da vicepresidencia son entre 100 000 y 400 000 soles.",
+			Options = new List<string> { "<strong>Excluir</strong> ingresos mayores a 1 millón de soles", "<strong>Excluir</strong> ingresos menores a 100 000 soles" },
 			OnNext = filterByIngresos
 		};
 		questions.Add(question8);
@@ -60,7 +60,8 @@
 		{
 			Title = "Valor de bienes inmuebles, muebles y vehículos declarados",
 			Description = "Los candidatos a la presidencia, 1ra vicepresidencia y 2da vicepresidencia",
-			Options = new List<string> { "Menor de 1 millón de soles", "Mayor a 100 000 soles" },
+			Options = new List<string> { "<strong>Excluir</strong> valor de bienes mayor de 1 millón de soles",
+				"<strong>Excluir</strong> valor de bienes menor a 100 000 soles" },
 			OnNext = filterByBienes
 		};
 		questions.Add(question9);
@@ -71,7 +72,7 @@
 			Description = "Los candidatos a la presidencia, 1ra vicepresidencia y 2da vicepresidencia pueden " +
 			"haber renunciado a otros partidos, movimientos de alcance regional o departamental u organizaciones políticas de alcance " +
 			"provincial y distrital",
-			Options = new List<string> { "Candidatos con renuncias", "Candidatos sin renuncias" },
+			Options = new List<string> { "Candidatos han renunciado a otros partidos", "Candidatos <strong>no</strong> han renunciado a otros partidos" },
 			OnNext = filterByRenuncias
 		};
 		questions.Add(question6);
@@ -699,6 +700,7 @@
 				Name = i.strOrganizacionPolitica
 			});
 		}
+		results = results.OrderBy(a => Guid.NewGuid()).ToList();
 	}
 
 	public void ShowResults()

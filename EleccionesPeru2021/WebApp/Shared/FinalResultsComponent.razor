@@ -249,6 +249,24 @@
 		else
 		{
 			winnerResults.Add(Results[0]);
+
+			if(Results[0].AgreePercentage == Results[1].AgreePercentage)
+			{
+				winnerResults.Add(Results[1]);
+			}
+			if (Results[0].AgreePercentage == Results[2].AgreePercentage)
+			{
+				winnerResults.Add(Results[2]);
+			}
+			if (Results[0].AgreePercentage == Results[3].AgreePercentage)
+			{
+				winnerResults.Add(Results[3]);
+			}
+			if (Results[0].AgreePercentage == Results[4].AgreePercentage)
+			{
+				winnerResults.Add(Results[4]);
+			}
+
 		}
 
 	}
