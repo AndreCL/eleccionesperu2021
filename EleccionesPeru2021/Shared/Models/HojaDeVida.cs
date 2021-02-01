@@ -55,9 +55,11 @@ namespace SharedLibrary.Models
 		[JsonPropertyName("lBienMueble")]
 		public BienMueble[] BienMueble { get; set; }
 
+		/// <summary>
+		/// En presidencial ha estado siempre vacío
+		/// </summary>
 		[JsonPropertyName("lBienMuebleOtro")]
-		public object[] BienMuebleOtro { get; set; }
-		//todo: que es?
+		public object[] BienMuebleOtro { get; set; }		
 
 		[JsonPropertyName("oInfoAdicional")]
 		public InfoAdicional InfoAdicional { get; set; }

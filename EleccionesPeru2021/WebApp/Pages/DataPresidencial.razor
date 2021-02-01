@@ -3,7 +3,7 @@
 
 <h1>Información electoral</h1>
 
-<p>Lista presidencial actualizada 28/01/2021</p>
+<p>Lista presidencial actualizada 01/02/2021</p>
 
 @if (partidosPoliticos == null || candidatosPoliticos == null || hojasDeVida == null)
 {
@@ -96,6 +96,10 @@ else
 							hojasDeVida.Where(i => i?.DatosPersonales?.idHojaVida == president.idHojaVida)?.FirstOrDefault()?.Ingresos?.decRentaIndividualPrivado +
 							hojasDeVida.Where(i => i?.DatosPersonales?.idHojaVida == president.idHojaVida)?.FirstOrDefault()?.Ingresos?.decRentaIndividualPublico )
 
+										@:Bienes inmuebles y muebles:
+
+										@(hojasDeVida.Where(i => i?.DatosPersonales?.idHojaVida == president.idHojaVida)?.FirstOrDefault()?.BienInmueble?.Where(x=> x.strTengoInmueble.Equals("1")).Sum(x => x.decAutovaluo) +
+										hojasDeVida.Where(i => i?.DatosPersonales?.idHojaVida == president.idHojaVida)?.FirstOrDefault()?.BienMueble?.Where(x => x.strTengoBienMueble.Equals("1")).Sum(x => x.decValor) )
 
 									}
 								</td>
@@ -159,6 +163,11 @@ else
 							hojasDeVida.Where(i => i?.DatosPersonales?.idHojaVida == vicepres1.idHojaVida)?.FirstOrDefault()?.Ingresos?.decRentaIndividualPrivado +
 							hojasDeVida.Where(i => i?.DatosPersonales?.idHojaVida == vicepres1.idHojaVida)?.FirstOrDefault()?.Ingresos?.decRentaIndividualPublico )
 
+										@:Bienes inmuebles y muebles:
+
+										@(hojasDeVida.Where(i => i?.DatosPersonales?.idHojaVida == vicepres1.idHojaVida)?.FirstOrDefault()?.BienInmueble?.Where(x=> x.strTengoInmueble.Equals("1")).Sum(x => x.decAutovaluo) +
+										hojasDeVida.Where(i => i?.DatosPersonales?.idHojaVida == vicepres1.idHojaVida)?.FirstOrDefault()?.BienMueble?.Where(x => x.strTengoBienMueble.Equals("1")).Sum(x => x.decValor) )
+
 									}
 								</td>
 							</tr>
@@ -220,6 +229,13 @@ else
 							hojasDeVida.Where(i => i?.DatosPersonales?.idHojaVida == vicepres2.idHojaVida)?.FirstOrDefault()?.Ingresos?.decRemuBrutaPublico +
 							hojasDeVida.Where(i => i?.DatosPersonales?.idHojaVida == vicepres2.idHojaVida)?.FirstOrDefault()?.Ingresos?.decRentaIndividualPrivado +
 							hojasDeVida.Where(i => i?.DatosPersonales?.idHojaVida == vicepres2.idHojaVida)?.FirstOrDefault()?.Ingresos?.decRentaIndividualPublico )
+
+										@:Bienes inmuebles y muebles:
+
+										@(hojasDeVida.Where(i => i?.DatosPersonales?.idHojaVida == vicepres2.idHojaVida)?.FirstOrDefault()?.BienInmueble?.Where(x=> x.strTengoInmueble.Equals("1")).Sum(x => x.decAutovaluo) +
+										hojasDeVida.Where(i => i?.DatosPersonales?.idHojaVida == vicepres2.idHojaVida)?.FirstOrDefault()?.BienMueble?.Where(x => x.strTengoBienMueble.Equals("1")).Sum(x => x.decValor) )
+
+
 									}
 								</td>
 							</tr>

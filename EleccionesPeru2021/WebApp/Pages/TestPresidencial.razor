@@ -1,9 +1,15 @@
 ﻿@page "/testpresidencial"
 @inject HttpClient Http
 
-<QuestionComponent Questions="questions"></QuestionComponent>
+<QuestionComponent Questions="questions" Completed="@ShowResults"></QuestionComponent>
 
-<ResultsComponent Results="@results"></ResultsComponent>
+<ResultsComponent Results="@results" Hidden="@HideResultsBar"></ResultsComponent>
+
+<FinalResultsComponent Results="@results" 
+					   candidatosPoliticos="@candidatosPoliticos" 
+					   hojasDeVida="@hojasDeVida"
+					   partidosPoliticos="@partidosPoliticos"
+					   Hidden="@(!HideResultsBar)"></FinalResultsComponent>
 
 @code {
 	private List<PartidoPolitico> partidosPoliticos;
@@ -11,6 +17,7 @@
 	private List<HojaDeVida> hojasDeVida;
 	private List<Result> results = new List<Result> { };
 	private List<Question> questions = new List<Question> { };
+	private bool HideResultsBar = false;
 
 
 	protected override async Task OnInitializedAsync()
@@ -31,34 +38,43 @@
 
 		LoadResults();
 
-		Question question = new Question
+		Question question7 = new Question
 		{
-			Title = "Conformación por sexo",
-			Description = "Todos los partidos tienen al menos 1 persona de cada genero en la lista para presidencia, " +
-			"1a vicepresidencia y 2a vicepresidencia. ¿Cual es tu conformación preferida?",
-			Options = new List<string> { "2 mujeres y 1 hombre", "2 hombres y 1 mujer" },
-			OnNext = filterByGender
+			Title = "Relación de sentencias",
+			Description = "Los candidatos a la presidencia, 1ra vicepresidencia y 2da vicepresidencia",
+			Options = new List<string> { "Candidatos sin sentencias" },
+			OnNext = filterBySentencias
 		};
-		questions.Add(question);
+		questions.Add(question7);
 
-		Question question2 = new Question
+		Question question8 = new Question
 		{
-			Title = "País de nacimiento",
-			Description = "¿En qué país nacieron los candidatos a la presidencia, 1ra vicepresidencia y 2da vicepresidencia?",
-			Options = new List<string> { "Perú" },
-			OnNext = filterByBirthplace
+			Title = "Ingresos anuales declarados",
+			Description = "Los candidatos a la presidencia, 1ra vicepresidencia y 2da vicepresidencia",
+			Options = new List<string> { "Menor de 1 millón de soles", "Mayor a 100 000 soles" },
+			OnNext = filterByIngresos
 		};
-		questions.Add(question2);
+		questions.Add(question8);
 
-		Question question3 = new Question
+		Question question9 = new Question
 		{
-			Title = "Minimo nivel de educación concluída",
-			Description = "¿Cual es el minimo nivel de educacíon concluída de los candidatos a la presidencia, 1ra " +
-			"vicepresidencia y 2da vicepresidencia?",
-			Options = new List<string> { "Primaria", "Secundaria", "Estudio universitario", "Postgrado" },
-			OnNext = filterByEduLevel
+			Title = "Valor de bienes inmuebles, muebles y vehículos declarados",
+			Description = "Los candidatos a la presidencia, 1ra vicepresidencia y 2da vicepresidencia",
+			Options = new List<string> { "Menor de 1 millón de soles", "Mayor a 100 000 soles" },
+			OnNext = filterByBienes
 		};
-		questions.Add(question3);
+		questions.Add(question9);
+
+		Question question6 = new Question
+		{
+			Title = "Renuncias a otros partidos",
+			Description = "Los candidatos a la presidencia, 1ra vicepresidencia y 2da vicepresidencia pueden " +
+			"haber renunciado a otros partidos, movimientos de alcance regional o departamental u organizaciones políticas de alcance " +
+			"provincial y distrital",
+			Options = new List<string> { "Candidatos con renuncias", "Candidatos sin renuncias" },
+			OnNext = filterByRenuncias
+		};
+		questions.Add(question6);
 
 		Question question4 = new Question
 		{
@@ -80,37 +96,106 @@
 		};
 		questions.Add(question5);
 
-		Question question6 = new Question
+		Question question2 = new Question
 		{
-			Title = "Renuncias a otros partidos",
-			Description = "Los candidatos a la presidencia, 1ra vicepresidencia y 2da vicepresidencia pueden " +
-			"haber renunciado a otros partidos, movimientos de alcance regional o departamental u organizaciones políticas de alcance " +
-			"provincial y distrital",
-			Options = new List<string> { "Candidatos con renuncias", "Candidatos sin renuncias" },
-			OnNext = filterByRenuncias
+			Title = "País de nacimiento",
+			Description = "¿En qué país nacieron los candidatos a la presidencia, 1ra vicepresidencia y 2da vicepresidencia?",
+			Options = new List<string> { "Perú" },
+			OnNext = filterByBirthplace
 		};
-		questions.Add(question6);
+		questions.Add(question2);
 
-		Question question7 = new Question
+		Question question3 = new Question
 		{
-			Title = "Relación de sentencias",
-			Description = "Los candidatos a la presidencia, 1ra vicepresidencia y 2da vicepresidencia",
-			Options = new List<string> { "Candidatos sin sentencias" },
-			OnNext = filterBySentencias
+			Title = "Minimo nivel de educación concluída",
+			Description = "¿Cual es el minimo nivel de educacíon concluída de los candidatos a la presidencia, 1ra " +
+			"vicepresidencia y 2da vicepresidencia?",
+			Options = new List<string> { "Primaria", "Secundaria", "Estudio universitario", "Postgrado" },
+			OnNext = filterByEduLevel
 		};
-		questions.Add(question7);
+		questions.Add(question3);
 
-		Question question8 = new Question
+		Question question = new Question
 		{
-			Title = "Ingresos anuales",
-			Description = "Los candidatos a la presidencia, 1ra vicepresidencia y 2da vicepresidencia",
-			Options = new List<string> { "Menor de 1 millón de soles", "Mayor a 100 000 soles" },
-			OnNext = filterByIngresos
+			Title = "Conformación por sexo",
+			Description = "Todos los partidos tienen al menos 1 persona de cada genero en la lista para presidencia, " +
+			"1a vicepresidencia y 2a vicepresidencia. ¿Cual es tu conformación preferida?",
+			Options = new List<string> { "2 mujeres y 1 hombre", "2 hombres y 1 mujer" },
+			OnNext = filterByGender
 		};
-		questions.Add(question8);
+		questions.Add(question);
+
+
 	}
 
 	#region actions
+	public void filterByBienes(string option)
+	{
+		List<PartidoPolitico> failed = new List<PartidoPolitico>();
+
+		if (option.Equals("1", StringComparison.InvariantCultureIgnoreCase))
+		{
+			foreach (var i in partidosPoliticos)
+			{
+				var president = candidatosPoliticos.FirstOrDefault(x => x.idSolicitudLista == i.idSolicitudLista && x.idCargoEleccion == 1);
+				var vicepres1 = candidatosPoliticos.FirstOrDefault(x => x.idSolicitudLista == i.idSolicitudLista && x.idCargoEleccion == 2);
+				var vicepres2 = candidatosPoliticos.FirstOrDefault(x => x.idSolicitudLista == i.idSolicitudLista && x.idCargoEleccion == 3);
+				var preshoja =
+					hojasDeVida.Where(x => x.DatosPersonales.idHojaVida == president?.idHojaVida).FirstOrDefault()?.BienInmueble?.Where(x => x.strTengoInmueble.Equals("1")).Sum(x => x.decAutovaluo) +
+					hojasDeVida.Where(x => x?.DatosPersonales?.idHojaVida == president?.idHojaVida)?.FirstOrDefault()?.BienMueble?.Where(x => x.strTengoBienMueble.Equals("1")).Sum(x => x.decValor);
+				var vice1hoja =
+					hojasDeVida.Where(x => x.DatosPersonales.idHojaVida == vicepres1?.idHojaVida).FirstOrDefault()?.BienInmueble?.Where(x => x.strTengoInmueble.Equals("1")).Sum(x => x.decAutovaluo) +
+					hojasDeVida.Where(x => x?.DatosPersonales?.idHojaVida == vicepres1?.idHojaVida)?.FirstOrDefault()?.BienMueble?.Where(x => x.strTengoBienMueble.Equals("1")).Sum(x => x.decValor);
+				var vice2hoja =
+					hojasDeVida.Where(x => x.DatosPersonales.idHojaVida == vicepres2?.idHojaVida).FirstOrDefault()?.BienInmueble?.Where(x => x.strTengoInmueble.Equals("1")).Sum(x => x.decAutovaluo) +
+					hojasDeVida.Where(x => x?.DatosPersonales?.idHojaVida == vicepres2?.idHojaVida)?.FirstOrDefault()?.BienMueble?.Where(x => x.strTengoBienMueble.Equals("1")).Sum(x => x.decValor);
+
+				if ((preshoja != null && preshoja >= 1000000) || (vice1hoja != null && vice1hoja >= 1000000) || (vice2hoja != null && vice2hoja >= 1000000))
+				{
+					failed.Add(i);
+				}
+			}
+		}
+		else if (option.Equals("2", StringComparison.InvariantCultureIgnoreCase))
+		{
+			foreach (var i in partidosPoliticos)
+			{
+				var president = candidatosPoliticos.FirstOrDefault(x => x.idSolicitudLista == i.idSolicitudLista && x.idCargoEleccion == 1);
+				var vicepres1 = candidatosPoliticos.FirstOrDefault(x => x.idSolicitudLista == i.idSolicitudLista && x.idCargoEleccion == 2);
+				var vicepres2 = candidatosPoliticos.FirstOrDefault(x => x.idSolicitudLista == i.idSolicitudLista && x.idCargoEleccion == 3);
+				var preshoja =
+					hojasDeVida.Where(x => x.DatosPersonales.idHojaVida == president?.idHojaVida).FirstOrDefault()?.BienInmueble?.Where(x => x.strTengoInmueble.Equals("1")).Sum(x => x.decAutovaluo) +
+					hojasDeVida.Where(x => x?.DatosPersonales?.idHojaVida == president?.idHojaVida)?.FirstOrDefault()?.BienMueble?.Where(x => x.strTengoBienMueble.Equals("1")).Sum(x => x.decValor);
+				var vice1hoja =
+					hojasDeVida.Where(x => x.DatosPersonales.idHojaVida == vicepres1?.idHojaVida).FirstOrDefault()?.BienInmueble?.Where(x => x.strTengoInmueble.Equals("1")).Sum(x => x.decAutovaluo) +
+					hojasDeVida.Where(x => x?.DatosPersonales?.idHojaVida == vicepres1?.idHojaVida)?.FirstOrDefault()?.BienMueble?.Where(x => x.strTengoBienMueble.Equals("1")).Sum(x => x.decValor);
+				var vice2hoja =
+					hojasDeVida.Where(x => x.DatosPersonales.idHojaVida == vicepres2?.idHojaVida).FirstOrDefault()?.BienInmueble?.Where(x => x.strTengoInmueble.Equals("1")).Sum(x => x.decAutovaluo) +
+					hojasDeVida.Where(x => x?.DatosPersonales?.idHojaVida == vicepres2?.idHojaVida)?.FirstOrDefault()?.BienMueble?.Where(x => x.strTengoBienMueble.Equals("1")).Sum(x => x.decValor);
+
+				if ((preshoja != null && preshoja <= 100000) || (vice1hoja != null && vice1hoja <= 100000) || (vice2hoja != null && vice2hoja <= 100000))
+				{
+					failed.Add(i);
+				}
+			}
+		}
+
+
+		foreach (var i in partidosPoliticos)
+		{
+			if (failed.Count > 0 && failed.Exists(x => x.idOrganizacionPolitica == i.idOrganizacionPolitica))
+			{
+				results.Where(x => x.Id == i.idOrganizacionPolitica).FirstOrDefault().AddCounter(false);
+			}
+			else
+			{
+				results.Where(x => x.Id == i.idOrganizacionPolitica).FirstOrDefault().AddCounter(true);
+			}
+		}
+
+		StateHasChanged();
+	}
+
 	public void filterByIngresos(string option)
 	{
 		List<PartidoPolitico> failed = new List<PartidoPolitico>();
@@ -144,7 +229,7 @@
 							hojasDeVida.Where(x => x?.DatosPersonales?.idHojaVida == vicepres2?.idHojaVida)?.FirstOrDefault()?.Ingresos?.decRentaIndividualPrivado +
 							hojasDeVida.Where(x => x?.DatosPersonales?.idHojaVida == vicepres2?.idHojaVida)?.FirstOrDefault()?.Ingresos?.decRentaIndividualPublico;
 
-				if ((preshoja != null && preshoja >= 1000000) || (vice1hoja != null && vice1hoja >= 1000000) || (vice2hoja != null && vice2hoja >= 1000000) )
+				if ((preshoja != null && preshoja >= 1000000) || (vice1hoja != null && vice1hoja >= 1000000) || (vice2hoja != null && vice2hoja >= 1000000))
 				{
 					failed.Add(i);
 				}
@@ -614,5 +699,11 @@
 				Name = i.strOrganizacionPolitica
 			});
 		}
+	}
+
+	public void ShowResults()
+	{
+		HideResultsBar = true;
+		StateHasChanged();
 	}
 }
