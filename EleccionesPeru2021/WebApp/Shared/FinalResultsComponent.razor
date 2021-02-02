@@ -43,95 +43,15 @@
 				<h3>Candidatos</h3>
 
 				<div class="ParentColumns">
-					<div class="ColumnThird">
-
-						<h4>Presidente de la República</h4>
-
-						@if (president != null)
-						{
-							<img width="79px" height="111px" src="@($"sample-data{president.strRutaArchivo.Replace("Assets","ASSETS")}")" alt="@president.strCandidato" />
-							<p>@president.strCandidato</p>
-							<p>Edad: @president.intEdad</p>
-							<p>Sexo: @(president.strSexo=="1"?"Masculino":"Femenino")</p>
-							<p>Estado de inscripción: <strong class="@president.strEstadoExp">@president.strEstadoExp</strong></p>
-
-							var hojaDeVida = hojasDeVida.Where(i => i?.DatosPersonales?.idHojaVida == president.idHojaVida)?.FirstOrDefault();
-
-							if (hojaDeVida != null)
-							{
-								<p>
-									Primaria concluida:
-									<strong class="@(hojaDeVida.EduBasica?.strConcluidoEduPrimaria.Equals("1")??false?"Si":"No")">
-										@(hojaDeVida.EduBasica?.strConcluidoEduPrimaria.Equals("1")??false?"Si":"No")
-									</strong>
-								</p>
-							}
-						}
-						else
-						{
-							<h5 class="No">Hoja de vida no está disponible</h5>
-						}
+					<div class="ColumnThird" style="padding:10px">
+						<HojaDeVidaComponent Title="Presidente de la República" Candidate="@president" HojasDeVida="@hojasDeVida"/>
+					</div>
+					<div class="ColumnThird" style="padding:10px">
+						<HojaDeVidaComponent Title="Primer Vicepresidente de la República" Candidate="@vicepres1" HojasDeVida="@hojasDeVida" />					
 
 					</div>
-					<div class="ColumnThird">
-
-						<h4>Primer Vicepresidente de la República</h4>
-
-						@if (vicepres1 != null)
-						{
-							<img width="79px" height="111px" src="@($"sample-data{vicepres1.strRutaArchivo.Replace("Assets","ASSETS")}")" alt="@vicepres1.strCandidato" />
-							<p>@vicepres1.strCandidato</p>
-							<p>Edad: @vicepres1.intEdad</p>
-							<p>Sexo: @(vicepres1.strSexo=="1"?"Masculino":"Femenino")</p>
-							<p>Estado de inscripción: <strong class="@vicepres1.strEstadoExp">@vicepres1.strEstadoExp</strong></p>
-
-							var hojaDeVida = hojasDeVida.Where(i => i?.DatosPersonales?.idHojaVida == vicepres1.idHojaVida)?.FirstOrDefault();
-
-							if (hojaDeVida != null)
-							{
-								<p>
-									Primaria concluida:
-									<strong class="@(hojaDeVida.EduBasica?.strConcluidoEduPrimaria.Equals("1")??false?"Si":"No")">
-										@(hojaDeVida.EduBasica?.strConcluidoEduPrimaria.Equals("1")??false?"Si":"No")
-									</strong>
-								</p>
-							}
-						}
-						else
-						{
-							<h5 class="No">Hoja de vida no está disponible</h5>
-						}
-
-					</div>
-					<div class="ColumnThird">
-
-						<h4>Segundo Vicepresidente de la República</h4>
-
-						@if (vicepres2 != null)
-						{
-							<img width="79px" height="111px" src="@($"sample-data{vicepres2.strRutaArchivo.Replace("Assets","ASSETS")}")" alt="@vicepres2.strCandidato" />
-							<p>@vicepres2.strCandidato</p>
-							<p>Edad: @vicepres2.intEdad</p>
-							<p>Sexo: @(vicepres2.strSexo=="1"?"Masculino":"Femenino")</p>
-							<p>Estado de inscripción: <strong class="@vicepres2.strEstadoExp">@vicepres2.strEstadoExp</strong></p>
-
-							var hojaDeVida = hojasDeVida.Where(i => i?.DatosPersonales?.idHojaVida == vicepres2.idHojaVida)?.FirstOrDefault();
-
-							if (hojaDeVida != null)
-							{
-								<p>
-									Primaria concluida:
-									<strong class="@(hojaDeVida.EduBasica?.strConcluidoEduPrimaria.Equals("1")??false?"Si":"No")">
-										@(hojaDeVida.EduBasica?.strConcluidoEduPrimaria.Equals("1")??false?"Si":"No")
-									</strong>
-								</p>
-							}
-						}
-						else
-						{
-							<h5 class="No">Hoja de vida no está disponible</h5>
-						}
-
+					<div class="ColumnThird" style="padding:10px">
+						<HojaDeVidaComponent Title="Segundo Vicepresidente de la República" Candidate="@vicepres2" HojasDeVida="@hojasDeVida" />
 					</div>
 				</div>
 

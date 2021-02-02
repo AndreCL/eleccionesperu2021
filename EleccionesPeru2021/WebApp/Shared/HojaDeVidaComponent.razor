@@ -1,0 +1,100 @@
+﻿<h4>@Title</h4>
+
+@if (Candidate != null)
+{
+	<img width="79px" height="111px" src="@($"sample-data{Candidate.strRutaArchivo.Replace("Assets", "ASSETS")}")" alt="@Candidate.strCandidato" />
+	<p>@Candidate.strCandidato</p>
+	<p>Edad: @Candidate.intEdad</p>
+	<p>Sexo: @(Candidate.strSexo == "1" ? "Masculino" : "Femenino")</p>
+	<p>Estado de inscripción: <strong class="@Candidate.strEstadoExp">@Candidate.strEstadoExp</strong></p>
+
+	var hojaDeVida = HojasDeVida.Where(i => i?.DatosPersonales?.idHojaVida == Candidate.idHojaVida)?.FirstOrDefault();
+
+	@if (hojaDeVida != null)
+	{
+		<div style="text-align:left">
+			<h5>I. Formación academica</h5>
+			<p>
+				Primaria concluida:
+				<strong class="@(hojaDeVida.EduBasica?.strConcluidoEduPrimaria.Equals("1") ?? false ? "Si" : "No")">
+					@(hojaDeVida.EduBasica?.strConcluidoEduPrimaria.Equals("1") ?? false ? "Si" : "No")
+				</strong>
+			</p>
+			<p>
+				Secundaria concluida:
+				<strong class="@(hojaDeVida.EduBasica?.strConcluidoEduSecundaria.Equals("1") ?? false ? "Si" : "No")">
+					@(hojaDeVida.EduBasica?.strConcluidoEduSecundaria.Equals("1") ?? false ? "Si" : "No")
+				</strong>
+			</p>
+			@if (hojaDeVida.EduTecnico.strConcluidoEduTecnico.Equals("1"))
+			{
+				<p>
+					<h6><strong>Estudios técnicos concluidos:</strong></h6>
+					<ul>
+						<li>
+							@hojaDeVida.EduTecnico.strCarreraTecnico.ToLower() - @hojaDeVida.EduTecnico.strCenEstudioTecnico.ToLower()
+						</li>
+					</ul>
+
+				</p>
+			}
+			@if (hojaDeVida.EduNoUniversitaria.strConcluidoNoUni.Equals("1"))
+			{
+				<p>
+					<h6><strong>Estudios no Universitarios concluidos:</strong></h6>
+					<ul>
+						<li>
+							@hojaDeVida.EduNoUniversitaria.strCarreraNoUni.ToLower() - @hojaDeVida.EduNoUniversitaria.strCentroEstudioNoUni.ToLower()
+						</li>
+					</ul>
+
+				</p>
+			}
+			@if (hojaDeVida.EduUniversitaria.Any(x => x.strConcluidoEduUni.Equals("1")))
+			{
+				<h6><strong>Estudios Universitarios concluidos:</strong></h6>
+			}
+			@foreach (var item in hojaDeVida.EduUniversitaria)
+			{
+				if (item.strConcluidoEduUni.Equals("1"))
+				{
+					<p>
+						<ul>
+							<li>
+								@item.strCarreraUni.ToLower() - @item.strUniversidad.ToLower()
+							</li>
+						</ul>
+
+					</p>
+				}
+			}
+			@if (hojaDeVida.EduPosgrado.strConcluidoPosgrado.Equals("1"))
+			{
+				<p>
+					<h6><strong>Estudios de Postgrado concluidos:</strong></h6>
+					<ul>
+						<li>
+							@hojaDeVida.EduPosgrado.strEspecialidadPosgrado.ToLower() - @hojaDeVida.EduPosgrado.strCenEstudioPosgrado.ToLower()
+						</li>
+					</ul>
+
+				</p>
+			}
+		</div>
+	}
+}
+else
+{
+	<h5 class="No">Hoja de vida no está disponible</h5>
+}
+
+@code {
+	[Parameter]
+	public string Title { get; set; }
+
+	[Parameter]
+	public CandidatoGeneral Candidate { get; set; }
+
+	[Parameter]
+	public List<HojaDeVida> HojasDeVida { get; set; }
+}
