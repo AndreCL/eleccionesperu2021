@@ -8,7 +8,7 @@
 	{
 		<h1>Resultados:</h1>
 		<p>Partidos políticos que cumplen todos tus criterios: @agreed de @Results.Count()</p>
-
+		<p>Mostrando @winnerResults.Count() partido(s) con mayor nivel de cumplir tus criterios (@(winnerResults[0].Agree?"100":$"{winnerResults[0].AgreePercentage:0.##}")%)</p>
 		<hr>
 
 		@foreach (var winnerResult in winnerResults)
@@ -44,10 +44,10 @@
 
 				<div class="ParentColumns">
 					<div class="ColumnThird" style="padding:10px">
-						<HojaDeVidaComponent Title="Presidente de la República" Candidate="@president" HojasDeVida="@hojasDeVida"/>
+						<HojaDeVidaComponent Title="Presidente de la República" Candidate="@president" HojasDeVida="@hojasDeVida" />
 					</div>
 					<div class="ColumnThird" style="padding:10px">
-						<HojaDeVidaComponent Title="Primer Vicepresidente de la República" Candidate="@vicepres1" HojasDeVida="@hojasDeVida" />					
+						<HojaDeVidaComponent Title="Primer Vicepresidente de la República" Candidate="@vicepres1" HojasDeVida="@hojasDeVida" />
 
 					</div>
 					<div class="ColumnThird" style="padding:10px">
@@ -106,12 +106,12 @@
 				width: 67%;
 				display: table-cell;
 			}
+
 			.ParentColumns {
 				overflow: hidden;
 				width: 100%;
 				display: table;
 			}
-
 		</style>
 
 	}
@@ -170,7 +170,7 @@
 		{
 			winnerResults.Add(Results[0]);
 
-			if(Results[0].AgreePercentage == Results[1].AgreePercentage)
+			if (Results[0].AgreePercentage == Results[1].AgreePercentage)
 			{
 				winnerResults.Add(Results[1]);
 			}
