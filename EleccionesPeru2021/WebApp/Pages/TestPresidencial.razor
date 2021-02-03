@@ -47,11 +47,21 @@
 		};
 		questions.Add(question7);
 
+		Question question5 = new Question
+		{
+			Title = "Cargos de Elección Popular",
+			Description = "Los candidatos a la presidencia, 1ra vicepresidencia y 2da vicepresidencia deben haber desempeñado " +
+			"un cargo de elección popular (ejemplo alcalde, regidor, congresista, etc.)",
+			Options = new List<string> { "Si", "No" },
+			OnNext = filterByCargoElecto
+		};
+		questions.Add(question5);
+
 		Question question4 = new Question
 		{
 			Title = "Cargos Partidarios",
 			Description = "Los candidatos a la presidencia, 1ra vicepresidencia y 2da vicepresidencia deben haber desempeñado " +
-			"un cargo partidario en su trayectoria política (cargo en organización política)",
+		"un cargo partidario en su trayectoria política (cargo en organización política)",
 			Options = new List<string> { "Si", "No" },
 			OnNext = filterByCargoPartidario
 		};
@@ -68,16 +78,6 @@
 			OnNext = filterByRenuncias
 		};
 		questions.Add(question6);
-
-		Question question5 = new Question
-		{
-			Title = "Cargos de Elección Popular",
-			Description = "Los candidatos a la presidencia, 1ra vicepresidencia y 2da vicepresidencia deben haber desempeñado " +
-			"un cargo de elección popular (ejemplo alcalde, regidor, congresista, etc.)",
-			Options = new List<string> { "Si", "No" },
-			OnNext = filterByCargoElecto
-		};
-		questions.Add(question5);
 
 		Question question2 = new Question
 		{
