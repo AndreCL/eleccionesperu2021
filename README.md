@@ -27,9 +27,9 @@ Falta implementar:
 			* Hoja de vida
 * WebApp
 	* ~~Modulo de preguntas~~
-	* Modulo de resultados
-	* Detalles de resultados
-	* Test presidencial - En progreso
+	* ~~Modulo de resultados~~
+	* Detalles de resultados - En progreso
+	* ~~Test presidencial~~
 	* Test congreso
 	* Test parlamento andino
 	
