@@ -1,4 +1,4 @@
-﻿<h4>@Title</h4>
+﻿<h4>@((MarkupString)Title)</h4>
 
 @if (Candidate != null)
 {
@@ -83,6 +83,8 @@
 		</p>
 	}
 
+	<hr>
+
 	<h5>II. Experiencia laboral</h5>
 	<p>
 		<ul>
@@ -97,6 +99,8 @@
 			}
 		</ul>
 	</p>
+
+	<hr>
 
 	<h5>III.  Trayectoria Partidaria y/o Política de dirigente</h5>
 	@if (hojaDeVida.CargoPartidario.Any(x => x.strTengoCargoPartidario.Equals("1")))
@@ -153,12 +157,14 @@
 		</ul>
 	</p>
 
+	<hr>
+
 	<h5>IV. Relación de sentencias</h5>
 	@if (hojaDeVida.SentenciaObliga.Any(x => x.strTengoSentenciaObliga.Equals("1")))
 	{
 		<h6><strong>Sentencias condenatorias firmes impuestas por delitos dolosos y la que incluye las sentencias con reserva del fallo condenatorio:</strong></h6>
 	}
-	<p>
+	<p class="Negative">
 		<ul>
 			@foreach (var item in hojaDeVida.SentenciaObliga)
 			{
@@ -175,7 +181,7 @@
 	{
 		<h6><strong>Sentencias que declaren fundadas las demandas interpuestas contra los candidatos(as) por incumplimiento de obligaciones alimentarias, contractuales, laborales o por incurrir en violencia familiar, que hubieran quedado firmes:</strong></h6>
 	}
-	<p>
+	<p class="Negative">
 		<ul>
 			@foreach (var item in hojaDeVida.SentenciaPenal)
 			{
@@ -189,13 +195,40 @@
 		</ul>
 	</p>
 
+	<hr>
+
+	<h5>V. Ingresos y bienes</h5>
+	<p>
+		Ingresos anuales totales reportados: S/@(hojaDeVida.Ingresos?.decOtroIngresoPrivado + hojaDeVida.Ingresos?.decOtroIngresoPublico +
+							hojaDeVida.Ingresos?.decRemuBrutaPrivado + hojaDeVida.Ingresos?.decRemuBrutaPublico +
+							hojaDeVida.Ingresos?.decRentaIndividualPrivado + hojaDeVida.Ingresos?.decRentaIndividualPublico)
+	</p>
+	<p>
+		Valor total de bienes reportados: S/@(hojaDeVida.BienInmueble?.Where(x=> x.strTengoInmueble.Equals("1")).Sum(x => x.decAutovaluo) +
+										hojaDeVida.BienMueble?.Where(x => x.strTengoBienMueble.Equals("1")).Sum(x => x.decValor) )
+	</p>
+
 </div>
 	}
 }
 else
 {
-	<h5 class="No">Hoja de vida no está disponible</h5>
+	<h5 class="Unavailable">Hoja de vida no está disponible</h5>
 }
+
+<style type="text/css">
+	.Positive {
+		background-color: palegreen;
+	}
+
+	.Negative {
+		background-color: palevioletred;
+	}
+
+	.Unavailable {
+		background-color: lightgray;
+	}
+</style>
 
 @code {
 	[Parameter]
