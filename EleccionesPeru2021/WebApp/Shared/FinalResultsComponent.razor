@@ -8,7 +8,7 @@
 	{
 		<h1>Resultados:</h1>
 		<p>Partidos políticos que cumplen todos tus criterios: @agreed de @Results.Count()</p>
-		<p>Mostrando @winnerResults.Count() partido(s) con mayor nivel de cumplir tus criterios (@(winnerResults[0].Agree?"100":$"{winnerResults[0].AgreePercentage:0.##}")%)</p>
+		<p>Mostrando @winnerResults.Count() partido(s) con mayor nivel de cumplir tus criterios</p>
 		<hr>
 
 		@foreach (var winnerResult in winnerResults)
@@ -170,10 +170,9 @@
 		{
 			winnerResults.Add(Results[0]);
 
-			if (Results[0].AgreePercentage == Results[1].AgreePercentage)
-			{
-				winnerResults.Add(Results[1]);
-			}
+			//siempre muestra minimo 2 resultados
+			winnerResults.Add(Results[1]);
+
 			if (Results[0].AgreePercentage == Results[2].AgreePercentage)
 			{
 				winnerResults.Add(Results[2]);
@@ -189,5 +188,5 @@
 
 		}
 
-	}
+}
 }
