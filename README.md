@@ -28,7 +28,7 @@ Falta implementar:
 * WebApp
 	* ~~Modulo de preguntas~~
 	* ~~Modulo de resultados~~
-	* Detalles de resultados - En progreso
+	* ~~Detalles de resultados~~
 	* ~~Test presidencial~~
 	* Test congreso
 	* Test parlamento andino
