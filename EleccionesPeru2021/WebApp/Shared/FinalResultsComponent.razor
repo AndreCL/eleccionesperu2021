@@ -1,6 +1,6 @@
 ﻿@if (Hidden == false)
 {
-	if (partidosPoliticos == null || candidatosPoliticos == null || hojasDeVida == null || Results == null || winnerResults == null)
+	if (partidosPoliticos == null || candidatosPoliticos == null || hojasDeVida == null || Results == null || winnerResults == null || planesDeGobierno == null)
 	{
 		<p><em>Cargando...</em></p>
 	}
@@ -59,6 +59,8 @@
 				<a target="_blank" href="sample-data/@(winnerPartido.strCarpeta+winnerPartido.idPlanGobierno+".pdf")">
 					Link plan de gobierno completo
 				</a>
+
+				<ResumenPlanDeGobierno Title="Resumen plan de gobierno" PlanDeGobierno="@planesDeGobierno.Where(x=> x.idPlanGobierno == winnerPartido.idPlanGobierno).FirstOrDefault()"></ResumenPlanDeGobierno>
 
 				<hr>
 			}
@@ -131,6 +133,9 @@
 	public List<HojaDeVida> hojasDeVida { get; set; }
 
 	[Parameter]
+	public List<PlanDeGobierno> planesDeGobierno { get; set; }
+
+	[Parameter]
 	public bool Hidden
 	{
 		get
@@ -188,5 +193,5 @@
 
 		}
 
-}
+	}
 }

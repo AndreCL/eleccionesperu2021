@@ -9,12 +9,14 @@
 					   candidatosPoliticos="@candidatosPoliticos" 
 					   hojasDeVida="@hojasDeVida"
 					   partidosPoliticos="@partidosPoliticos"
+					   planesDeGobierno="@planesDeGobierno"
 					   Hidden="@(!HideResultsBar)"></FinalResultsComponent>
 
 @code {
 	private List<PartidoPolitico> partidosPoliticos;
 	private List<CandidatoGeneral> candidatosPoliticos;
 	private List<HojaDeVida> hojasDeVida;
+	private List<PlanDeGobierno> planesDeGobierno;
 	private List<Result> results = new List<Result> { };
 	private List<Question> questions = new List<Question> { };
 	private bool HideResultsBar = false;
@@ -35,6 +37,9 @@
 
 		var temp3 = await Http.GetFromJsonAsync<HojaDeVida[]>("sample-data/presidentialList2.json");
 		hojasDeVida = temp3.ToList();
+
+		var temp4 = await Http.GetFromJsonAsync<PlanDeGobierno[]>("sample-data/planDeGobierno0.json");
+		planesDeGobierno = temp4.ToList();
 
 		LoadResults();
 
