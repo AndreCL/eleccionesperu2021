@@ -27,8 +27,7 @@
 		var temp = await Http.GetFromJsonAsync<PartidoPolitico[]>("sample-data/presidentialList0.json");
 
 		//Filter out improsedente
-		partidosPoliticos = temp.ToList().Where(
-			x => !x.strEstadoLista.Equals("IMPROCEDENTE", StringComparison.InvariantCultureIgnoreCase)).ToList();
+		partidosPoliticos = temp.ToList();
 
 		//Filter out improsedente
 		var temp2 = await Http.GetFromJsonAsync<CandidatoGeneral[]>("sample-data/presidentialList1.json");

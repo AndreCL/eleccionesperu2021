@@ -34,6 +34,15 @@ namespace DataExporter
 			System.Console.WriteLine("Download presidential list level 0");
 
 			PresidentialPartyData = DeSerializePresidentialPartyData(data);
+
+			//Remove the ones that are out
+			var removed = PresidentialPartyData.RemoveAll(x =>
+			x.strEstadoLista.Equals("IMPROCEDENTE", System.StringComparison.InvariantCultureIgnoreCase) ||
+			x.strEstadoLista.Equals("TACHADO", System.StringComparison.InvariantCultureIgnoreCase) ||
+			x.strEstadoLista.Equals("INADMISIBLE", System.StringComparison.InvariantCultureIgnoreCase) );
+
+			System.Console.WriteLine( $"Removed {removed} invalid parties");
+
 			System.Console.WriteLine($"DeSerialize presidential list level 0. Found: {PresidentialPartyData.Count}");
 
 			SaveJsonFile(path, "presidentialList0", JsonSerializer.Serialize(PresidentialPartyData));

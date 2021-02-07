@@ -170,6 +170,12 @@
 			{
 				winnerResults.Add(Results[i]);
 			}
+
+			//siempre muestra minimo 2 resultados
+			if (winnerResults.Count == 1)
+			{
+				winnerResults.Add(Results[1]);
+			}
 		}
 		else
 		{
