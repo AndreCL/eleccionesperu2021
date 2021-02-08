@@ -1,0 +1,111 @@
+﻿@page "/testcongreso"
+@inject HttpClient Http
+
+<QuestionComponent Questions="questions" Completed="@ShowResults"></QuestionComponent>
+
+<ResultsComponent Results="@results" Hidden="@HideResultsBar"></ResultsComponent>
+
+@code {
+	private List<Result> results = new List<Result> { };
+	private List<Question> questions = new List<Question> { };
+	private List<PartidoPolitico> partidosPoliticos;
+	private List<CandidatoGeneral> candidatosPoliticos = new List<CandidatoGeneral>();
+	private List<HojaDeVida> hojasDeVida;
+	private UbigeoItemLite[] ubigeos;
+
+
+	private bool HideResultsBar = false;
+
+	public void LoadResults()
+	{
+		foreach (var candidate in candidatosPoliticos)
+		{
+			results.Add(new Result()
+			{
+				Id = candidate.idCandidato,
+				ImageRoute = $"sample-data{candidate.strRutaArchivo.Replace("Assets", "ASSETS")}",
+				Name = candidate.strCandidato
+			});
+		}
+		results = results.OrderBy(a => Guid.NewGuid()).ToList();
+	}
+
+	public void ShowResults()
+	{
+		HideResultsBar = true;
+		StateHasChanged();
+	}
+
+	private async Task LoadParties(UbigeoItemLite ubigeoItem)
+	{
+		var temp = await Http.GetFromJsonAsync<PartidoPolitico[]>($"sample-data/cong/Party{ubigeoItem.strUbigeoDistritoElectoral}.json");
+
+		//Filter out improsedente
+		partidosPoliticos = temp.ToList();
+	}
+
+	private async Task LoadCandidates(UbigeoItemLite ubigeoItem)
+	{
+		var temp = await Http.GetFromJsonAsync<CandidatoGeneral[]>($"sample-data/cong/Candidate{ubigeoItem.strUbigeoDistritoElectoral}.json");
+		candidatosPoliticos = temp.ToList().Where(
+			x => !x.strEstadoExp.Equals("IMPROCEDENTE", StringComparison.InvariantCultureIgnoreCase)).ToList();
+
+		LoadResults();
+
+		StateHasChanged();
+	}
+
+	private async Task LoadHDV(UbigeoItemLite ubigeoItem)
+	{
+		var temp = await Http.GetFromJsonAsync<HojaDeVida[]>($"sample-data/cong/HDV{ubigeoItem.strUbigeoDistritoElectoral}.json");
+		hojasDeVida = temp.ToList();
+	}
+
+	protected override async Task OnInitializedAsync()
+	{
+		ubigeos = await Http.GetFromJsonAsync<UbigeoItemLite[]>("sample-data/cong/ubigeoCon.json");
+
+
+
+		Question question0 = new Question
+		{
+			Title = "Distrito electoral",
+			Description = "",
+			Options = ubigeos.Select(x => x.strDistritoElectoral.ToLower()).ToList(),
+			HideSinImportancia = true,
+			OnNext = loadByUbigeo
+		};
+		questions.Add(question0);
+
+		Question question1 = new Question
+		{
+			Title = "Test",
+			Description = "Testing",
+			Options = new List<string> { "Si", "No"},
+			//OnNext = loadByUbigeo
+		};
+		questions.Add(question1);
+
+	}
+
+	#region actions
+	public void loadByUbigeo(string option)
+	{
+		var ubigeosList = ubigeos.Select(x => x.strDistritoElectoral.ToLower()).ToList();
+
+		//index is option - 1
+		var chosenUbigeoIndex = int.Parse(option) - 1;
+		var chosenUbigeoName = ubigeosList[chosenUbigeoIndex];
+		var chosenUbigeo = ubigeos.Where(x =>
+		x.strDistritoElectoral.Equals(chosenUbigeoName, StringComparison.InvariantCultureIgnoreCase)).FirstOrDefault();
+
+		var task = LoadCandidates(chosenUbigeo);
+
+		var task2 = LoadParties(chosenUbigeo);
+
+		var task3 = LoadHDV(chosenUbigeo);
+
+		StateHasChanged();
+	}
+	#endregion
+}

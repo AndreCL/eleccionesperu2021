@@ -13,6 +13,8 @@ namespace SharedLibrary.Models.UIModels
 
 		public Action<string> OnNext { get; set; }
 
+		public bool HideSinImportancia { get; set; } = false;
+
 		public void Next(string option)
 		{
 			OnNext?.Invoke(option);

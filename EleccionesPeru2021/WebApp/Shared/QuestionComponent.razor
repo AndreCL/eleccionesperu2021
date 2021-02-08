@@ -21,11 +21,15 @@
 				<label for="@option">@((MarkupString)option)</label><br>
 			}
 
-			<input type="radio" id="sin-importancia" name="option" value="sin-importancia"
-				   @onchange="SelectionChanged"
-				   checked=@(selectedValue == "0")
-				   @onclick=@(() => selectedValue = "0")>
-			<label for="sin-importancia">Sin importancia</label><br>
+			@if (!Questions[CurrentQuestion].HideSinImportancia)
+			{
+				<input type="radio" id="sin-importancia" name="option" value="sin-importancia"
+					   @onchange="SelectionChanged"
+					   checked=@(selectedValue == "0")
+					   @onclick=@(() => selectedValue = "0")>
+				<label for="sin-importancia">Sin importancia</label><br>
+			}
+
 		</form>
 
 		<button class="questionButton" @onclick="OnNext" disabled="@(selectedValue == "")">Siguiente</button>
