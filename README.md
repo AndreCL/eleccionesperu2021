@@ -15,16 +15,17 @@ Falta implementar:
 			* ~~Candidatos~~
 			* ~~Imagenes~~
 			* ~~Hoja de vida~~
-		* Congreso
-			* Partidos
-			* Candidatos
-			* Imagenes
-			* Hoja de vida		
+		* ~~Congreso~~
+			* ~~Partidos~~
+			* ~~Candidatos~~
+			* ~~Imagenes~~
+			* ~~Hoja de vida~~	
 		* Parlamento andino
 			* Partidos
 			* Candidatos
 			* Imagenes
 			* Hoja de vida
+	* Optimize code: Remove fields not used from data model
 * WebApp
 	* ~~Modulo de preguntas~~
 	* ~~Modulo de resultados~~

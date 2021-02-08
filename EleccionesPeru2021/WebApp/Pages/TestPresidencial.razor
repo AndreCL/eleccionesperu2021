@@ -24,20 +24,20 @@
 
 	protected override async Task OnInitializedAsync()
 	{
-		var temp = await Http.GetFromJsonAsync<PartidoPolitico[]>("sample-data/presidentialList0.json");
+		var temp = await Http.GetFromJsonAsync<PartidoPolitico[]>("sample-data/pres/presidentialList0.json");
 
 		//Filter out improsedente
 		partidosPoliticos = temp.ToList();
 
 		//Filter out improsedente
-		var temp2 = await Http.GetFromJsonAsync<CandidatoGeneral[]>("sample-data/presidentialList1.json");
+		var temp2 = await Http.GetFromJsonAsync<CandidatoGeneral[]>("sample-data/pres/presidentialList1.json");
 		candidatosPoliticos = temp2.ToList().Where(
 			x => !x.strEstadoExp.Equals("IMPROCEDENTE", StringComparison.InvariantCultureIgnoreCase)).ToList();
 
-		var temp3 = await Http.GetFromJsonAsync<HojaDeVida[]>("sample-data/presidentialList2.json");
+		var temp3 = await Http.GetFromJsonAsync<HojaDeVida[]>("sample-data/pres/presidentialList2.json");
 		hojasDeVida = temp3.ToList();
 
-		var temp4 = await Http.GetFromJsonAsync<PlanDeGobierno[]>("sample-data/planDeGobierno0.json");
+		var temp4 = await Http.GetFromJsonAsync<PlanDeGobierno[]>("sample-data/pres/planDeGobierno0.json");
 		planesDeGobierno = temp4.ToList();
 
 		LoadResults();

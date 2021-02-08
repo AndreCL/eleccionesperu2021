@@ -6,9 +6,9 @@ namespace SharedLibrary.Api
 	{
 		private static readonly string _nrEleccion = "110";
 
-		public static string ListaPartidos(TipoDeEleccion tipoDeEleccion)
+		public static string ListaPartidos(TipoDeEleccion tipoDeEleccion, string strUbigeo = "")
 		{
-			return $"https://plataformaelectoral.jne.gob.pe/Candidato/GetExpedientesLista/{_nrEleccion}-{(int)tipoDeEleccion}-------0-";
+			return $"https://plataformaelectoral.jne.gob.pe/Candidato/GetExpedientesLista/{_nrEleccion}-{(int)tipoDeEleccion}-{strUbigeo}------0-";
 		}
 
 		public static string ListaCandidatos(TipoDeEleccion tipoDeEleccion, int idSolicitudLista, int idExpediente)
@@ -34,6 +34,11 @@ namespace SharedLibrary.Api
 		public static string ImageCandidatos(string strRutaArchivo)
 		{
 			return $"https://declara.jne.gob.pe/{strRutaArchivo}";
+		}
+
+		public static string ListaDeUbigeo(TipoDeEleccion tipoDeEleccion)
+		{
+			return $"https://plataformaelectoral.jne.gob.pe/JEE/GetUbigeoporJEE?id={(int)tipoDeEleccion}-{_nrEleccion}-0";
 		}
 	}
 }

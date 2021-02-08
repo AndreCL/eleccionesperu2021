@@ -2,17 +2,17 @@
 using SharedLibrary.Api;
 using System.Text.Json;
 using System.Collections.Generic;
+using System.Linq;
 
 namespace DataExporter
 {
-	public class DownloadData : JneParser
-	{
-		private List<PartidoPolitico> PresidentialPartyData = new List<PartidoPolitico>();
-		private List<CandidatoGeneral> CandidatoGeneralData = new List<CandidatoGeneral>();
-		private List<PlanDeGobierno> ResumenPlanDeGobierno = new List<PlanDeGobierno>();
-		private List<HojaDeVida> HojasDeVida = new List<HojaDeVida>();
+	public partial class DownloadData : JneParser
+	{	
+		private List<UbigeoItemLite> ubigeosUnique = new List<UbigeoItemLite>();
 
 		private string path = "sample-data";
+		private string pathPres = "sample-data\\pres";
+		private string pathCong = "sample-data\\cong";
 		private string path2 = "sample-data\\ASSETS\\PLANGOBIERNO\\FILEPLANGOBIERNO";
 		private string path3 = "sample-data\\Assets\\Fotos-HojaVida";
 
@@ -20,120 +20,92 @@ namespace DataExporter
 		{
 			CreateDirectory(path2);
 			CreateDirectory(path3);
-			DownloadPresidentialPartyData();
-			DownloadPresidentialPlanDeGobiernoFiles();
-			DownloadPresidentialPlanDeGobiernoResumen();
-			DownloadPresidentialCandidateData();
-			DownloadPresidentialCandidatePictures();
-			DownloadHojaDeVida();
+			CreateDirectory(pathCong);
+			CreateDirectory(pathPres);
+
+			DownloadPresidential();
+
+			/*Congress*/
+			DownloadUbigeoData();
+			DownloadCongressPartyData();			
 		}		
 
-		private void DownloadPresidentialPartyData()
+		private void DownloadCongressPartyData()
 		{
-			var data = LoadPartyData(TipoDeEleccion.Presidencial);
-			System.Console.WriteLine("Download presidential list level 0");
-
-			PresidentialPartyData = DeSerializePresidentialPartyData(data);
-
-			//Remove the ones that are out
-			var removed = PresidentialPartyData.RemoveAll(x =>
-			x.strEstadoLista.Equals("IMPROCEDENTE", System.StringComparison.InvariantCultureIgnoreCase) ||
-			x.strEstadoLista.Equals("TACHADO", System.StringComparison.InvariantCultureIgnoreCase) ||
-			x.strEstadoLista.Equals("INADMISIBLE", System.StringComparison.InvariantCultureIgnoreCase) );
-
-			System.Console.WriteLine( $"Removed {removed} invalid parties");
-
-			System.Console.WriteLine($"DeSerialize presidential list level 0. Found: {PresidentialPartyData.Count}");
-
-			SaveJsonFile(path, "presidentialList0", JsonSerializer.Serialize(PresidentialPartyData));
-			System.Console.WriteLine("Saved presidential list level 0");			
-		}
-
-		private List<PartidoPolitico> DeSerializePresidentialPartyData(string data)
-		{
-			var requestData = JsonSerializer.Deserialize<APICallList<PartidoPolitico>>(data);
-			return requestData.Data;
-		}
-
-		private void DownloadPresidentialPlanDeGobiernoFiles()
-		{
-			foreach (var i in PresidentialPartyData)
+			foreach(var item in ubigeosUnique)
 			{
-				DownloadFile(path, $"{i.strCarpeta}{i.idPlanGobierno}.pdf", APIOverview.PlanDeGobiernoFile(i.strCarpeta, i.idPlanGobierno));
+				var data = LoadPartyData(TipoDeEleccion.Congresal, item.strUbigeoDistritoElectoral);
+				System.Console.WriteLine($"Download congress list {item.strUbigeoDistritoElectoral}");
+
+				var SerialData = DeSerializePartyData(data);
+
+				//Remove the ones that are out
+				var removed = SerialData.RemoveAll(x =>
+				x.strEstadoLista.Equals("IMPROCEDENTE", System.StringComparison.InvariantCultureIgnoreCase) ||
+				x.strEstadoLista.Equals("TACHADO", System.StringComparison.InvariantCultureIgnoreCase) ||
+				x.strEstadoLista.Equals("INADMISIBLE", System.StringComparison.InvariantCultureIgnoreCase));
+
+				System.Console.WriteLine($"Removed {removed} invalid parties");
+
+				System.Console.WriteLine($"DeSerialize presidential list level 0. Found: {SerialData.Count}");
+
+				SaveJsonFile(pathCong, $"Party{item.strUbigeoDistritoElectoral}", JsonSerializer.Serialize(SerialData));
+				System.Console.WriteLine($"Saved Party{item.strUbigeoDistritoElectoral}");
+
+				//In here because one file per ubigeo
+				DownloadCongressCandidateData(SerialData);
 			}
-			System.Console.WriteLine("Saved presidential plan de gobierno level 0");
 		}
 
-		private void DownloadPresidentialPlanDeGobiernoResumen()
+		private void DownloadCongressCandidateData(List<PartidoPolitico> partidosPoliticos)
 		{
-			foreach (var i in PresidentialPartyData)
+			List<CandidatoGeneral> finalList = new List<CandidatoGeneral>();
+
+			foreach (var i in partidosPoliticos)
 			{
-				var data = LoadPlanDeGobiernoResumenData(i.idPlanGobierno);
-				if (!string.IsNullOrEmpty(data) && !data.StartsWith("{\"data\":null"))
-				{
-					ResumenPlanDeGobierno.Add(DeSerializePlanDeGobiernoData(data));
-				}
-				
-			}
-			System.Console.WriteLine($"Download & DeSerialize plandegobierno resumen. Found: {ResumenPlanDeGobierno.Count}");
+				var data = LoadCandidateData(i.idSolicitudLista, i.idExpediente, TipoDeEleccion.Congresal);
 
-			SaveJsonFile(path, "planDeGobierno0", JsonSerializer.Serialize(ResumenPlanDeGobierno));
-			System.Console.WriteLine("Saved planDeGobierno0");
-		}
-
-		private static PlanDeGobierno DeSerializePlanDeGobiernoData(string data)
-		{
-			var requestData = JsonSerializer.Deserialize<APICallItem<PlanDeGobierno>>(data);
-			return requestData.Data;
-		}
-
-		private void DownloadPresidentialCandidateData()
-		{
-			foreach (var i in PresidentialPartyData)
-			{
-				var data = LoadCandidateData(i.idSolicitudLista, i.idExpediente, TipoDeEleccion.Presidencial);
-
-				var candidates = DeSerializePresidentialCandidateData(data);
+				var candidates = DeSerializeCandidateData(data);
 
 				//fix because dataset has 0 here always
-				foreach(var candidate in candidates)
+				foreach (var candidate in candidates)
 				{
 					candidate.idOrganizacionPolitica = i.idOrganizacionPolitica;
 				}
 
-				CandidatoGeneralData.AddRange(candidates);
+				finalList.AddRange(candidates);
 			}
-			System.Console.WriteLine($"Download & DeSerialize presidential list level 1. Found: {CandidatoGeneralData.Count}");
+			System.Console.WriteLine($"Download & DeSerialize congreso list level 1. Found: {finalList.Count}");
 
-			SaveJsonFile(path, "presidentialList1", JsonSerializer.Serialize(CandidatoGeneralData));
-			System.Console.WriteLine("Saved presidential list level 1");
+			SaveJsonFile(pathCong, $"Candidate{partidosPoliticos[0].strUbigeo}", JsonSerializer.Serialize(finalList));
+			System.Console.WriteLine($"Saved Candidate{partidosPoliticos[0].strUbigeo}");
+
+			DownloadCongressCandidatePictures(finalList);
+
+			DownloadCongressHDV(finalList, partidosPoliticos[0].strUbigeo);
 		}		
 
-		private List<CandidatoGeneral> DeSerializePresidentialCandidateData(string data)
+		private void DownloadCongressCandidatePictures(List<CandidatoGeneral> candidatos)
 		{
-			var requestData = JsonSerializer.Deserialize<APICallList<CandidatoGeneral>>(data);
-			return requestData.Data;
-		}
-
-		private void DownloadPresidentialCandidatePictures()
-		{
-			foreach (var i in CandidatoGeneralData)
+			foreach (var i in candidatos)
 			{
 				DownloadFile(path, $"{i.strRutaArchivo}", APIOverview.ImageCandidatos(i.strRutaArchivo));
 			}
-			System.Console.WriteLine("Downloaded presidential candidate images");
+			System.Console.WriteLine("Downloaded congress candidate images");
 		}
 
-		private void DownloadHojaDeVida()
+		private void DownloadCongressHDV(List<CandidatoGeneral> candidatos, string strUbigeo)
 		{
-			foreach (var i in CandidatoGeneralData)
+			var finalList = new List<HojaDeVida>();
+
+			foreach (var i in candidatos)
 			{
-				if(i.idHojaVida != 0)
+				if (i.idHojaVida != 0)
 				{
 					var data = LoadHojaDeVidaData(i.idHojaVida, i.idOrganizacionPolitica);
 					if (!string.IsNullOrEmpty(data) && !data.StartsWith("{\"data\":null"))
 					{
-						HojasDeVida.Add(DeSerializeHojasDeVidaData(data));
+						finalList.Add(DeSerializeHojasDeVidaData(data));
 					}
 				}
 				else
@@ -141,16 +113,45 @@ namespace DataExporter
 					System.Console.WriteLine($"{i.strCandidato} has no hoja de vida");
 				}
 			}
-			System.Console.WriteLine($"Download & DeSerialize hojas de vida. Found: {HojasDeVida.Count}");
+			System.Console.WriteLine($"Download & DeSerialize hojas de vida. Found: {finalList.Count}");
 
-			SaveJsonFile(path, "presidentialList2", JsonSerializer.Serialize(HojasDeVida));
-			System.Console.WriteLine("Saved presidential hojas de vida (presidentialList2)");
+			SaveJsonFile(pathCong, $"HDV{strUbigeo}", JsonSerializer.Serialize(finalList));
+			System.Console.WriteLine($"Saved HDV{strUbigeo}");
 		}
 
-		private HojaDeVida DeSerializeHojasDeVidaData(string data)
+		private void DownloadUbigeoData()
 		{
-			var requestData = JsonSerializer.Deserialize<APICallItem<HojaDeVida>>(data);
-			return requestData.Data;
+			var data = LoadListaDeUbigeo(TipoDeEleccion.Congresal);
+			System.Console.WriteLine("Download ubigeo list");
+
+			var ubigeos = new List<UbigeoItem>();
+			ubigeos = DeSerializeUbigeoData(data);
+			System.Console.WriteLine($"Found {ubigeos.Count} ubigeos");
+
+			//Only uniques
+			foreach (var item in ubigeos)
+			{
+				if (ubigeosUnique.Count == 0 ||
+					!ubigeosUnique.Any(x => x.strUbigeoDistritoElectoral.Equals(item.strUbigeoDistritoElectoral,
+					System.StringComparison.InvariantCultureIgnoreCase)))
+				{
+					ubigeosUnique.Add(new UbigeoItemLite
+					{
+						strDistritoElectoral = item.strDistritoElectoral,
+						strUbigeoDistritoElectoral = item.strUbigeoDistritoElectoral
+					});
+				}
+			}
+			System.Console.WriteLine($"Found {ubigeosUnique.Count} unique ubigeos");
+
+			SaveJsonFile(pathCong, "ubigeoCon", JsonSerializer.Serialize(ubigeosUnique));
+			System.Console.WriteLine("Saved ubigeoCon.json");
 		}
+
+		private List<UbigeoItem> DeSerializeUbigeoData(string data)
+		{
+			var requestData = JsonSerializer.Deserialize<APICallList<UbigeoItem>>(data);
+			return requestData.Data;
+		}		
 	}
 }

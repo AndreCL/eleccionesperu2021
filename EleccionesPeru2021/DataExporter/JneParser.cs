@@ -1,16 +1,18 @@
 ﻿using SharedLibrary.Api;
 using SharedLibrary.Models;
+using System.Collections.Generic;
 using System.Net;
+using System.Text.Json;
 
 namespace DataExporter
 {
 	public class JneParser: Parser
 	{
-		protected static string LoadPartyData(TipoDeEleccion tipoDeEleccion)
+		protected static string LoadPartyData(TipoDeEleccion tipoDeEleccion, string strUbigeo = "")
 		{
 			using (WebClient wc = new WebClient())
 			{
-				return wc.DownloadString(APIOverview.ListaPartidos(tipoDeEleccion));
+				return wc.DownloadString(APIOverview.ListaPartidos(tipoDeEleccion, strUbigeo));
 			}
 		}
 
@@ -36,6 +38,26 @@ namespace DataExporter
 			{
 				return wc.DownloadString(APIOverview.HojaDeVidaCandidato(idHojaVida, idOrganizacionPolitica));
 			}
+		}
+
+		protected static string LoadListaDeUbigeo(TipoDeEleccion tipoDeEleccion)
+		{
+			using (WebClient wc = new WebClient())
+			{
+				return wc.DownloadString(APIOverview.ListaDeUbigeo(tipoDeEleccion));
+			}
+		}
+
+		protected List<PartidoPolitico> DeSerializePartyData(string data)
+		{
+			var requestData = JsonSerializer.Deserialize<APICallList<PartidoPolitico>>(data);
+			return requestData.Data;
+		}
+
+		protected List<CandidatoGeneral> DeSerializeCandidateData(string data)
+		{
+			var requestData = JsonSerializer.Deserialize<APICallList<CandidatoGeneral>>(data);
+			return requestData.Data;
 		}
 	}
 }
