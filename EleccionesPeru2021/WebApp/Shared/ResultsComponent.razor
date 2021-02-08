@@ -18,7 +18,7 @@
 			}
 			else
 			{
-				@foreach (var result in Results.OrderByDescending(x => x.Agree).ThenByDescending(x => x.AgreePercentage).Take(17))
+				@foreach (var result in Results.OrderByDescending(x => x.Agree).ThenByDescending(x => x.AgreePercentage).Take(Math.Min(20,Results.Count)))
 				{
 					<td>
 						<SingleResult Result="@result"></SingleResult>

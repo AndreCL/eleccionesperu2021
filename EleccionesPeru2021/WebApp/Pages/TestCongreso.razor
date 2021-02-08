@@ -14,7 +14,7 @@
 	private UbigeoItemLite[] ubigeos;
 
 
-	private bool HideResultsBar = false;
+	private bool HideResultsBar = true;
 
 	public void LoadResults()
 	{
@@ -32,7 +32,8 @@
 
 	public void ShowResults()
 	{
-		HideResultsBar = true;
+		//todo: uncomment
+		//HideResultsBar = true;
 		StateHasChanged();
 	}
 
@@ -51,6 +52,8 @@
 			x => !x.strEstadoExp.Equals("IMPROCEDENTE", StringComparison.InvariantCultureIgnoreCase)).ToList();
 
 		LoadResults();
+
+		HideResultsBar = false;
 
 		StateHasChanged();
 	}
@@ -79,16 +82,78 @@
 
 		Question question1 = new Question
 		{
-			Title = "Test",
-			Description = "Testing",
-			Options = new List<string> { "Si", "No"},
-			//OnNext = loadByUbigeo
+			Title = "Sentencias",
+			Description = "Lista representa solo a los candidatos de un partido en el distrito electoral seleccionado",
+			Options = new List<string> { "Candidatos sin sentencias", "Listas sin candidatos con sentencias" },
+			OnNext = filterBySentencias
 		};
 		questions.Add(question1);
 
 	}
 
 	#region actions
+	public void filterBySentencias(string option)
+	{
+		List<CandidatoGeneral> failed = new List<CandidatoGeneral>();
+
+		if (option.Equals("1", StringComparison.InvariantCultureIgnoreCase))
+		{
+			foreach (var i in candidatosPoliticos)
+			{
+				var hoja = hojasDeVida.Where(x => x.DatosPersonales.idHojaVida == i?.idHojaVida).FirstOrDefault();
+
+				if (hoja != null &&
+					(hoja.SentenciaPenal.Where(x => x.strTengoSentenciaPenal.Equals("1", StringComparison.InvariantCultureIgnoreCase)).Count() > 0 ||
+					hoja.SentenciaObliga.Where(x => x.strTengoSentenciaObliga.Equals("1", StringComparison.InvariantCultureIgnoreCase)).Count() > 0)
+					)
+				{
+					failed.Add(i);
+				}
+			}
+		}
+		if (option.Equals("2", StringComparison.InvariantCultureIgnoreCase))
+		{
+			foreach (var i in candidatosPoliticos)
+			{
+				var hoja = hojasDeVida.Where(x => x.DatosPersonales.idHojaVida == i?.idHojaVida).FirstOrDefault();
+
+				if (hoja != null &&
+					(hoja.SentenciaPenal.Where(x => x.strTengoSentenciaPenal.Equals("1", StringComparison.InvariantCultureIgnoreCase)).Count() > 0 ||
+					hoja.SentenciaObliga.Where(x => x.strTengoSentenciaObliga.Equals("1", StringComparison.InvariantCultureIgnoreCase)).Count() > 0)
+					)
+				{
+					failed.Add(i);
+				}
+			}
+			if (failed.Count() > 0)
+			{
+				foreach (var i in candidatosPoliticos)
+				{
+
+					@if ((!failed.Any(x => x.idCandidato == i.idCandidato)) && //not already in list
+					   failed.Any(x => x.idOrganizacionPolitica == i.idOrganizacionPolitica)) //same party as someone in list
+					{
+						failed.Add(i);
+					}
+				}
+			}
+		}
+
+		foreach (var i in candidatosPoliticos)
+		{
+			if (failed.Count > 0 && failed.Exists(x => x.idCandidato == i.idCandidato))
+			{
+				results.Where(x => x.Id == i.idCandidato).FirstOrDefault().AddCounter(false);
+			}
+			else
+			{
+				results.Where(x => x.Id == i.idCandidato).FirstOrDefault().AddCounter(true);
+			}
+		}
+
+		StateHasChanged();
+	}
+
 	public void loadByUbigeo(string option)
 	{
 		var ubigeosList = ubigeos.Select(x => x.strDistritoElectoral.ToLower()).ToList();
