@@ -1,4 +1,4 @@
-﻿<h4>@((MarkupString)Title)</h4>
+﻿<h4>@((MarkupString)Title)  <button @onclick="HideShow">@(shown?"Mostrar":"Ocultar") </button>  </h4>
 
 @if (PlanDeGobierno == null)
 {
@@ -6,69 +6,73 @@
 }
 else
 {
-	@if (PlanDeGobierno.ListPGDSocial != null && PlanDeGobierno.ListPGDSocial.Count() > 0)
-	{
-		<h5>I. Dimensión social</h5>
+	<div hidden="@shown">
 
-		foreach (var item in PlanDeGobierno.ListPGDSocial)
+		@if (PlanDeGobierno.ListPGDSocial != null && PlanDeGobierno.ListPGDSocial.Count() > 0)
 		{
-			<h6><strong>@item.strPGProblema.ToLower()</strong></h6>
+			<h5>I. Dimensión social</h5>
 
-			<p><u>Objetivo:</u> @item.strPGObjetivo.ToLower()</p>
+			foreach (var item in PlanDeGobierno.ListPGDSocial)
+			{
+				<h6><strong>@item.strPGProblema.ToLower()</strong></h6>
 
-			<p><u>Indicador:</u> @item.strPGIndicador.ToLower()</p>
+				<p><u>Objetivo:</u> @item.strPGObjetivo.ToLower()</p>
 
-			<p><u>Meta:</u> @item.strPGMeta.ToLower()</p>
+				<p><u>Indicador:</u> @item.strPGIndicador.ToLower()</p>
+
+				<p><u>Meta:</u> @item.strPGMeta.ToLower()</p>
+			}
 		}
-	}
 
-	@if (PlanDeGobierno.ListPGDEconomica != null && PlanDeGobierno.ListPGDEconomica.Count() > 0)
-	{
-		<h5>II. Dimensión económica</h5>
-
-		foreach (var item in PlanDeGobierno.ListPGDEconomica)
+		@if (PlanDeGobierno.ListPGDEconomica != null && PlanDeGobierno.ListPGDEconomica.Count() > 0)
 		{
-			<h6><strong>@item.strPGProblema.ToLower()</strong></h6>
+			<h5>II. Dimensión económica</h5>
 
-			<p><u>Objetivo:</u> @item.strPGObjetivo.ToLower()</p>
+			foreach (var item in PlanDeGobierno.ListPGDEconomica)
+			{
+				<h6><strong>@item.strPGProblema.ToLower()</strong></h6>
 
-			<p><u>Indicador:</u> @item.strPGIndicador.ToLower()</p>
+				<p><u>Objetivo:</u> @item.strPGObjetivo.ToLower()</p>
 
-			<p><u>Meta:</u> @item.strPGMeta.ToLower()</p>
+				<p><u>Indicador:</u> @item.strPGIndicador.ToLower()</p>
+
+				<p><u>Meta:</u> @item.strPGMeta.ToLower()</p>
+			}
 		}
-	}
 
-	@if (PlanDeGobierno.ListPGDAmbiental != null && PlanDeGobierno.ListPGDAmbiental.Count() > 0)
-	{
-		<h5>III. Dimensión territorial-ambiental</h5>
-
-		foreach (var item in PlanDeGobierno.ListPGDAmbiental)
+		@if (PlanDeGobierno.ListPGDAmbiental != null && PlanDeGobierno.ListPGDAmbiental.Count() > 0)
 		{
-			<h6><strong>@item.strPGProblema.ToLower()</strong></h6>
+			<h5>III. Dimensión territorial-ambiental</h5>
 
-			<p><u>Objetivo:</u> @item.strPGObjetivo.ToLower()</p>
+			foreach (var item in PlanDeGobierno.ListPGDAmbiental)
+			{
+				<h6><strong>@item.strPGProblema.ToLower()</strong></h6>
 
-			<p><u>Indicador:</u> @item.strPGIndicador.ToLower()</p>
+				<p><u>Objetivo:</u> @item.strPGObjetivo.ToLower()</p>
 
-			<p><u>Meta:</u> @item.strPGMeta.ToLower()</p>
+				<p><u>Indicador:</u> @item.strPGIndicador.ToLower()</p>
+
+				<p><u>Meta:</u> @item.strPGMeta.ToLower()</p>
+			}
 		}
-	}
 
-	@if (PlanDeGobierno.ListPGDInstitucional != null && PlanDeGobierno.ListPGDInstitucional.Count() > 0)
-	{
-		<h5>IV. Dimensión institucional</h5>
-
-		foreach (var item in PlanDeGobierno.ListPGDInstitucional)
+		@if (PlanDeGobierno.ListPGDInstitucional != null && PlanDeGobierno.ListPGDInstitucional.Count() > 0)
 		{
-			<h6><strong>@item.strPGProblema.ToLower()</strong></h6>
+			<h5>IV. Dimensión institucional</h5>
 
-			<p><u>Objetivo:</u> @item.strPGObjetivo.ToLower()</p>
+			foreach (var item in PlanDeGobierno.ListPGDInstitucional)
+			{
+				<h6><strong>@item.strPGProblema.ToLower()</strong></h6>
 
-			<p><u>Indicador:</u> @item.strPGIndicador.ToLower()</p>
+				<p><u>Objetivo:</u> @item.strPGObjetivo.ToLower()</p>
 
-			<p><u>Meta:</u> @item.strPGMeta.ToLower()</p>
+				<p><u>Indicador:</u> @item.strPGIndicador.ToLower()</p>
+
+				<p><u>Meta:</u> @item.strPGMeta.ToLower()</p>
+			}
 		}
-	}
+
+	</div>
 
 }
 
@@ -78,4 +82,11 @@ else
 
 	[Parameter]
 	public PlanDeGobierno PlanDeGobierno { get; set; }
+
+	private bool shown = true;
+
+	private void HideShow()
+	{
+		shown = !shown;
+	}
 }

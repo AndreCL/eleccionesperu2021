@@ -67,6 +67,16 @@ namespace DataExporter
 
 				var candidates = DeSerializeCandidateData(data);
 
+				//Remove the ones that are out
+				var removed = candidates.RemoveAll(x =>
+				x.strEstadoExp.Equals("IMPROCEDENTE", System.StringComparison.InvariantCultureIgnoreCase) ||
+				x.strEstadoExp.Equals("TACHADO", System.StringComparison.InvariantCultureIgnoreCase) ||
+				x.strEstadoExp.Equals("INADMISIBLE", System.StringComparison.InvariantCultureIgnoreCase) ||
+				x.strEstadoExp.Equals("RENUNCIA", System.StringComparison.InvariantCultureIgnoreCase) ||
+				x.strEstadoExp.Equals("EXCLUSION", System.StringComparison.InvariantCultureIgnoreCase));
+
+				System.Console.WriteLine($"Removed {removed} invalid candidates");
+
 				//fix because dataset has 0 here always
 				foreach (var candidate in candidates)
 				{
