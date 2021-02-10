@@ -31,7 +31,7 @@ Falta implementar:
 	* ~~Modulo de resultados~~
 	* ~~Detalles de resultados~~
 	* ~~Test presidencial~~
-	* Test congreso
+	* ~~Test congreso~~
 	* Test parlamento andino
 	
 ## Contribuciones
