@@ -2,11 +2,13 @@
 
 @if (Candidate != null)
 {
-	<img width="79px" height="111px" src="@($"sample-data{Candidate.strRutaArchivo.Replace("Assets", "ASSETS")}")" alt="@Candidate.strCandidato" />
-	<p>@Candidate.strCandidato</p>
+	<img width="79px" height="111px" src="@($"sample-data{Candidate.strRutaArchivo.Replace("Assets", "ASSETS")}")" 
+		 alt="@textInfo.ToTitleCase(Candidate.strCandidato.ToLower())" />
+	<p>@textInfo.ToTitleCase(Candidate.strCandidato.ToLower())</p>
 	<p>Edad: @Candidate.intEdad</p>
 	<p>Sexo: @(Candidate.strSexo == "1" ? "Masculino" : "Femenino")</p>
-	<p>Estado de inscripción: <strong class="@Candidate.strEstadoExp">@Candidate.strEstadoExp</strong></p>
+	<p>Estado de inscripción: <strong class="@Helpers.UppercaseFirstRestLower(Candidate.strEstadoExp)">
+		@Helpers.UppercaseFirstRestLower(Candidate.strEstadoExp)</strong></p>
 
 	var hojaDeVida = HojasDeVida.Where(i => i?.DatosPersonales?.idHojaVida == Candidate.idHojaVida)?.FirstOrDefault();
 
@@ -35,7 +37,8 @@
 					<h6><strong>Estudios técnicos concluidos:</strong></h6>
 					<ul>
 						<li>
-							@hojaDeVida.EduTecnico.strCarreraTecnico.ToLower() - @hojaDeVida.EduTecnico.strCenEstudioTecnico.ToLower()
+							@textInfo.ToTitleCase(hojaDeVida.EduTecnico.strCarreraTecnico.ToLower()) - 
+							@textInfo.ToTitleCase(hojaDeVida.EduTecnico.strCenEstudioTecnico.ToLower())
 						</li>
 					</ul>
 
@@ -47,7 +50,8 @@
 					<h6><strong>Estudios no Universitarios concluidos:</strong></h6>
 					<ul>
 						<li>
-							@hojaDeVida.EduNoUniversitaria.strCarreraNoUni.ToLower() - @hojaDeVida.EduNoUniversitaria.strCentroEstudioNoUni.ToLower()
+							@textInfo.ToTitleCase(hojaDeVida.EduNoUniversitaria.strCarreraNoUni.ToLower()) - 
+							@textInfo.ToTitleCase(hojaDeVida.EduNoUniversitaria.strCentroEstudioNoUni.ToLower())
 						</li>
 					</ul>
 
@@ -64,9 +68,18 @@
 						if (item.strConcluidoEduUni.Equals("1"))
 						{
 
-							<li>
-								@item.strCarreraUni.ToLower() - @item.strUniversidad.ToLower()
-							</li>
+					<li>
+						@textInfo.ToTitleCase(item.strCarreraUni.ToLower()) -
+						@textInfo.ToTitleCase(item.strUniversidad.ToLower())
+						@if (!string.IsNullOrEmpty(item.strAnioBachiller))
+						{
+							@($" ({@item.strAnioBachiller})")
+						}
+						else if (!string.IsNullOrEmpty(item.strAnioTitulo))
+						{
+							@($" ({@item.strAnioTitulo})")
+						}
+					</li>
 
 						}
 					}
@@ -79,7 +92,8 @@
 					<h6><strong>Estudios de Postgrado concluidos:</strong></h6>
 					<ul>
 						<li>
-							@hojaDeVida.EduPosgrado.strEspecialidadPosgrado.ToLower() - @hojaDeVida.EduPosgrado.strCenEstudioPosgrado.ToLower()
+							@textInfo.ToTitleCase(hojaDeVida.EduPosgrado.strEspecialidadPosgrado.ToLower()) - 
+							@textInfo.ToTitleCase(hojaDeVida.EduPosgrado.strCenEstudioPosgrado.ToLower())
 						</li>
 					</ul>
 
@@ -96,7 +110,9 @@
 						if (item.strTengoExpeLaboral.Equals("1"))
 						{
 							<li>
-								@item.strOcupacionProfesion.ToLower() - @item.strCentroTrabajo.ToLower() (@item.strAnioTrabajoDesde - @(item.strAnioTrabajoHasta.Equals("0000")?"...":item.strAnioTrabajoHasta))
+								@textInfo.ToTitleCase(item.strOcupacionProfesion.ToLower()) - 
+								@textInfo.ToTitleCase(item.strCentroTrabajo.ToLower()) 
+								(@item.strAnioTrabajoDesde - @(item.strAnioTrabajoHasta.Equals("0000")?"...":item.strAnioTrabajoHasta))
 							</li>
 						}
 					}
@@ -118,7 +134,9 @@
 						{
 
 							<li>
-								@item.strCargoPartidario.ToLower() - @item.strOrgPolCargoPartidario.ToLower() (@item.strAnioCargoPartiDesde - @(item.strAnioCargoPartiHasta.Equals("0000")?"...":item.strAnioCargoPartiHasta))
+								@textInfo.ToTitleCase(item.strCargoPartidario.ToLower()) - 
+								@textInfo.ToTitleCase(item.strOrgPolCargoPartidario.ToLower()) (@item.strAnioCargoPartiDesde - 
+								@(item.strAnioCargoPartiHasta.Equals("0000")?"...":item.strAnioCargoPartiHasta))
 							</li>
 						}
 					}
@@ -136,7 +154,9 @@
 						{
 
 							<li>
-								@item.strCargoEleccion2.ToLower() - @item.strOrgPolCargoElec.ToLower() (@item.strAnioCargoElecDesde - @(item.strAnioCargoElecHasta.Equals("0000")?"...":item.strAnioCargoElecHasta))
+								@textInfo.ToTitleCase(item.strCargoEleccion2.ToLower()) - 
+								@textInfo.ToTitleCase(item.strOrgPolCargoElec.ToLower()) (@item.strAnioCargoElecDesde - 
+								@(item.strAnioCargoElecHasta.Equals("0000")?"...":item.strAnioCargoElecHasta))
 							</li>
 						}
 					}
@@ -153,7 +173,7 @@
 						if (item.strTengoRenunciaOP.Equals("1"))
 						{
 							<li>
-								@item.strOrgPolRenunciaOP.ToLower() - @item.strAnioRenunciaOP
+								@textInfo.ToTitleCase(item.strOrgPolRenunciaOP.ToLower()) - @item.strAnioRenunciaOP
 							</li>
 						}
 					}
@@ -242,4 +262,11 @@ else
 
 	[Parameter]
 	public List<HojaDeVida> HojasDeVida { get; set; }
+
+	private TextInfo textInfo;
+
+	protected override async Task OnInitializedAsync()
+	{
+		textInfo = new CultureInfo("es-PE", false).TextInfo;		
+	}
 }

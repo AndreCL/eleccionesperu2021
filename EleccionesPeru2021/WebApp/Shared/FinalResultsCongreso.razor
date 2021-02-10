@@ -17,7 +17,7 @@
 		{
 			if (winnerResult != null)
 			{
-				<h2 width="100%">@winnerResult.Partido.strOrganizacionPolitica.ToLower()</h2>
+				<h2 width="100%">@textInfo.ToTitleCase(winnerResult.Partido.strOrganizacionPolitica.ToLower())</h2>
 				<div class="ParentColumns">
 					<div class="ColumnThird">
 						<img src="@($"sample-data/Logo/{winnerResult.Partido.idOrganizacionPolitica}.png")" alt="Logo" height="100px" width="100px" />
@@ -25,10 +25,23 @@
 					<div class="ColumnTwoThirds">
 						<p>
 							Estado de inscripción:
-							<strong class="@winnerResult.Partido.strEstadoLista">@winnerResult.Partido.strEstadoLista</strong>
+							<strong class="@Helpers.UppercaseFirstRestLower(winnerResult.Partido.strEstadoLista)">@Helpers.UppercaseFirstRestLower(winnerResult.Partido.strEstadoLista)</strong>
 						</p>
 					</div>
 				</div>
+
+				<br />
+
+				<h3>Plan de gobierno</h3>
+
+				@if (winnerResult.Partido.idPlanGobierno != 0)
+				{
+					<a target="_blank" href="sample-data/@(winnerResult.Partido.strCarpeta+winnerResult.Partido.idPlanGobierno+".pdf")">
+						Link plan de gobierno completo
+					</a>
+				}
+
+				<ResumenPlanDeGobierno Title="Resumen plan de gobierno" PlanDeGobierno="@winnerResult.Plan"></ResumenPlanDeGobierno>
 
 				<br />
 
@@ -44,39 +57,30 @@
 					}
 				</div>
 
-				<h3>Plan de gobierno</h3>
 
-				@if (winnerResult.Partido.idPlanGobierno != 0)
-				{
-					<a target="_blank" href="sample-data/@(winnerResult.Partido.strCarpeta+winnerResult.Partido.idPlanGobierno+".pdf")">
-						Link plan de gobierno completo
-					</a>
-				}
-
-				<ResumenPlanDeGobierno Title="Resumen plan de gobierno" PlanDeGobierno="@winnerResult.Plan"></ResumenPlanDeGobierno>
 
 				<hr>
 			}
 		}
 
 		<style type="text/css">
-			.INSCRITO {
+			.Inscrito {
 				background-color: palegreen;
 			}
 
-			.ADMITIDO {
+			.Admitido {
 				background-color: palegreen;
 			}
 
-			.IMPROCEDENTE {
+			.Improcedente {
 				background-color: palevioletred;
 			}
 
-			.APELACIÓN {
+			.Apelación {
 				background-color: lightyellow;
 			}
 
-			.TACHA {
+			.Tacha {
 				background-color: lightyellow;
 			}
 
@@ -90,30 +94,34 @@
 
 			.ColumnHalf {
 				float: left;
-				width: 50%;
 				align-content: center;
 				text-align: center;
 				display: table-cell;
+				flex: 50%;
+				border: 1px solid gray;
+				min-width: 200px;
 			}
 
 			.ColumnThird {
 				float: left;
-				width: 33%;
+				flex: 33%;
 				align-content: center;
 				text-align: center;
-				display: table-cell;
+				min-width: 200px;
 			}
 
 			.ColumnTwoThirds {
 				float: left;
-				width: 67%;
 				display: table-cell;
+				flex: 66%;
+				min-width: 200px;
 			}
 
 			.ParentColumns {
 				overflow: hidden;
 				width: 100%;
-				display: table;
+				display: flex;
+				flex-wrap: wrap;
 			}
 		</style>
 
@@ -158,7 +166,14 @@
 
 	private int agreed = 0;
 
+	private TextInfo textInfo;
+
 	private List<Party> PartyResults { get; set; }
+
+	protected override async Task OnInitializedAsync()
+	{
+		textInfo = new CultureInfo("es-PE", false).TextInfo;
+	}
 
 	private void UpdateResults()
 	{

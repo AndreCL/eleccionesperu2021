@@ -3,45 +3,50 @@
 <div id="card-container" hidden="@Hide">
 	@if (Questions != null && Questions.Count > 0)
 	{
-	<div id="card-content">
-		<h1 class="cardTitle">
-			@Questions[CurrentQuestion].Title
-		</h1>
-		<div class="description">
-			@((MarkupString)Questions[CurrentQuestion].Description)
+		<div id="card-content">
+			<h1 class="cardTitle">
+				@Questions[CurrentQuestion].Title
+			</h1>
+			<div class="description">
+				@((MarkupString)Questions[CurrentQuestion].Description)
+			</div>
+
+			<form>
+				@foreach (var option in Questions[CurrentQuestion].Options)
+				{
+					<div class="parent">
+						<input type="radio" id="@option" name="option" value="@option" class="narrow"
+							   @onchange="SelectionChanged"
+							   checked=@(selectedValue == (Questions[CurrentQuestion].Options.IndexOf(option)+1).ToString())
+							   @onclick=@(() => selectedValue = (Questions[CurrentQuestion].Options.IndexOf(option)+1).ToString())>
+						<label for="@option" class="wide">@((MarkupString)option)</label><br>
+					</div>
+
+				}
+
+				@if (!Questions[CurrentQuestion].HideSinImportancia)
+				{
+					<div class="parent">
+						<input type="radio" id="sin-importancia" name="option" value="sin-importancia" class="narrow"
+							   @onchange="SelectionChanged"
+							   checked=@(selectedValue == "0")
+							   @onclick=@(() => selectedValue = "0")>
+						<label for="sin-importancia" class="wide">Sin importancia</label><br>
+					</div>
+				}
+
+			</form>
+
+			<button class="questionButton" @onclick="OnNext" disabled="@(selectedValue == "")">Siguiente</button>
+
+			<br />
+			<br />
+			<br />
+			<br />
+			<br />
+			<br />
+
 		</div>
-
-		<form>
-			@foreach (var option in Questions[CurrentQuestion].Options)
-			{
-				<input type="radio" id="@option" name="option" value="@option"
-					   @onchange="SelectionChanged"
-					   checked=@(selectedValue == (Questions[CurrentQuestion].Options.IndexOf(option)+1).ToString())
-					   @onclick=@(() => selectedValue = (Questions[CurrentQuestion].Options.IndexOf(option)+1).ToString())>
-				<label for="@option">@((MarkupString)option)</label><br>
-			}
-
-			@if (!Questions[CurrentQuestion].HideSinImportancia)
-			{
-				<input type="radio" id="sin-importancia" name="option" value="sin-importancia"
-					   @onchange="SelectionChanged"
-					   checked=@(selectedValue == "0")
-					   @onclick=@(() => selectedValue = "0")>
-				<label for="sin-importancia">Sin importancia</label><br>
-			}
-
-		</form>
-
-		<button class="questionButton" @onclick="OnNext" disabled="@(selectedValue == "")">Siguiente</button>
-
-		<br />
-		<br />
-		<br />
-		<br />
-		<br />
-		<br />
-
-	</div>
 	}
 </div>
 

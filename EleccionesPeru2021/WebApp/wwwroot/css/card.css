@@ -26,6 +26,19 @@
 	box-shadow: 5px 5px 10px rgba(0,0,0,0.5);
 }
 
+.parent {
+	display: flex;
+}
+
+.narrow {
+	width: 20px;
+	margin-top: 5px;
+}
+
+.wide {
+	flex: 1;
+}
+
 .cardTitle {
 	font-family: 'Sriracha', arial, sans-serif;
 	text-align: center;

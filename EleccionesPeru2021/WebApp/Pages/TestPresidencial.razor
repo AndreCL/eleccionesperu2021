@@ -20,10 +20,13 @@
 	private List<Result> results = new List<Result> { };
 	private List<Question> questions = new List<Question> { };
 	private bool HideResultsBar = false;
+	private TextInfo textInfo;
 
 
 	protected override async Task OnInitializedAsync()
 	{
+		textInfo = new CultureInfo("es-PE", false).TextInfo;
+
 		var temp = await Http.GetFromJsonAsync<PartidoPolitico[]>("sample-data/pres/presidentialList0.json");
 
 		//Filter out improsedente
@@ -703,7 +706,7 @@
 			{
 				Id = i.idOrganizacionPolitica,
 				ImageRoute = $"sample-data/Logo/{i.idOrganizacionPolitica}.png",
-				Name = i.strOrganizacionPolitica
+				Name = textInfo.ToTitleCase(i.strOrganizacionPolitica.ToLower())
 			});
 		}
 		results = results.OrderBy(a => Guid.NewGuid()).ToList();

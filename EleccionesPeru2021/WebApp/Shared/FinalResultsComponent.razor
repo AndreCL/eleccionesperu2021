@@ -33,10 +33,19 @@
 						<p>Cumple tus criterios: @(winnerResult.Agree?"100":$"{winnerResult.AgreePercentage:0.##}")%</p>
 						<p>
 							Estado de inscripción:
-							<strong class="@winnerPartido.strEstadoLista">@winnerPartido.strEstadoLista</strong>
+							<strong class="@Helpers.UppercaseFirstRestLower(winnerPartido.strEstadoLista)">@Helpers.UppercaseFirstRestLower(winnerPartido.strEstadoLista)</strong>
 						</p>
 					</div>
 				</div>
+
+				<br />
+
+				<h3>Plan de gobierno</h3>
+				<a target="_blank" href="sample-data/@(winnerPartido.strCarpeta+winnerPartido.idPlanGobierno+".pdf")">
+					Link plan de gobierno completo
+				</a>
+
+				<ResumenPlanDeGobierno Title="Resumen plan de gobierno" PlanDeGobierno="@planesDeGobierno.Where(x=> x.idPlanGobierno == winnerPartido.idPlanGobierno).FirstOrDefault()"></ResumenPlanDeGobierno>
 
 				<br />
 
@@ -55,35 +64,28 @@
 					</div>
 				</div>
 
-				<h3>Plan de gobierno</h3>
-				<a target="_blank" href="sample-data/@(winnerPartido.strCarpeta+winnerPartido.idPlanGobierno+".pdf")">
-					Link plan de gobierno completo
-				</a>
-
-				<ResumenPlanDeGobierno Title="Resumen plan de gobierno" PlanDeGobierno="@planesDeGobierno.Where(x=> x.idPlanGobierno == winnerPartido.idPlanGobierno).FirstOrDefault()"></ResumenPlanDeGobierno>
-
 				<hr>
 			}
 		}
 
 		<style type="text/css">
-			.INSCRITO {
+			.Inscrito {
 				background-color: palegreen;
 			}
 
-			.ADMITIDO {
+			.Admitido {
 				background-color: palegreen;
 			}
 
-			.IMPROCEDENTE {
+			.Improcedente {
 				background-color: palevioletred;
 			}
 
-			.APELACIÓN {
+			.Apelación {
 				background-color: lightyellow;
 			}
 
-			.TACHA {
+			.Tacha {
 				background-color: lightyellow;
 			}
 
@@ -97,22 +99,23 @@
 
 			.ColumnThird {
 				float: left;
-				width: 33%;
+				flex: 33%;
 				align-content: center;
 				text-align: center;
-				display: table-cell;
+				min-width: 200px;
 			}
 
 			.ColumnTwoThirds {
 				float: left;
-				width: 67%;
-				display: table-cell;
+				flex: 66%;
+				min-width: 200px;
 			}
 
 			.ParentColumns {
 				overflow: hidden;
 				width: 100%;
-				display: table;
+				display: flex;
+				flex-wrap: wrap;
 			}
 		</style>
 

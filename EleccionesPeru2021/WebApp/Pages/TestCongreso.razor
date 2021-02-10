@@ -20,6 +20,7 @@
 	private List<CandidatoGeneral> candidatosPoliticos = new List<CandidatoGeneral>();
 	private List<HojaDeVida> hojasDeVida;
 	private UbigeoItemLite[] ubigeos;
+	private TextInfo textInfo;
 
 	private bool HideResultsBar = true;
 
@@ -42,7 +43,7 @@
 			{
 				Id = candidate.idCandidato,
 				ImageRoute = $"sample-data{candidate.strRutaArchivo.Replace("Assets", "ASSETS")}",
-				Name = candidate.strCandidato
+				Name = textInfo.ToTitleCase(candidate.strCandidato.ToLower())
 			});
 		}
 		results = results.OrderBy(a => Guid.NewGuid()).ToList();
@@ -84,7 +85,12 @@
 
 	protected override async Task OnInitializedAsync()
 	{
-		ubigeos = await Http.GetFromJsonAsync<UbigeoItemLite[]>("sample-data/cong/ubigeoCon.json");
+		ubigeos  = await Http.GetFromJsonAsync<UbigeoItemLite[]>("sample-data/cong/ubigeoCon.json");
+		textInfo = new CultureInfo("es-PE", false).TextInfo;
+		foreach (var item in ubigeos)
+		{
+			item.strDistritoElectoral = textInfo.ToTitleCase(item.strDistritoElectoral.ToLower());
+		}
 
 		var temp4 = await Http.GetFromJsonAsync<PlanDeGobierno[]>("sample-data/pres/planDeGobierno0.json");
 		planesDeGobierno = temp4.ToList();
@@ -93,7 +99,7 @@
 		{
 			Title = "Distrito electoral",
 			Description = "",
-			Options = ubigeos.Select(x => x.strDistritoElectoral.ToLower()).ToList(),
+			Options = ubigeos.Select(x => x.strDistritoElectoral).ToList(),
 			HideSinImportancia = true,
 			OnNext = loadByUbigeo
 		};
@@ -216,7 +222,7 @@
 					failed.Add(i);
 				}
 			}
-		}		
+		}
 
 		foreach (var i in candidatosPoliticos)
 		{

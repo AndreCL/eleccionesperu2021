@@ -1,12 +1,14 @@
 ﻿<h4>@((MarkupString)Title)  <button @onclick="HideShow">@(shown?"Mostrar":"Ocultar") </button>  </h4>
 
-@if (PlanDeGobierno == null)
-{
-	<p>Cargando...</p>
-}
-else
-{
-	<div hidden="@shown">
+<div hidden="@shown">
+
+	@if (PlanDeGobierno == null)
+	{
+		<p>Resumen de plan de gobierno no está disponible</p>
+	}
+	else
+	{
+
 
 		@if (PlanDeGobierno.ListPGDSocial != null && PlanDeGobierno.ListPGDSocial.Count() > 0)
 		{
@@ -72,9 +74,11 @@ else
 			}
 		}
 
-	</div>
 
-}
+
+	}
+
+</div>
 
 @code {
 	[Parameter]
