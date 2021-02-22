@@ -43,6 +43,9 @@ namespace DataExporter
 				var removed = SerialData.RemoveAll(x =>
 				x.strEstadoLista.Equals("IMPROCEDENTE", System.StringComparison.InvariantCultureIgnoreCase) ||
 				x.strEstadoLista.Equals("TACHADO", System.StringComparison.InvariantCultureIgnoreCase) ||
+				x.strEstadoLista.Equals("RENUNCIA", System.StringComparison.InvariantCultureIgnoreCase) ||
+				x.strEstadoLista.Equals("EXCLUSION", System.StringComparison.InvariantCultureIgnoreCase) ||
+				x.strEstadoLista.Equals("RETIRO", System.StringComparison.InvariantCultureIgnoreCase) ||
 				x.strEstadoLista.Equals("INADMISIBLE", System.StringComparison.InvariantCultureIgnoreCase));
 
 				System.Console.WriteLine($"Removed {removed} invalid parties");
@@ -73,6 +76,7 @@ namespace DataExporter
 				x.strEstadoExp.Equals("TACHADO", System.StringComparison.InvariantCultureIgnoreCase) ||
 				x.strEstadoExp.Equals("INADMISIBLE", System.StringComparison.InvariantCultureIgnoreCase) ||
 				x.strEstadoExp.Equals("RENUNCIA", System.StringComparison.InvariantCultureIgnoreCase) ||
+				x.strEstadoExp.Equals("RETIRO", System.StringComparison.InvariantCultureIgnoreCase) ||
 				x.strEstadoExp.Equals("EXCLUSION", System.StringComparison.InvariantCultureIgnoreCase));
 
 				System.Console.WriteLine($"Removed {removed} invalid candidates");

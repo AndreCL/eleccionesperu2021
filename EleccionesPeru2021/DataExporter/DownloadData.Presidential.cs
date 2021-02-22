@@ -36,7 +36,7 @@ namespace DataExporter
 			x.strEstadoLista.Equals("TACHADO", System.StringComparison.InvariantCultureIgnoreCase) ||
 			x.strEstadoLista.Equals("INADMISIBLE", System.StringComparison.InvariantCultureIgnoreCase));
 
-			System.Console.WriteLine($"Removed {removed} invalid parties");
+			System.Console.WriteLine($"Removed {removed} improcendente/tachado/inadmisible parties");
 
 			System.Console.WriteLine($"DeSerialize presidential list level 0. Found: {PresidentialPartyData.Count}");
 
