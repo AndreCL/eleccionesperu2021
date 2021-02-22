@@ -32,9 +32,12 @@ namespace DataExporter
 
 			//Remove the ones that are out
 			var removed = PresidentialPartyData.RemoveAll(x =>
-			x.strEstadoLista.Equals("IMPROCEDENTE", System.StringComparison.InvariantCultureIgnoreCase) ||
-			x.strEstadoLista.Equals("TACHADO", System.StringComparison.InvariantCultureIgnoreCase) ||
-			x.strEstadoLista.Equals("INADMISIBLE", System.StringComparison.InvariantCultureIgnoreCase));
+				x.strEstadoLista.Equals("IMPROCEDENTE", System.StringComparison.InvariantCultureIgnoreCase) ||
+				x.strEstadoLista.Equals("TACHADO", System.StringComparison.InvariantCultureIgnoreCase) ||
+				x.strEstadoLista.Equals("RENUNCIA", System.StringComparison.InvariantCultureIgnoreCase) ||
+				x.strEstadoLista.Equals("EXCLUSION", System.StringComparison.InvariantCultureIgnoreCase) ||
+				x.strEstadoLista.Equals("RETIRO", System.StringComparison.InvariantCultureIgnoreCase) ||
+				x.strEstadoLista.Equals("INADMISIBLE", System.StringComparison.InvariantCultureIgnoreCase));
 
 			System.Console.WriteLine($"Removed {removed} improcendente/tachado/inadmisible parties");
 
