@@ -8,88 +8,50 @@ namespace DataExporter
 {
 	public partial class DownloadData :JneParser
 	{
-		private List<CandidatoGeneral> CandidatoGeneralData = new List<CandidatoGeneral>();
-		private List<PlanDeGobierno> ResumenPlanDeGobierno = new List<PlanDeGobierno>();
-		private List<HojaDeVida> HojasDeVida = new List<HojaDeVida>();
-
 		protected void DownloadPresidential()
 		{
-			var parties = DownloadPartyData(TipoDeEleccion.Presidencial, pathPres, "presidentialList0");
-			DownloadPresidentialPlanDeGobiernoFiles(parties);
-			DownloadPresidentialPlanDeGobiernoResumen(parties);
-			DownloadCandidateData(parties, TipoDeEleccion.Presidencial);
-			DownloadPresidentialCandidatePictures();
-			DownloadHojaDeVida();
+			var partidos = DownloadPartyData(TipoDeEleccion.Presidencial, pathPres, "presidentialList0");
+			var candidates = DownloadCandidateData(partidos, TipoDeEleccion.Presidencial, pathPres, "presidentialList1");
+			var hojasDeVida = DownloadHojaDeVida(candidates, pathPres, "presidentialList2");
+			var resumenPlanDeGobierno = DownloadPresidentialPlanDeGobiernoResumen(partidos);
+			DownloadPresidentialPlanDeGobiernoFiles(partidos);					
+			DownloadCandidatePictures(candidates);			
 		}
 
-		private void DownloadPresidentialPlanDeGobiernoFiles(List<PartidoPolitico> partidosPoliticos)
+		private void DownloadPresidentialPlanDeGobiernoFiles(List<PartidoPolitico> partidos)
 		{
-			foreach (var i in partidosPoliticos)
+			foreach (var partido in partidos)
 			{
-				DownloadFile(path, $"{i.strCarpeta}{i.idPlanGobierno}.pdf", APIOverview.PlanDeGobiernoFile(i.strCarpeta, i.idPlanGobierno));
+				DownloadFile(path, $"{partido.strCarpeta}{partido.idPlanGobierno}.pdf", APIOverview.PlanDeGobiernoFile(partido.strCarpeta, partido.idPlanGobierno));
 			}
 			Console.WriteLine("Saved presidential plan de gobierno level 0");
 		}
 
-		private void DownloadPresidentialPlanDeGobiernoResumen(List<PartidoPolitico> partidosPoliticos)
+		private List<PlanDeGobierno> DownloadPresidentialPlanDeGobiernoResumen(List<PartidoPolitico> partidos)
 		{
-			foreach (var i in partidosPoliticos)
+			List<PlanDeGobierno> result = new List<PlanDeGobierno>();
+
+			foreach (var partido in partidos)
 			{
-				var data = LoadPlanDeGobiernoResumenData(i.idPlanGobierno);
+				var data = LoadPlanDeGobiernoResumenData(partido.idPlanGobierno);
 				if (!string.IsNullOrEmpty(data) && !data.StartsWith("{\"data\":null"))
 				{
-					ResumenPlanDeGobierno.Add(DeSerializePlanDeGobiernoData(data));
+					result.Add(DeSerializePlanDeGobiernoData(data));
 				}
 
 			}
-			Console.WriteLine($"Download & DeSerialize plandegobierno resumen. Found: {ResumenPlanDeGobierno.Count}");
+			Console.WriteLine($"Download & DeSerialize plandegobierno resumen. Found: {result.Count}");
 
-			SaveJsonFile(pathPres, "planDeGobierno0", JsonSerializer.Serialize(ResumenPlanDeGobierno));
+			SaveJsonFile(pathPres, "planDeGobierno0", JsonSerializer.Serialize(result));
 			Console.WriteLine("Saved planDeGobierno0");
+
+			return result;
 		}
 
 		private static PlanDeGobierno DeSerializePlanDeGobiernoData(string data)
 		{
 			var requestData = JsonSerializer.Deserialize<APICallItem<PlanDeGobierno>>(data);
 			return requestData.Data;
-		}
-
-		private void DownloadPresidentialCandidatePictures()
-		{
-			foreach (var i in CandidatoGeneralData)
-			{
-				DownloadFile(path, $"{i.strRutaArchivo}", APIOverview.ImageCandidatos(i.strRutaArchivo));
-			}
-			Console.WriteLine("Downloaded presidential candidate images");
-		}
-
-		private void DownloadHojaDeVida()
-		{
-			foreach (var i in CandidatoGeneralData)
-			{
-				if (i.idHojaVida != 0)
-				{
-					var data = LoadHojaDeVidaData(i.idHojaVida, i.idOrganizacionPolitica);
-					if (!string.IsNullOrEmpty(data) && !data.StartsWith("{\"data\":null"))
-					{
-						HojasDeVida.Add(DeSerializeHojasDeVidaData(data));
-					}
-				}
-				else
-				{
-					Console.WriteLine($"{i.strCandidato} has no hoja de vida");
-				}
-			}
-			Console.WriteLine($"Download & DeSerialize hojas de vida. Found: {HojasDeVida.Count}");
-
-			SaveJsonFile(pathPres, "presidentialList2", JsonSerializer.Serialize(HojasDeVida));
-			Console.WriteLine("Saved presidential hojas de vida (presidentialList2)");
-		}
-
-		private static HojaDeVida DeSerializeHojasDeVidaData(string data)
-		{
-			var requestData = JsonSerializer.Deserialize<APICallItem<HojaDeVida>>(data);
-			return requestData.Data;
-		}
+		}		
 	}
 }

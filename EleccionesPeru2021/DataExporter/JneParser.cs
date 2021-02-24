@@ -60,5 +60,11 @@ namespace DataExporter
 			return requestData.Data;
 		}
 
+		protected static HojaDeVida DeSerializeHojasDeVidaData(string data)
+		{
+			var requestData = JsonSerializer.Deserialize<APICallItem<HojaDeVida>>(data);
+			return requestData.Data;
+		}
+
 	}
 }

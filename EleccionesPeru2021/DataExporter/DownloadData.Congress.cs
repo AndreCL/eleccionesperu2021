@@ -11,58 +11,29 @@ namespace DataExporter
     {
 		protected void DownloadCongress()
 		{
-			DownloadUbigeoData();
-			DownloadCongressPartyData();
+			var ubigeos = DownloadUbigeoData();
+			DownloadCongressPartyData(ubigeos);
 		}
 
-		private void DownloadCongressPartyData()
+		private void DownloadCongressPartyData(List<UbigeoItemLite> ubigeos)
 		{
-			foreach (var item in ubigeosUnique)
+			foreach (var ubigeo in ubigeos)
 			{
 				var parties = DownloadPartyData(TipoDeEleccion.Congresal, pathCong, 
-					$"Party{item.strUbigeoDistritoElectoral}", item.strUbigeoDistritoElectoral);
+					$"Party{ubigeo.strUbigeoDistritoElectoral}", ubigeo.strUbigeoDistritoElectoral);
 								
 				//In here because one file per ubigeo
-				DownloadCandidateData(parties, TipoDeEleccion.Congresal);
+				var candidates = DownloadCandidateData(parties, TipoDeEleccion.Congresal, pathCong, 
+					$"Candidate{ubigeo.strUbigeoDistritoElectoral}");
+				DownloadHojaDeVida(candidates, pathCong, $"HDV{ubigeo.strUbigeoDistritoElectoral}");
+				DownloadCandidatePictures(candidates);
 			}
-		}
+		}				
 
-		private void DownloadCongressCandidatePictures(List<CandidatoGeneral> candidatos)
+		private List<UbigeoItemLite> DownloadUbigeoData()
 		{
-			foreach (var i in candidatos)
-			{
-				DownloadFile(path, $"{i.strRutaArchivo}", APIOverview.ImageCandidatos(i.strRutaArchivo));
-			}
-			Console.WriteLine("Downloaded congress candidate images");
-		}
+			var result = new List<UbigeoItemLite>();
 
-		private void DownloadCongressHDV(List<CandidatoGeneral> candidatos, string strUbigeo)
-		{
-			var finalList = new List<HojaDeVida>();
-
-			foreach (var i in candidatos)
-			{
-				if (i.idHojaVida != 0)
-				{
-					var data = LoadHojaDeVidaData(i.idHojaVida, i.idOrganizacionPolitica);
-					if (!string.IsNullOrEmpty(data) && !data.StartsWith("{\"data\":null"))
-					{
-						finalList.Add(DeSerializeHojasDeVidaData(data));
-					}
-				}
-				else
-				{
-					Console.WriteLine($"{i.strCandidato} has no hoja de vida");
-				}
-			}
-			Console.WriteLine($"Download & DeSerialize hojas de vida. Found: {finalList.Count}");
-
-			SaveJsonFile(pathCong, $"HDV{strUbigeo}", JsonSerializer.Serialize(finalList));
-			Console.WriteLine($"Saved HDV{strUbigeo}");
-		}
-
-		private void DownloadUbigeoData()
-		{
 			var data = LoadListaDeUbigeo(TipoDeEleccion.Congresal);
 			Console.WriteLine("Download ubigeo list");
 
@@ -73,21 +44,23 @@ namespace DataExporter
 			//Only uniques
 			foreach (var item in ubigeos)
 			{
-				if (ubigeosUnique.Count == 0 ||
-					!ubigeosUnique.Any(x => x.strUbigeoDistritoElectoral.Equals(item.strUbigeoDistritoElectoral,
+				if (result.Count == 0 ||
+					!result.Any(x => x.strUbigeoDistritoElectoral.Equals(item.strUbigeoDistritoElectoral,
 					StringComparison.InvariantCultureIgnoreCase)))
 				{
-					ubigeosUnique.Add(new UbigeoItemLite
+					result.Add(new UbigeoItemLite
 					{
 						strDistritoElectoral = item.strDistritoElectoral,
 						strUbigeoDistritoElectoral = item.strUbigeoDistritoElectoral
 					});
 				}
 			}
-			Console.WriteLine($"Found {ubigeosUnique.Count} unique ubigeos");
+			Console.WriteLine($"Found {result.Count} unique ubigeos");
 
-			SaveJsonFile(pathCong, "ubigeoCon", JsonSerializer.Serialize(ubigeosUnique));
+			SaveJsonFile(pathCong, "ubigeoCon", JsonSerializer.Serialize(result));
 			Console.WriteLine("Saved ubigeoCon.json");
+
+			return result;
 		}
 
 		private List<UbigeoItem> DeSerializeUbigeoData(string data)

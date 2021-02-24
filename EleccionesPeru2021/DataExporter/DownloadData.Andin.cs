@@ -1,10 +1,4 @@
 ﻿using SharedLibrary.Models;
-using System;
-using System.Collections.Generic;
-using System.Linq;
-using System.Text;
-using System.Text.Json;
-using System.Threading.Tasks;
 
 namespace DataExporter
 {
@@ -14,11 +8,14 @@ namespace DataExporter
 		{
 			var partyData = DownloadPartyData(TipoDeEleccion.Andino, pathAndin, "partidos");
 
-			var candidateData = DownloadCandidateData(partyData, TipoDeEleccion.Andino);
+			var candidateData = DownloadCandidateData(partyData, TipoDeEleccion.Andino, pathAndin, "candidatos");
 
-			//todo: hdv
+			var hojasDeVida = DownloadHojaDeVida(candidateData, pathAndin, "hojasDeVida");
+
 			//todo: download plan de trabajo
 			//todo: download resumen de plan de trabajo
+
+			DownloadCandidatePictures(candidateData);
 		}
 	}
 }

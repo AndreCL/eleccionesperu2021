@@ -21,11 +21,12 @@ Falta implementar:
 			* ~~Imagenes~~
 			* ~~Hoja de vida~~	
 		* Parlamento andino
-			* Partidos
-			* Candidatos
-			* Imagenes
-			* Hoja de vida
-	* Optimize code: Remove fields not used from data model
+			* ~~Partidos~~
+			* ~~Candidatos~~
+			* ~~Imagenes~~
+			* ~~Hoja de vida~~
+			* Plan de trabajo
+			* Resumen de plan de trabajo
 * WebApp
 	* ~~Modulo de preguntas~~
 	* ~~Modulo de resultados~~
