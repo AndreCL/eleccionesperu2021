@@ -6,7 +6,7 @@ using System.Text.Json;
 
 namespace DataExporter
 {
-	public class JneParser: Parser
+	public class JneParser : Parser
 	{
 		protected static string LoadPartyData(TipoDeEleccion tipoDeEleccion, string strUbigeo = "")
 		{
@@ -59,5 +59,6 @@ namespace DataExporter
 			var requestData = JsonSerializer.Deserialize<APICallList<CandidatoGeneral>>(data);
 			return requestData.Data;
 		}
+
 	}
 }

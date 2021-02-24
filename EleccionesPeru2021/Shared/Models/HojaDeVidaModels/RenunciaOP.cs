@@ -56,7 +56,6 @@
 		/// Ejemplo: null
 		/// </summary>
 		public object cadenaRenuncia { get; set; }
-		//todo: Que es?
 
 		/// <summary>
 		/// Ejemplo: null

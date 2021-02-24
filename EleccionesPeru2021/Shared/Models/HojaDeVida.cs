@@ -71,6 +71,5 @@ namespace SharedLibrary.Models
 		public CargoEleccion2[] CargoElecHistorico { get; set; }
 
 		public object[] lAnotacionMarginal { get; set; }
-		//todo: que es?
 	}
 }
