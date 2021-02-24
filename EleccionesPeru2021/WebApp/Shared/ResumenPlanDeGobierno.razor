@@ -74,6 +74,20 @@
 			}
 		}
 
+		@if (PlanDeGobierno.ListPTDPropuesta != null && PlanDeGobierno.ListPTDPropuesta.Count() > 0)
+		{
+			<h5>Propuestas</h5>
+
+			<ul>
+				@foreach (var item in PlanDeGobierno.ListPTDPropuesta)
+				{
+				<li>@item.strPGProblema.ToLower()</li>
+				}
+			</ul>
+
+			
+		}
+
 
 
 	}
