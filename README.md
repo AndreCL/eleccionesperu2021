@@ -6,7 +6,7 @@ Simple herramienta para facilitar la selección de candidatos
 Falta implementar:
 * DataExporter
     * ~~ApiOveview~~
-	* Data Models & extract
+	* ~~Data Models & extract~~
 		* ~~Presidencial~~
 			* ~~Partidos~~
 			* ~~Logos~~
@@ -25,15 +25,15 @@ Falta implementar:
 			* ~~Candidatos~~
 			* ~~Imagenes~~
 			* ~~Hoja de vida~~
-			* Plan de trabajo
-			* Resumen de plan de trabajo
+			* ~~Plan de trabajo~~
+			* ~~Resumen de plan de trabajo~~
 * WebApp
 	* ~~Modulo de preguntas~~
 	* ~~Modulo de resultados~~
 	* ~~Detalles de resultados~~
 	* ~~Test presidencial~~
 	* ~~Test congreso~~
-	* Test parlamento andino
+	* ~~Test parlamento andino~~
 	
 ## Contribuciones
 Haz un push request

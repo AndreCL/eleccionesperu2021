@@ -66,5 +66,11 @@ namespace DataExporter
 			return requestData.Data;
 		}
 
+		protected static PlanDeGobierno DeSerializePlanDeGobiernoData(string data)
+		{
+			var requestData = JsonSerializer.Deserialize<APICallItem<PlanDeGobierno>>(data);
+			return requestData.Data;
+		}
+
 	}
 }

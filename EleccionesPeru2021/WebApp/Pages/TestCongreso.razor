@@ -10,7 +10,9 @@
 					  hojasDeVida="@hojasDeVida"
 					  partidosPoliticos="@partidosPoliticos"
 					  planesDeGobierno="@planesDeGobierno"
-					  Hidden="@hideFinalResultsBar"></FinalResultsCongreso>
+					  Hidden="@hideFinalResultsBar"
+					  MaxParties="2"
+					  MaxCandidatesPerParty="2"></FinalResultsCongreso>
 
 @code {
 	private List<Result> results = new List<Result> { };
@@ -85,7 +87,7 @@
 
 	protected override async Task OnInitializedAsync()
 	{
-		ubigeos  = await Http.GetFromJsonAsync<UbigeoItemLite[]>("sample-data/cong/ubigeoCon.json");
+		ubigeos = await Http.GetFromJsonAsync<UbigeoItemLite[]>("sample-data/cong/ubigeoCon.json");
 		textInfo = new CultureInfo("es-PE", false).TextInfo;
 		foreach (var item in ubigeos)
 		{
@@ -690,7 +692,7 @@
 				{
 
 					@if ((!failed.Any(x => x.idCandidato == i.idCandidato)) && //not already in list
-					failed.Any(x => x.idOrganizacionPolitica == i.idOrganizacionPolitica)) //same party as someone in list
+				   failed.Any(x => x.idOrganizacionPolitica == i.idOrganizacionPolitica)) //same party as someone in list
 					{
 						failed.Add(i);
 					}

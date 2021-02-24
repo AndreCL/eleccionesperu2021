@@ -1,0 +1,712 @@
+﻿@page "/testandino"
+@inject HttpClient Http
+
+<QuestionComponent Questions="questions" Completed="@ShowResults"></QuestionComponent>
+
+<ResultsComponent Results="@results" Hidden="@HideResultsBar"></ResultsComponent>
+
+<FinalResultsCongreso Results="@results"
+					  candidatosPoliticos="@candidatosPoliticos"
+					  hojasDeVida="@hojasDeVida"
+					  partidosPoliticos="@partidosPoliticos"
+					  planesDeGobierno="@planesDeGobierno"
+					  Hidden="@hideFinalResultsBar"
+					  MaxParties="3"
+					  MaxCandidatesPerParty="2"></FinalResultsCongreso>
+
+@code {
+	private List<Result> results = new List<Result> { };
+	private List<Question> questions = new List<Question> { };
+	private List<PartidoPolitico> partidosPoliticos;
+	private List<PlanDeGobierno> planesDeGobierno;
+	private List<CandidatoGeneral> candidatosPoliticos = new List<CandidatoGeneral>();
+	private List<HojaDeVida> hojasDeVida;
+	private UbigeoItemLite[] ubigeos;
+	private TextInfo textInfo;
+
+	private bool HideResultsBar = false;
+
+	private bool hideFinalResultsBar = true;
+
+	public void LoadResults()
+	{
+		foreach (var candidate in candidatosPoliticos)
+		{
+			results.Add(new Result()
+			{
+				Id = candidate.idCandidato,
+				ImageRoute = $"sample-data{candidate.strRutaArchivo.Replace("Assets", "ASSETS")}",
+				Name = textInfo.ToTitleCase(candidate.strCandidato.ToLower())
+			});
+		}
+		results = results.OrderBy(a => Guid.NewGuid()).ToList();
+	}
+
+	public void ShowResults()
+	{
+		HideResultsBar = true;
+		hideFinalResultsBar = false;
+		StateHasChanged();
+	}
+
+	private async Task LoadParties(UbigeoItemLite ubigeoItem)
+	{
+		var temp = await Http.GetFromJsonAsync<PartidoPolitico[]>($"sample-data/cong/Party{ubigeoItem.strUbigeoDistritoElectoral}.json");
+
+		//Filter out improsedente
+		partidosPoliticos = temp.ToList();
+	}
+
+	private async Task LoadCandidates(UbigeoItemLite ubigeoItem)
+	{
+		var temp = await Http.GetFromJsonAsync<CandidatoGeneral[]>($"sample-data/cong/Candidate{ubigeoItem.strUbigeoDistritoElectoral}.json");
+		candidatosPoliticos = temp.ToList().Where(
+			x => !x.strEstadoExp.Equals("IMPROCEDENTE", StringComparison.InvariantCultureIgnoreCase)).ToList();
+
+		LoadResults();
+
+		HideResultsBar = false;
+
+		StateHasChanged();
+	}
+
+	private async Task LoadHDV(UbigeoItemLite ubigeoItem)
+	{
+		var temp = await Http.GetFromJsonAsync<HojaDeVida[]>($"sample-data/cong/HDV{ubigeoItem.strUbigeoDistritoElectoral}.json");
+		hojasDeVida = temp.ToList();
+	}
+
+	protected override async Task OnInitializedAsync()
+	{
+		textInfo = new CultureInfo("es-PE", false).TextInfo;
+
+		var temp = await Http.GetFromJsonAsync<PartidoPolitico[]>("sample-data/andin/partidos.json");
+
+		//Filter out improsedente
+		partidosPoliticos = temp.ToList();
+
+		//Filter out improsedente
+		var temp2 = await Http.GetFromJsonAsync<CandidatoGeneral[]>("sample-data/andin/candidatos.json");
+		candidatosPoliticos = temp2.ToList().Where(
+			x => !x.strEstadoExp.Equals("IMPROCEDENTE", StringComparison.InvariantCultureIgnoreCase)).ToList();
+
+		var temp3 = await Http.GetFromJsonAsync<HojaDeVida[]>("sample-data/andin/hojasDeVida.json");
+		hojasDeVida = temp3.ToList();
+
+		var temp4 = await Http.GetFromJsonAsync<PlanDeGobierno[]>("sample-data/andin/planDeGobierno.json");
+		planesDeGobierno = temp4.ToList();
+
+		LoadResults();
+
+
+
+		Question question1 = new Question
+		{
+			Title = "Sentencias",
+			Description = "Candidatos al parlamento andino",
+			Options = new List<string> { "Candidatos sin sentencias", "Lista de partido sin candidatos con sentencias" },
+			OnNext = filterBySentencias
+		};
+		questions.Add(question1);
+
+		Question question2 = new Question
+		{
+			Title = "Cargos de Elección Popular",
+			Description = "Los candidatos pueden haber desempeñado " +
+			"un cargo de elección popular (ejemplo alcalde, regidor, congresista, etc.)",
+			Options = new List<string> { "Candidatos con cargos previos", "Candidatos sin cargos previos" },
+			OnNext = filterByCargoElecto
+		};
+		questions.Add(question2);
+
+		Question question3 = new Question
+		{
+			Title = "Cargos Partidarios",
+			Description = "Los candidatos pueden haber desempeñado " +
+		"un cargo partidario en su trayectoria política (cargo en organización política)",
+			Options = new List<string> { "Candidatos con cargos previos", "Candidatos sin cargos previos" },
+			OnNext = filterByCargoPartidario
+		};
+		questions.Add(question3);
+
+		Question question4 = new Question
+		{
+			Title = "Renuncias a otros partidos",
+			Description = "Los candidatos al pueden " +
+		"haber renunciado a otros partidos, movimientos de alcance regional o departamental u organizaciones políticas de alcance " +
+		"provincial y distrital",
+			Options = new List<string> { "Candidatos que han renunciado a otros partidos",
+				"Candidatos que <strong>no</strong> han renunciado a otros partidos" },
+			OnNext = filterByRenuncias
+		};
+		questions.Add(question4);
+
+		Question question5 = new Question
+		{
+			Title = "País de nacimiento",
+			Description = "¿En qué país nació el candidato al parlamento andino?",
+			Options = new List<string> { "Perú" },
+			OnNext = filterByBirthplace
+		};
+		questions.Add(question5);
+
+		Question question6 = new Question
+		{
+			Title = "Nivel de educación concluída",
+			Description = "¿Cual es el minimo nivel de educacíon concluída del candidato al parlamento andino?",
+			Options = new List<string> { "Primaria", "Secundaria", "Estudio universitario", "Postgrado" },
+			OnNext = filterByEduLevel
+		};
+		questions.Add(question6);
+
+		Question question10 = new Question
+		{
+			Title = "Experiencia laboral",
+			Description = "¿Solo candidatos con experiencia laboral reportada?",
+			Options = new List<string> { "Si" },
+			OnNext = filterByWork
+		};
+		questions.Add(question10);
+
+		Question question7 = new Question
+		{
+			Title = "Sexo del candidato",
+			Description = "",
+			Options = new List<string> { "Femenino", "Masculino" },
+			OnNext = filterByGender
+		};
+		questions.Add(question7);
+
+		Question question8 = new Question
+		{
+			Title = "Ingresos anuales declarados",
+			Description = "Según INEI el salario anual promedio de un peruano es 18 000 soles",
+			Options = new List<string> { "<strong>Excluir</strong> candidatos con ingresos mayores a 180 000 de soles (10 veces más que el promedio)",
+				"<strong>Excluir</strong> candidatos con ingresos menores a 1800 soles (10 veces menor a el promedio)",
+				"<strong>Excluir</strong> candidatos con ingresos tanto menores a 1800 soles como mayores a 180 000 de soles"},
+			OnNext = filterByIngresos
+		};
+		questions.Add(question8);
+
+		Question question9 = new Question
+		{
+			Title = "Valor de bienes declarados",
+			Description = "Valor de bienes inmuebles, muebles y vehículos declarados por los candidatos al parlamento andino",
+			Options = new List<string> { "<strong>Excluir</strong> candidatos cuyo valor de bienes es mayor a 1 millón de soles",
+				"<strong>Excluir</strong> candidatos cuyo valor de bienes es menor a 18 000 soles" },
+			OnNext = filterByBienes
+		};
+		questions.Add(question9);
+
+	}
+
+	#region actions
+	public void filterByWork(string option)
+	{
+		List<CandidatoGeneral> failed = new List<CandidatoGeneral>();
+
+		if (option.Equals("1", StringComparison.InvariantCultureIgnoreCase))
+		{
+			foreach (var i in candidatosPoliticos)
+			{
+				var hoja = hojasDeVida.Where(x => x.DatosPersonales.idHojaVida == i?.idHojaVida).FirstOrDefault();
+
+				if (hoja != null &&
+					(!hoja.ExperienciasLaborales.Any(x => x.strTengoExpeLaboral.Equals("1"))))
+				{
+					failed.Add(i);
+				}
+			}
+		}
+
+		foreach (var i in candidatosPoliticos)
+		{
+			if (failed.Count > 0 && failed.Exists(x => x.idCandidato == i.idCandidato))
+			{
+				results.Where(x => x.Id == i.idCandidato).FirstOrDefault().AddCounter(false);
+			}
+			else
+			{
+				results.Where(x => x.Id == i.idCandidato).FirstOrDefault().AddCounter(true);
+			}
+		}
+
+		StateHasChanged();
+	}
+
+	public void filterByBienes(string option)
+	{
+		List<CandidatoGeneral> failed = new List<CandidatoGeneral>();
+
+		if (option.Equals("1", StringComparison.InvariantCultureIgnoreCase))
+		{
+			foreach (var i in candidatosPoliticos)
+			{
+				var hoja = hojasDeVida.Where(x => x.DatosPersonales.idHojaVida == i?.idHojaVida).FirstOrDefault();
+
+				if (hoja != null &&
+					(hoja.BienInmueble?.Where(x => x.strTengoInmueble.Equals("1")).Sum(x => x.decAutovaluo) +
+					hoja.BienMueble?.Where(x => x.strTengoBienMueble.Equals("1")).Sum(x => x.decValor))
+					> 1000000
+					)
+				{
+					failed.Add(i);
+				}
+			}
+		}
+		if (option.Equals("2", StringComparison.InvariantCultureIgnoreCase))
+		{
+			foreach (var i in candidatosPoliticos)
+			{
+				var hoja = hojasDeVida.Where(x => x.DatosPersonales.idHojaVida == i?.idHojaVida).FirstOrDefault();
+
+				if (hoja != null &&
+					(hoja.BienInmueble?.Where(x => x.strTengoInmueble.Equals("1")).Sum(x => x.decAutovaluo) +
+					hoja.BienMueble?.Where(x => x.strTengoBienMueble.Equals("1")).Sum(x => x.decValor))
+					< 18000
+					)
+				{
+					failed.Add(i);
+				}
+			}
+		}
+		foreach (var i in candidatosPoliticos)
+		{
+			if (failed.Count > 0 && failed.Exists(x => x.idCandidato == i.idCandidato))
+			{
+				results.Where(x => x.Id == i.idCandidato).FirstOrDefault().AddCounter(false);
+			}
+			else
+			{
+				results.Where(x => x.Id == i.idCandidato).FirstOrDefault().AddCounter(true);
+			}
+		}
+
+		StateHasChanged();
+	}
+
+	public void filterByIngresos(string option)
+	{
+		List<CandidatoGeneral> failed = new List<CandidatoGeneral>();
+
+		if (option.Equals("1", StringComparison.InvariantCultureIgnoreCase))
+		{
+			foreach (var i in candidatosPoliticos)
+			{
+				var hoja = hojasDeVida.Where(x => x.DatosPersonales.idHojaVida == i?.idHojaVida).FirstOrDefault();
+
+				if (hoja != null &&
+					(hoja.Ingresos.decOtroIngresoPrivado + hoja.Ingresos.decRemuBrutaPrivado + hoja.Ingresos.decRentaIndividualPrivado +
+					hoja.Ingresos.decOtroIngresoPublico + hoja.Ingresos.decRemuBrutaPublico + hoja.Ingresos.decRentaIndividualPublico) > 180000
+					)
+				{
+					failed.Add(i);
+				}
+			}
+		}
+		if (option.Equals("2", StringComparison.InvariantCultureIgnoreCase))
+		{
+			foreach (var i in candidatosPoliticos)
+			{
+				var hoja = hojasDeVida.Where(x => x.DatosPersonales.idHojaVida == i?.idHojaVida).FirstOrDefault();
+
+				if (hoja != null &&
+					(hoja.Ingresos.decOtroIngresoPrivado + hoja.Ingresos.decRemuBrutaPrivado + hoja.Ingresos.decRentaIndividualPrivado +
+					hoja.Ingresos.decOtroIngresoPublico + hoja.Ingresos.decRemuBrutaPublico + hoja.Ingresos.decRentaIndividualPublico) < 1800
+					)
+				{
+					failed.Add(i);
+				}
+			}
+		}
+
+		if (option.Equals("3", StringComparison.InvariantCultureIgnoreCase))
+		{
+			foreach (var i in candidatosPoliticos)
+			{
+				var hoja = hojasDeVida.Where(x => x.DatosPersonales.idHojaVida == i?.idHojaVida).FirstOrDefault();
+
+				if (hoja != null &&
+					(
+					(hoja.Ingresos.decOtroIngresoPrivado + hoja.Ingresos.decRemuBrutaPrivado + hoja.Ingresos.decRentaIndividualPrivado +
+					hoja.Ingresos.decOtroIngresoPublico + hoja.Ingresos.decRemuBrutaPublico + hoja.Ingresos.decRentaIndividualPublico) < 1800
+					||
+					(hoja.Ingresos.decOtroIngresoPrivado + hoja.Ingresos.decRemuBrutaPrivado + hoja.Ingresos.decRentaIndividualPrivado +
+					hoja.Ingresos.decOtroIngresoPublico + hoja.Ingresos.decRemuBrutaPublico + hoja.Ingresos.decRentaIndividualPublico) > 180000
+					)
+					)
+
+				{
+					failed.Add(i);
+				}
+			}
+		}
+
+		foreach (var i in candidatosPoliticos)
+		{
+			if (failed.Count > 0 && failed.Exists(x => x.idCandidato == i.idCandidato))
+			{
+				results.Where(x => x.Id == i.idCandidato).FirstOrDefault().AddCounter(false);
+			}
+			else
+			{
+				results.Where(x => x.Id == i.idCandidato).FirstOrDefault().AddCounter(true);
+			}
+		}
+
+		StateHasChanged();
+	}
+
+	public void filterByGender(string option)
+	{
+		List<CandidatoGeneral> failed = new List<CandidatoGeneral>();
+
+		if (option.Equals("1", StringComparison.InvariantCultureIgnoreCase))
+		{
+			foreach (var i in candidatosPoliticos)
+			{
+				var hoja = hojasDeVida.Where(x => x.DatosPersonales.idHojaVida == i?.idHojaVida).FirstOrDefault();
+
+				if (hoja != null &&
+					(!hoja.DatosPersonales.strSexo.Equals("2")))
+				{
+					failed.Add(i);
+				}
+			}
+		}
+		if (option.Equals("2", StringComparison.InvariantCultureIgnoreCase))
+		{
+			foreach (var i in candidatosPoliticos)
+			{
+				var hoja = hojasDeVida.Where(x => x.DatosPersonales.idHojaVida == i?.idHojaVida).FirstOrDefault();
+
+				if (hoja != null &&
+					(!hoja.DatosPersonales.strSexo.Equals("1")))
+				{
+					failed.Add(i);
+				}
+			}
+		}
+
+		foreach (var i in candidatosPoliticos)
+		{
+			if (failed.Count > 0 && failed.Exists(x => x.idCandidato == i.idCandidato))
+			{
+				results.Where(x => x.Id == i.idCandidato).FirstOrDefault().AddCounter(false);
+			}
+			else
+			{
+				results.Where(x => x.Id == i.idCandidato).FirstOrDefault().AddCounter(true);
+			}
+		}
+
+		StateHasChanged();
+	}
+
+	public void filterByEduLevel(string option)
+	{
+		List<CandidatoGeneral> failed = new List<CandidatoGeneral>();
+
+		if (option.Equals("4", StringComparison.InvariantCultureIgnoreCase))
+		{
+			foreach (var i in candidatosPoliticos)
+			{
+				var hoja = hojasDeVida.Where(x => x.DatosPersonales.idHojaVida == i?.idHojaVida).FirstOrDefault();
+
+				if (hoja != null &&
+					(!hoja.EduPosgrado.strConcluidoPosgrado.Equals("1")))
+				{
+					failed.Add(i);
+				}
+			}
+		}
+		if (option.Equals("3", StringComparison.InvariantCultureIgnoreCase))
+		{
+			foreach (var i in candidatosPoliticos)
+			{
+				var hoja = hojasDeVida.Where(x => x.DatosPersonales.idHojaVida == i?.idHojaVida).FirstOrDefault();
+
+				if (hoja != null &&
+					(!hoja.EduUniversitaria.Any(x => x.strConcluidoEduUni.Equals("1"))))
+				{
+					failed.Add(i);
+				}
+			}
+		}
+		if (option.Equals("2", StringComparison.InvariantCultureIgnoreCase))
+		{
+			foreach (var i in candidatosPoliticos)
+			{
+				var hoja = hojasDeVida.Where(x => x.DatosPersonales.idHojaVida == i?.idHojaVida).FirstOrDefault();
+
+				if (hoja != null &&
+					(!hoja.EduBasica.strConcluidoEduSecundaria.Equals("1")))
+				{
+					failed.Add(i);
+				}
+			}
+		}
+		if (option.Equals("1", StringComparison.InvariantCultureIgnoreCase))
+		{
+			foreach (var i in candidatosPoliticos)
+			{
+				var hoja = hojasDeVida.Where(x => x.DatosPersonales.idHojaVida == i?.idHojaVida).FirstOrDefault();
+
+				if (hoja != null &&
+					(!hoja.EduBasica.strConcluidoEduPrimaria.Equals("1")))
+				{
+					failed.Add(i);
+				}
+			}
+		}
+
+		foreach (var i in candidatosPoliticos)
+		{
+			if (failed.Count > 0 && failed.Exists(x => x.idCandidato == i.idCandidato))
+			{
+				results.Where(x => x.Id == i.idCandidato).FirstOrDefault().AddCounter(false);
+			}
+			else
+			{
+				results.Where(x => x.Id == i.idCandidato).FirstOrDefault().AddCounter(true);
+			}
+		}
+
+		StateHasChanged();
+	}
+
+	public void filterByBirthplace(string option)
+	{
+		List<CandidatoGeneral> failed = new List<CandidatoGeneral>();
+
+		if (option.Equals("1", StringComparison.InvariantCultureIgnoreCase))
+		{
+			foreach (var i in candidatosPoliticos)
+			{
+				var hoja = hojasDeVida.Where(x => x.DatosPersonales.idHojaVida == i?.idHojaVida).FirstOrDefault();
+
+				if (hoja != null &&
+					(!hoja.DatosPersonales.strPaisNacimiento.Equals("PERÚ", StringComparison.InvariantCultureIgnoreCase)))
+				{
+					failed.Add(i);
+				}
+			}
+		}
+
+		foreach (var i in candidatosPoliticos)
+		{
+			if (failed.Count > 0 && failed.Exists(x => x.idCandidato == i.idCandidato))
+			{
+				results.Where(x => x.Id == i.idCandidato).FirstOrDefault().AddCounter(false);
+			}
+			else
+			{
+				results.Where(x => x.Id == i.idCandidato).FirstOrDefault().AddCounter(true);
+			}
+		}
+
+		StateHasChanged();
+	}
+
+	public void filterByRenuncias(string option)
+	{
+		List<CandidatoGeneral> failed = new List<CandidatoGeneral>();
+
+		if (option.Equals("1", StringComparison.InvariantCultureIgnoreCase))
+		{
+			foreach (var i in candidatosPoliticos)
+			{
+				var hoja = hojasDeVida.Where(x => x.DatosPersonales.idHojaVida == i?.idHojaVida).FirstOrDefault();
+
+				if (hoja != null &&
+					(hoja.RenunciaOP.Where(x => x.strTengoRenunciaOP.Equals("1", StringComparison.InvariantCultureIgnoreCase)).Count() == 0))
+				{
+					failed.Add(i);
+				}
+			}
+		}
+		else if (option.Equals("2", StringComparison.InvariantCultureIgnoreCase))
+		{
+			foreach (var i in candidatosPoliticos)
+			{
+				var hoja = hojasDeVida.Where(x => x.DatosPersonales.idHojaVida == i?.idHojaVida).FirstOrDefault();
+
+				if (hoja != null &&
+					(hoja.RenunciaOP.Where(x => x.strTengoRenunciaOP.Equals("1", StringComparison.InvariantCultureIgnoreCase)).Count() > 0))
+				{
+					failed.Add(i);
+				}
+			}
+		}
+
+		foreach (var i in candidatosPoliticos)
+		{
+			if (failed.Count > 0 && failed.Exists(x => x.idCandidato == i.idCandidato))
+			{
+				results.Where(x => x.Id == i.idCandidato).FirstOrDefault().AddCounter(false);
+			}
+			else
+			{
+				results.Where(x => x.Id == i.idCandidato).FirstOrDefault().AddCounter(true);
+			}
+		}
+
+		StateHasChanged();
+	}
+
+	public void filterByCargoPartidario(string option)
+	{
+		List<CandidatoGeneral> failed = new List<CandidatoGeneral>();
+
+		if (option.Equals("1", StringComparison.InvariantCultureIgnoreCase))
+		{
+			foreach (var i in candidatosPoliticos)
+			{
+				var hoja = hojasDeVida.Where(x => x.DatosPersonales.idHojaVida == i?.idHojaVida).FirstOrDefault();
+
+				if (hoja != null &&
+					(hoja.CargoPartidario.Where(x => x.strTengoCargoPartidario.Equals("1", StringComparison.InvariantCultureIgnoreCase)).Count() == 0))
+				{
+					failed.Add(i);
+				}
+			}
+		}
+		else if (option.Equals("2", StringComparison.InvariantCultureIgnoreCase))
+		{
+			foreach (var i in candidatosPoliticos)
+			{
+				var hoja = hojasDeVida.Where(x => x.DatosPersonales.idHojaVida == i?.idHojaVida).FirstOrDefault();
+
+				if (hoja != null &&
+					(hoja.CargoPartidario.Where(x => x.strTengoCargoPartidario.Equals("1", StringComparison.InvariantCultureIgnoreCase)).Count() > 0))
+				{
+					failed.Add(i);
+				}
+			}
+		}
+
+		foreach (var i in candidatosPoliticos)
+		{
+			if (failed.Count > 0 && failed.Exists(x => x.idCandidato == i.idCandidato))
+			{
+				results.Where(x => x.Id == i.idCandidato).FirstOrDefault().AddCounter(false);
+			}
+			else
+			{
+				results.Where(x => x.Id == i.idCandidato).FirstOrDefault().AddCounter(true);
+			}
+		}
+
+		StateHasChanged();
+	}
+
+	public void filterByCargoElecto(string option)
+	{
+		List<CandidatoGeneral> failed = new List<CandidatoGeneral>();
+
+		if (option.Equals("1", StringComparison.InvariantCultureIgnoreCase))
+		{
+			foreach (var i in candidatosPoliticos)
+			{
+				var hoja = hojasDeVida.Where(x => x.DatosPersonales.idHojaVida == i?.idHojaVida).FirstOrDefault();
+
+				if (hoja != null &&
+					(hoja.CargoEleccion.Where(x => x.strCargoEleccion.Equals("1", StringComparison.InvariantCultureIgnoreCase)).Count() == 0))
+				{
+					failed.Add(i);
+				}
+			}
+		}
+		else if (option.Equals("2", StringComparison.InvariantCultureIgnoreCase))
+		{
+			foreach (var i in candidatosPoliticos)
+			{
+				var hoja = hojasDeVida.Where(x => x.DatosPersonales.idHojaVida == i?.idHojaVida).FirstOrDefault();
+
+				if (hoja != null &&
+					(hoja.CargoEleccion.Where(x => x.strCargoEleccion.Equals("1", StringComparison.InvariantCultureIgnoreCase)).Count() > 0))
+				{
+					failed.Add(i);
+				}
+			}
+		}
+
+		foreach (var i in candidatosPoliticos)
+		{
+			if (failed.Count > 0 && failed.Exists(x => x.idCandidato == i.idCandidato))
+			{
+				results.Where(x => x.Id == i.idCandidato).FirstOrDefault().AddCounter(false);
+			}
+			else
+			{
+				results.Where(x => x.Id == i.idCandidato).FirstOrDefault().AddCounter(true);
+			}
+		}
+
+		StateHasChanged();
+	}
+
+	public void filterBySentencias(string option)
+	{
+		List<CandidatoGeneral> failed = new List<CandidatoGeneral>();
+
+		if (option.Equals("1", StringComparison.InvariantCultureIgnoreCase))
+		{
+			foreach (var i in candidatosPoliticos)
+			{
+				var hoja = hojasDeVida.Where(x => x.DatosPersonales.idHojaVida == i?.idHojaVida).FirstOrDefault();
+
+				if (hoja != null &&
+					(hoja.SentenciaPenal.Where(x => x.strTengoSentenciaPenal.Equals("1", StringComparison.InvariantCultureIgnoreCase)).Count() > 0 ||
+					hoja.SentenciaObliga.Where(x => x.strTengoSentenciaObliga.Equals("1", StringComparison.InvariantCultureIgnoreCase)).Count() > 0)
+					)
+				{
+					failed.Add(i);
+				}
+			}
+		}
+		if (option.Equals("2", StringComparison.InvariantCultureIgnoreCase))
+		{
+			foreach (var i in candidatosPoliticos)
+			{
+				var hoja = hojasDeVida.Where(x => x.DatosPersonales.idHojaVida == i?.idHojaVida).FirstOrDefault();
+
+				if (hoja != null &&
+					(hoja.SentenciaPenal.Where(x => x.strTengoSentenciaPenal.Equals("1", StringComparison.InvariantCultureIgnoreCase)).Count() > 0 ||
+					hoja.SentenciaObliga.Where(x => x.strTengoSentenciaObliga.Equals("1", StringComparison.InvariantCultureIgnoreCase)).Count() > 0)
+					)
+				{
+					failed.Add(i);
+				}
+			}
+			if (failed.Count() > 0)
+			{
+				foreach (var i in candidatosPoliticos)
+				{
+
+					@if ((!failed.Any(x => x.idCandidato == i.idCandidato)) && //not already in list
+				   failed.Any(x => x.idOrganizacionPolitica == i.idOrganizacionPolitica)) //same party as someone in list
+					{
+						failed.Add(i);
+					}
+				}
+			}
+		}
+
+		foreach (var i in candidatosPoliticos)
+		{
+			if (failed.Count > 0 && failed.Exists(x => x.idCandidato == i.idCandidato))
+			{
+				results.Where(x => x.Id == i.idCandidato).FirstOrDefault().AddCounter(false);
+			}
+			else
+			{
+				results.Where(x => x.Id == i.idCandidato).FirstOrDefault().AddCounter(true);
+			}
+		}
+
+		StateHasChanged();
+	}
+
+	#endregion
+}

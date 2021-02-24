@@ -25,8 +25,7 @@ namespace DataExporter
 			CreateDirectory(pathAndin);
 
 			DownloadPresidential();
-			DownloadCongress();
-
+			//DownloadCongress();
 			DownloadAndin();			
 		}
 
@@ -59,6 +58,11 @@ namespace DataExporter
 			return result;
 		}
 
+
+		/// <summary>
+		/// All saved in same folder
+		/// </summary>
+		/// <param name="candidatos"></param>
 		private void DownloadCandidatePictures(List<CandidatoGeneral> candidatos)
 		{
 			foreach (var candidato in candidatos)
@@ -78,6 +82,17 @@ namespace DataExporter
 				var data = LoadCandidateData(partido.idSolicitudLista, partido.idExpediente, tipoDeEleccion);
 
 				var candidates = DeSerializeCandidateData(data);
+
+				//Remove the ones that are out
+				var removed = candidates.RemoveAll(x =>
+				x.strEstadoExp.Equals("IMPROCEDENTE", StringComparison.InvariantCultureIgnoreCase) ||
+				x.strEstadoExp.Equals("TACHADO", StringComparison.InvariantCultureIgnoreCase) ||
+				x.strEstadoExp.Equals("INADMISIBLE", StringComparison.InvariantCultureIgnoreCase) ||
+				x.strEstadoExp.Equals("RENUNCIA", StringComparison.InvariantCultureIgnoreCase) ||
+				x.strEstadoExp.Equals("RETIRO", StringComparison.InvariantCultureIgnoreCase) ||
+				x.strEstadoExp.Equals("EXCLUSION", StringComparison.InvariantCultureIgnoreCase));
+
+				Console.WriteLine($"Removed {removed} invalid candidates");
 
 				//fix because dataset has 0 here always
 				foreach (var candidate in candidates)
@@ -123,6 +138,44 @@ namespace DataExporter
 			Console.WriteLine($"Saved {outputPath}\\{outputFilename}");
 
 			return result;
+		}
+
+		private List<PlanDeGobierno> DownloadPlanDeGobiernoResumen(List<PartidoPolitico> partidos, 
+			string outputPath, string outputFilename)
+		{
+			List<PlanDeGobierno> result = new List<PlanDeGobierno>();
+
+			foreach (var partido in partidos)
+			{
+				var data = LoadPlanDeGobiernoResumenData(partido.idPlanGobierno);
+				if (!string.IsNullOrEmpty(data) && !data.StartsWith("{\"data\":null"))
+				{
+					result.Add(DeSerializePlanDeGobiernoData(data));
+				}
+
+			}
+			Console.WriteLine($"Download & DeSerialize plandegobierno resumen. Found: {result.Count}");
+
+			SaveJsonFile(outputPath, outputFilename, JsonSerializer.Serialize(result));
+			Console.WriteLine($"Saved {outputPath}\\{outputFilename}");
+
+			return result;
+		}
+
+		/// <summary>
+		/// All saved in same folder
+		/// </summary>
+		/// <param name="partidos"></param>
+		private void DownloadPlanDeGobiernoFiles(List<PartidoPolitico> partidos)
+		{
+			foreach (var partido in partidos)
+			{
+				if(partido.idPlanGobierno != 0)
+				{
+					DownloadFile(path, $"{partido.strCarpeta}{partido.idPlanGobierno}.pdf", APIOverview.PlanDeGobiernoFile(partido.strCarpeta, partido.idPlanGobierno));
+				}
+			}
+			Console.WriteLine("Saved presidential plan de gobierno level 0");
 		}
 	}
 }

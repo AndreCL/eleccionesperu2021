@@ -7,14 +7,10 @@ namespace DataExporter
 		protected void DownloadAndin()
 		{
 			var partyData = DownloadPartyData(TipoDeEleccion.Andino, pathAndin, "partidos");
-
 			var candidateData = DownloadCandidateData(partyData, TipoDeEleccion.Andino, pathAndin, "candidatos");
-
-			var hojasDeVida = DownloadHojaDeVida(candidateData, pathAndin, "hojasDeVida");
-
-			//todo: download plan de trabajo
-			//todo: download resumen de plan de trabajo
-
+			DownloadHojaDeVida(candidateData, pathAndin, "hojasDeVida");
+			DownloadPlanDeGobiernoResumen(partyData, pathAndin, "planDeGobierno");
+			DownloadPlanDeGobiernoFiles(partyData);
 			DownloadCandidatePictures(candidateData);
 		}
 	}

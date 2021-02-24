@@ -144,6 +144,18 @@
 	[Parameter]
 	public List<PlanDeGobierno> planesDeGobierno { get; set; }
 
+	/// <summary>
+	/// Ignored if 100%
+	/// </summary>
+	[Parameter]
+	public int MaxParties { get; set; }
+
+	/// <summary>
+	/// Ignored if 100%
+	/// </summary>
+	[Parameter]
+	public int MaxCandidatesPerParty { get; set; }
+
 	[Parameter]
 	public bool Hidden
 	{
@@ -184,9 +196,6 @@
 		//create object
 		PartyResults = new List<Party>();
 
-		//below ignore if candidates 100%
-		var maxparties = 2;
-		var maxcandidatesPerParty = 2;
 
 		for (int i = 0;
 			i < Results.Count();
@@ -203,7 +212,8 @@
 				{
 					var existing = PartyResults.Where(x => x.Partido.idOrganizacionPolitica == partido.idOrganizacionPolitica).FirstOrDefault();
 
-					if (existing.Candidato.Count() < maxcandidatesPerParty || Results[i].AgreePercentage == 100)
+					if ((Results[i].AgreePercentage > 75 && existing.Candidato.Count() < MaxCandidatesPerParty) 
+						|| Results[i].AgreePercentage == 100)
 					{
 						existing.Candidato.Add(candidate);
 						existing.HojasDeVida.Add(hojaDeVida);
@@ -212,7 +222,8 @@
 				}
 				else
 				{
-					if (PartyResults.Count() < maxparties || Results[i].AgreePercentage == 100)
+					if ((Results[i].AgreePercentage > 75 && PartyResults.Count() < MaxParties) 
+						|| Results[i].AgreePercentage == 100)
 					{
 						var party = new Party
 						{

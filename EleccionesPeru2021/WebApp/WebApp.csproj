@@ -37,8 +37,4 @@
     <ProjectReference Include="..\Shared\SharedLibrary.csproj" />
   </ItemGroup>
 
-  <ItemGroup>
-    <Folder Include="wwwroot\sample-data\andin\" />
-  </ItemGroup>
-
 </Project>

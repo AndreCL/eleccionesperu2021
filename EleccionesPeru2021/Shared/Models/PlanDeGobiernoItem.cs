@@ -8,6 +8,7 @@
 		public int idPlanGobDimension { get; set; }
 
 			/// <summary>
+			/// Unico en uso en Plan de trabajo de Parlamento andino
 			/// Ejemplo: "PLANIFICACIÓN DEL TERRITORIO, VIVIENDA Y SERVICIOS"
 			/// </summary>
 		public string strPGProblema { get; set; }

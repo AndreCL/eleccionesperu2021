@@ -132,12 +132,29 @@
 		/// </summary>
 		public string strFechaResumenGenerado { get; set; }
 
+		/// <summary>
+		/// Plan de gobierno presidencial
+		/// </summary>
 		public PlanDeGobiernoItem[] ListPGDSocial { get; set; }
 
+		/// <summary>
+		/// Plan de gobierno presidencial
+		/// </summary>
 		public PlanDeGobiernoItem[] ListPGDEconomica { get; set; }
 
+		/// <summary>
+		/// Plan de gobierno presidencial
+		/// </summary>
 		public PlanDeGobiernoItem[] ListPGDAmbiental { get; set; }
 
+		/// <summary>
+		/// Plan de gobierno presidencial
+		/// </summary>
 		public PlanDeGobiernoItem[] ListPGDInstitucional { get; set; }
+
+		/// <summary>
+		/// Plan de trabajo Andino
+		/// </summary>
+		public PlanDeGobiernoItem[] ListPTDPropuesta { get; set; }
 	}
 }
