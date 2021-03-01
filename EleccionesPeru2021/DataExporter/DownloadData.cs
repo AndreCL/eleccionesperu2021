@@ -25,7 +25,7 @@ namespace DataExporter
 			CreateDirectory(pathAndin);
 
 			DownloadPresidential();
-			//DownloadCongress();
+			DownloadCongress();
 			DownloadAndin();			
 		}
 
@@ -99,8 +99,12 @@ namespace DataExporter
 				{
 					if(candidate.idOrganizacionPolitica == 0)
 					{
-						candidate.idOrganizacionPolitica = partido.idOrganizacionPolitica;
-					}					
+						candidate.idOrganizacionPolitica = partido.idOrganizacionPolitica;						
+					}
+					if (candidate.strOrganizacionPolitica == null)
+					{
+						candidate.strOrganizacionPolitica = partido.strOrganizacionPolitica;
+					}
 				}
 
 				result.AddRange(candidates);

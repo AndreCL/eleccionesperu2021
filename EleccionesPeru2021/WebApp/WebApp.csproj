@@ -9,26 +9,42 @@
     <None Include="wwwroot\sample-data\ASSETS\PLANGOBIERNO\FILEPLANGOBIERNO\16480.pdf" />
     <None Include="wwwroot\sample-data\ASSETS\PLANGOBIERNO\FILEPLANGOBIERNO\16482.pdf" />
     <None Include="wwwroot\sample-data\ASSETS\PLANGOBIERNO\FILEPLANGOBIERNO\16490.pdf" />
+    <None Include="wwwroot\sample-data\ASSETS\PLANGOBIERNO\FILEPLANGOBIERNO\16491.pdf" />
     <None Include="wwwroot\sample-data\ASSETS\PLANGOBIERNO\FILEPLANGOBIERNO\16494.pdf" />
     <None Include="wwwroot\sample-data\ASSETS\PLANGOBIERNO\FILEPLANGOBIERNO\16495.pdf" />
     <None Include="wwwroot\sample-data\ASSETS\PLANGOBIERNO\FILEPLANGOBIERNO\16497.pdf" />
+    <None Include="wwwroot\sample-data\ASSETS\PLANGOBIERNO\FILEPLANGOBIERNO\16498.pdf" />
+    <None Include="wwwroot\sample-data\ASSETS\PLANGOBIERNO\FILEPLANGOBIERNO\16499.pdf" />
+    <None Include="wwwroot\sample-data\ASSETS\PLANGOBIERNO\FILEPLANGOBIERNO\16500.pdf" />
+    <None Include="wwwroot\sample-data\ASSETS\PLANGOBIERNO\FILEPLANGOBIERNO\16502.pdf" />
     <None Include="wwwroot\sample-data\ASSETS\PLANGOBIERNO\FILEPLANGOBIERNO\16511.pdf" />
     <None Include="wwwroot\sample-data\ASSETS\PLANGOBIERNO\FILEPLANGOBIERNO\16517.pdf" />
+    <None Include="wwwroot\sample-data\ASSETS\PLANGOBIERNO\FILEPLANGOBIERNO\16518.pdf" />
+    <None Include="wwwroot\sample-data\ASSETS\PLANGOBIERNO\FILEPLANGOBIERNO\16520.pdf" />
     <None Include="wwwroot\sample-data\ASSETS\PLANGOBIERNO\FILEPLANGOBIERNO\16521.pdf" />
     <None Include="wwwroot\sample-data\ASSETS\PLANGOBIERNO\FILEPLANGOBIERNO\16524.pdf" />
     <None Include="wwwroot\sample-data\ASSETS\PLANGOBIERNO\FILEPLANGOBIERNO\16525.pdf" />
     <None Include="wwwroot\sample-data\ASSETS\PLANGOBIERNO\FILEPLANGOBIERNO\16526.pdf" />
+    <None Include="wwwroot\sample-data\ASSETS\PLANGOBIERNO\FILEPLANGOBIERNO\16527.pdf" />
     <None Include="wwwroot\sample-data\ASSETS\PLANGOBIERNO\FILEPLANGOBIERNO\16530.pdf" />
     <None Include="wwwroot\sample-data\ASSETS\PLANGOBIERNO\FILEPLANGOBIERNO\16531.pdf" />
+    <None Include="wwwroot\sample-data\ASSETS\PLANGOBIERNO\FILEPLANGOBIERNO\16532.pdf" />
+    <None Include="wwwroot\sample-data\ASSETS\PLANGOBIERNO\FILEPLANGOBIERNO\16533.pdf" />
+    <None Include="wwwroot\sample-data\ASSETS\PLANGOBIERNO\FILEPLANGOBIERNO\16534.pdf" />
     <None Include="wwwroot\sample-data\ASSETS\PLANGOBIERNO\FILEPLANGOBIERNO\16535.pdf" />
     <None Include="wwwroot\sample-data\ASSETS\PLANGOBIERNO\FILEPLANGOBIERNO\16536.pdf" />
+    <None Include="wwwroot\sample-data\ASSETS\PLANGOBIERNO\FILEPLANGOBIERNO\16537.pdf" />
     <None Include="wwwroot\sample-data\ASSETS\PLANGOBIERNO\FILEPLANGOBIERNO\16538.pdf" />
     <None Include="wwwroot\sample-data\ASSETS\PLANGOBIERNO\FILEPLANGOBIERNO\16542.pdf" />
+    <None Include="wwwroot\sample-data\ASSETS\PLANGOBIERNO\FILEPLANGOBIERNO\16543.pdf" />
+    <None Include="wwwroot\sample-data\ASSETS\PLANGOBIERNO\FILEPLANGOBIERNO\16544.pdf" />
+    <None Include="wwwroot\sample-data\ASSETS\PLANGOBIERNO\FILEPLANGOBIERNO\16545.pdf" />
   </ItemGroup>
 
   <ItemGroup>
-    <PackageReference Include="Microsoft.AspNetCore.Components.WebAssembly" Version="5.0.2" />
-    <PackageReference Include="Microsoft.AspNetCore.Components.WebAssembly.DevServer" Version="5.0.2" PrivateAssets="all" />
+    <PackageReference Include="ChartJs.Blazor.Fork" Version="2.0.2" />
+    <PackageReference Include="Microsoft.AspNetCore.Components.WebAssembly" Version="5.0.3" />
+    <PackageReference Include="Microsoft.AspNetCore.Components.WebAssembly.DevServer" Version="5.0.3" PrivateAssets="all" />
     <PackageReference Include="Microsoft.Extensions.Http" Version="5.0.0" />
     <PackageReference Include="System.Net.Http.Json" Version="5.0.0" />
   </ItemGroup>

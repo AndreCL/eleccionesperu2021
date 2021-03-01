@@ -8,7 +8,11 @@
 		public int idCandidato { get; set; }
 
 		/// <summary>
-		/// Ejemplo: 1
+		/// 1: Presidente
+		/// 2: Primer vicepresidente
+		/// 3: Segundo vicepresidente
+		/// 4: Congresista
+		/// 5: Parlamento andino
 		/// </summary>
 		public int idCargoEleccion { get; set; }
 
@@ -149,6 +153,7 @@
 
 		/// <summary>
 		/// Ejemplo: null
+		/// Added in parsing by me
 		/// </summary>
 		public string strOrganizacionPolitica { get; set; }
 
@@ -183,7 +188,8 @@
 		public int idProcesoElectoral { get; set; }
 
 		/// <summary>
-		/// Ejemplo: 0
+		/// Ejemplo: 0 
+		/// Added in parsing by me
 		/// </summary>
 		public int idOrganizacionPolitica { get; set; }
 

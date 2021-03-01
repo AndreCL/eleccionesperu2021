@@ -1,9 +1,298 @@
 ﻿@page "/salonfama"
+@inject HttpClient Http
 
 <h1>Salón de Fama</h1>
 
+@if (_configRich != null)
+{
+	<Chart Config="_configRich"></Chart>
 
+	<h2>Lista de los con dinero (@candidatesRich.Count):</h2>
+
+	<div class="ParentColumns">
+		@foreach (var candidate in candidatesRich)
+		{
+			<div class="ColumnHalf" style="padding:10px">
+				<p>Partido: @candidate.strOrganizacionPolitica</p>
+				<p>Postula a: @candidate.strCargoEleccion @(candidate.idCargoEleccion == 4?$"por {ubigeos.Where(x=>x.strUbigeoDistritoElectoral == candidate.strUbigeoPostula).FirstOrDefault().strDistritoElectoral}":"")</p>
+				
+				<HojaDeVidaComponent Candidate="candidate" HojasDeVida="hojasDeVida"></HojaDeVidaComponent>
+			</div>
+		}
+	</div>
+}
+else
+{
+	<p>Cargando...</p>
+}
+
+<style type="text/css">
+	.Inscrito {
+		background-color: palegreen;
+	}
+
+	.Admitido {
+		background-color: palegreen;
+	}
+
+	.Improcedente {
+		background-color: palevioletred;
+	}
+
+	.Apelación {
+		background-color: lightyellow;
+	}
+
+	.Tacha {
+		background-color: lightyellow;
+	}
+
+	.Si {
+		background-color: palegreen;
+	}
+
+	.No {
+		background-color: palevioletred;
+	}
+
+	.ColumnHalf {
+		float: left;
+		align-content: center;
+		text-align: center;
+		display: table-cell;
+		flex: 50%;
+		border: 1px solid gray;
+		min-width: 200px;
+	}
+
+	.ColumnThird {
+		float: left;
+		flex: 33%;
+		align-content: center;
+		text-align: center;
+		min-width: 200px;
+	}
+
+	.ColumnTwoThirds {
+		float: left;
+		display: table-cell;
+		flex: 66%;
+		min-width: 200px;
+	}
+
+	.ParentColumns {
+		overflow: hidden;
+		width: 100%;
+		display: flex;
+		flex-wrap: wrap;
+	}
+</style>
 
 @code {
+	private BubbleConfig _configRich;
 
+	private List<CandidatoGeneral> candidatosPoliticos;
+	private TextInfo textInfo;
+	private List<HojaDeVida> hojasDeVida;
+	private UbigeoItemLite[] ubigeos;
+
+	private List<CandidatoGeneral> candidatesRich = new List<CandidatoGeneral>();
+
+	protected override async Task OnInitializedAsync()
+	{
+		textInfo = new CultureInfo("es-PE", false).TextInfo;
+		ubigeos = await Http.GetFromJsonAsync<UbigeoItemLite[]>("sample-data/cong/ubigeoCon.json");
+
+		var temp = await Http.GetFromJsonAsync<CandidatoGeneral[]>("sample-data/pres/presidentialList1.json");
+		candidatosPoliticos = temp.ToList();
+		temp = await Http.GetFromJsonAsync<CandidatoGeneral[]>("sample-data/andin/candidatos.json");
+		candidatosPoliticos.AddRange(temp.ToList());
+
+		var temp2 = await Http.GetFromJsonAsync<HojaDeVida[]>("sample-data/pres/presidentialList2.json");
+		hojasDeVida = temp2.ToList();
+		temp2 = await Http.GetFromJsonAsync<HojaDeVida[]>("sample-data/andin/hojasDeVida.json");
+		hojasDeVida.AddRange(temp2.ToList());
+
+		foreach (var ubigeo in ubigeos)
+		{
+			temp = await Http.GetFromJsonAsync<CandidatoGeneral[]>($"sample-data/cong/Candidate{ubigeo.strUbigeoDistritoElectoral}.json");
+			candidatosPoliticos.AddRange(temp.ToList());
+			temp2 = await Http.GetFromJsonAsync<HojaDeVida[]>($"sample-data/cong/HDV{ubigeo.strUbigeoDistritoElectoral}.json");
+			hojasDeVida.AddRange(temp2.ToList());
+		}
+
+		ShowGraph();
+	}
+
+	private void ShowGraph()
+	{
+		_configRich = new BubbleConfig
+		{
+			Options = new BubbleOptions
+			{
+				Responsive = true,
+				Title = new OptionsTitle
+				{
+					Display = true,
+					Text = "Valor de bienes (Y) o ingresos (X) reportados mayor a 10 millones de soles",
+				}
+			}
+		};
+
+		var groupedCandidatos = candidatosPoliticos.GroupBy(x => x.strOrganizacionPolitica);
+
+		foreach (IGrouping<string, CandidatoGeneral> candidatos in groupedCandidatos)
+		{
+			BubbleDataset dataset = new BubbleDataset();
+			List<PointStyle> pointStyle = new List<PointStyle>();
+			List<string> circleColor = new List<string>();
+
+			foreach (var candidate in candidatos)
+			{
+				var hojaDeVida = hojasDeVida.Where(x => x.DatosPersonales.idHojaVida == candidate.idHojaVida).FirstOrDefault();
+
+				if (hojaDeVida != null)
+				{
+					var ingresos = hojaDeVida.Ingresos.decOtroIngresoPrivado +
+								hojaDeVida.Ingresos.decOtroIngresoPublico +
+								hojaDeVida.Ingresos.decRemuBrutaPrivado +
+								hojaDeVida.Ingresos.decRemuBrutaPublico +
+								hojaDeVida.Ingresos.decRentaIndividualPrivado +
+								hojaDeVida.Ingresos.decRentaIndividualPublico;
+					var bienes = hojaDeVida.BienInmueble.Where(x => x.strTengoInmueble.Equals("1")).Sum(x => x.decAutovaluo) +
+							hojaDeVida.BienMueble.Where(x => x.strTengoBienMueble.Equals("1")).Sum(x => x.decValor);
+
+					if (ingresos > 10000000 || bienes > 10000000)
+					{
+						candidatesRich.Add(candidate);
+
+						dataset.Add(new BubblePoint((int)ingresos / 1000000, (int)bienes / 1000000, 10));
+
+						//color by party
+						if (partyColors.Any(x => x.Name == candidate.strOrganizacionPolitica))
+						{
+							circleColor.Add(partyColors.Where(x => x.Name == candidate.strOrganizacionPolitica).FirstOrDefault().Color);
+						}
+						else
+						{
+							var newColor = new ColorParty()
+							{
+								Id = candidate.idOrganizacionPolitica,
+								Name = candidate.strOrganizacionPolitica
+							};
+							circleColor.Add(newColor.Color);
+							partyColors.Add(newColor);
+
+						}
+					}
+				}
+
+				if (candidate.idCargoEleccion == 1)
+				{
+					pointStyle.Add(PointStyle.Triangle);
+				}
+				else if (candidate.idCargoEleccion == 2)
+				{
+					pointStyle.Add(PointStyle.Triangle);
+				}
+				else if (candidate.idCargoEleccion == 3)
+				{
+					pointStyle.Add(PointStyle.Triangle);
+				}
+				else if (candidate.idCargoEleccion == 4)
+				{
+					pointStyle.Add(PointStyle.Circle);
+				}
+				else if (candidate.idCargoEleccion == 5)
+				{
+					pointStyle.Add(PointStyle.Rect);
+				}
+			}
+
+			if (circleColor.Count > 0)
+			{
+				dataset.BackgroundColor = circleColor.ToArray();
+				dataset.PointStyle = pointStyle.ToArray();
+				dataset.Label = candidatos.Key ?? candidatos.First().strOrganizacionPolitica ?? "Error";
+
+				_configRich.Data.Datasets.Add(dataset);
+			}
+		}
+	}
+
+	private List<ColorParty> partyColors = new List<ColorParty>() {
+	 new ColorParty()
+	 {
+		 Name = "PARTIDO MORADO",
+		 Color = "#6a0dad"
+	 },
+	 new ColorParty()
+	 {
+		 Name = "RENOVACION POPULAR",
+		 Color = "#0CB7F2"
+	 },
+	 new ColorParty()
+	 {
+		 Name = "FUERZA POPULAR",
+		 Color = "#FFA500"
+	 },
+	 new ColorParty()
+	 {
+		 Name = "JUNTOS POR EL PERU",
+		 Color = "#84E900"
+	 },
+	 new ColorParty()
+	 {
+		 Name = "VICTORIA NACIONAL",
+		 Color = "#000000"
+	 },
+	 new ColorParty()
+	 {
+		 Name = "AVANZA PAIS - PARTIDO DE INTEGRACION SOCIAL",
+		 Color = "#ffc0cb"
+	 },
+	 new ColorParty()
+	 {
+		 Name = "ALIANZA PARA EL PROGRESO",
+		 Color = "#0000FF"
+	 },
+	 new ColorParty()
+	 {
+		 Name = "ACCION POPULAR",
+		 Color = "#FFD700"
+	 },
+	 new ColorParty()
+	 {
+		 Name = "PARTIDO NACIONALISTA PERUANO",
+		 Color = "#FF0000"
+	 },
+	 new ColorParty()
+	 {
+		 Name = "PARTIDO POLITICO NACIONAL PERU LIBRE",
+		 Color = "#FFFF00"
+	 }
+
+
+	};
+
+	public class ColorParty
+	{
+		private Random rnd = new Random();
+
+		public string Name { get; set; }
+
+		public int Id { get; set; }
+
+		private string _color;
+
+		public string Color
+		{
+			get => _color ?? (_color = ColorUtil.ColorHexString(
+				(byte)rnd.Next(0, 255),
+				(byte)rnd.Next(0, 255),
+				(byte)rnd.Next(0, 255)));
+			set => _color = value;
+		}
+	}
 }
+
