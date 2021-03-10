@@ -52,15 +52,18 @@
 				<h3>Candidatos</h3>
 
 				<div class="ParentColumns">
-					<div class="ColumnThird" style="padding:10px">
-						<HojaDeVidaComponent Title="Presidente de la República <br /><br />" Candidate="@president" HojasDeVida="@hojasDeVida" />
+					<div class="ColumnThird" style="padding:10px; border:solid">
+						<HojaDeVidaComponent Candidate="@president" 
+											 HojaDeVida="@hojasDeVida.Where(i => i?.DatosPersonales?.idHojaVida == president?.idHojaVida)?.FirstOrDefault()" />
 					</div>
-					<div class="ColumnThird" style="padding:10px">
-						<HojaDeVidaComponent Title="Primer Vicepresidente de la República" Candidate="@vicepres1" HojasDeVida="@hojasDeVida" />
+					<div class="ColumnThird" style="padding:10px; border:solid">
+						<HojaDeVidaComponent Candidate="@vicepres1" 
+											 HojaDeVida="@hojasDeVida.Where(i => i?.DatosPersonales?.idHojaVida == vicepres1?.idHojaVida)?.FirstOrDefault()" />
 
 					</div>
-					<div class="ColumnThird" style="padding:10px">
-						<HojaDeVidaComponent Title="Segundo Vicepresidente de la República" Candidate="@vicepres2" HojasDeVida="@hojasDeVida" />
+					<div class="ColumnThird" style="padding:10px; border:solid">
+						<HojaDeVidaComponent Candidate="@vicepres2" 
+											 HojaDeVida="@hojasDeVida.Where(i => i?.DatosPersonales?.idHojaVida == vicepres2?.idHojaVida)?.FirstOrDefault()" />
 					</div>
 				</div>
 

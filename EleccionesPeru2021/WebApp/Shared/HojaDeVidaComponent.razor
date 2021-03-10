@@ -1,238 +1,286 @@
-﻿<h4>@((MarkupString)Title)</h4>
-
-@if (Candidate != null)
+﻿
+@if (Candidate != null || HojaDeVida != null)
 {
-	<img width="79px" height="111px" src="@($"sample-data{Candidate.strRutaArchivo.Replace("Assets", "ASSETS")}")" 
+	<h4>@((MarkupString)textInfo.ToTitleCase(@Candidate.strCargoEleccion.ToLower()))</h4>
+
+	if (AgreePercentage != null)
+	{
+		<p>Cumple tus criterios: @($"{AgreePercentage:0.##}%")</p>
+	}
+
+	<img width="79px" height="111px" src="@($"sample-data{Candidate.strRutaArchivo.Replace("Assets", "ASSETS")}")"
 		 alt="@textInfo.ToTitleCase(Candidate.strCandidato.ToLower())" />
 	<p>@textInfo.ToTitleCase(Candidate.strCandidato.ToLower())</p>
-	<p>Edad: @Candidate.intEdad</p>
-	<p>Sexo: @(Candidate.strSexo == "1" ? "Masculino" : "Femenino")</p>
-	<p>Estado de inscripción: <strong class="@Helpers.UppercaseFirstRestLower(Candidate.strEstadoExp)">
-		@Helpers.UppercaseFirstRestLower(Candidate.strEstadoExp)</strong></p>
 
-	var hojaDeVida = HojasDeVida.Where(i => i?.DatosPersonales?.idHojaVida == Candidate.idHojaVida)?.FirstOrDefault();
+	<div style="text-align:left">
+		<h5>I. General</h5>
 
-	@if (hojaDeVida != null)
-	{
-		<div style="text-align:left">
-			<h5>I. Formación academica</h5>
+		<p>@(Candidate.idCargoEleccion == 4?$"postula por {Ubigeo.strDistritoElectoral}":"")</p>
+
+		<p>Partido: @textInfo.ToTitleCase(Candidate.strOrganizacionPolitica.ToLower()) <img width="20px" height="20px" src="@($"sample-data/Logo/{Candidate.idOrganizacionPolitica}.png")" /></p>
+
+		<p>Número en lista: @Candidate.intPosicion</p>
+
+		<p>Edad: @Candidate.intEdad</p>
+		<p>Sexo: @(Candidate.strSexo == "1" ? "Masculino" : "Femenino") <img width="20px" height="20px" src="@($"img/{(Candidate.strSexo == "1" ? "male" : "female")}.png")" /></p>
+		<p>
+			Estado de inscripción: <strong class="@Helpers.UppercaseFirstRestLower(Candidate.strEstadoExp)">
+				@Helpers.UppercaseFirstRestLower(Candidate.strEstadoExp)
+			</strong>
+		</p>
+		<p>
+			@Birthplace()
+		</p>
+		<p>Domicilio: @textInfo.ToTitleCase(HojaDeVida.DatosPersonales.strDomiProvincia.ToLower())</p>
+	</div>
+
+	<div style="text-align:left">
+		<h5>
+			II. Formación academica
+			@for (int i = 0; i < Math.Min(EducationScore(), 5); i++)
+			{
+				@((MarkupString)$"&#9733;")
+			}
+		</h5>
+
+		<button @onclick="HideShowEdu"
+				style="background-color:aliceblue;border-radius:5px">
+			@(hideEdu ? "Mostrar":"Ocultar")
+		</button>
+
+		<div hidden="@hideEdu">
+
 			<p>
 				Primaria concluida:
-				<strong class="@(hojaDeVida.EduBasica?.strConcluidoEduPrimaria.Equals("1") ?? false ? "Si" : "No")">
-					@(hojaDeVida.EduBasica?.strConcluidoEduPrimaria.Equals("1") ?? false ? "Si" : "No")
+				<strong class="@(HojaDeVida.EduBasica?.strConcluidoEduPrimaria.Equals("1") ?? false ? "Si" : "No")">
+					@(HojaDeVida.EduBasica?.strConcluidoEduPrimaria.Equals("1") ?? false ? "Si" : "No")
 				</strong>
 			</p>
 			<p>
 				Secundaria concluida:
-				<strong class="@(hojaDeVida.EduBasica?.strConcluidoEduSecundaria.Equals("1") ?? false ? "Si" : "No")">
-					@(hojaDeVida.EduBasica?.strConcluidoEduSecundaria.Equals("1") ?? false ? "Si" : "No")
+				<strong class="@(HojaDeVida.EduBasica?.strConcluidoEduSecundaria.Equals("1") ?? false ? "Si" : "No")">
+					@(HojaDeVida.EduBasica?.strConcluidoEduSecundaria.Equals("1") ?? false ? "Si" : "No")
 				</strong>
 			</p>
-			@if (hojaDeVida.EduTecnico != null && 
-				hojaDeVida.EduTecnico.strConcluidoEduTecnico != null &&
-				hojaDeVida.EduTecnico.strConcluidoEduTecnico.Equals("1")
-				)
+			@if (HojaDeVida.EduTecnico != null &&
+  HojaDeVida.EduTecnico.strConcluidoEduTecnico != null &&
+  HojaDeVida.EduTecnico.strConcluidoEduTecnico.Equals("1")
+  )
 			{
 				<p>
 					<h6><strong>Estudios técnicos concluidos:</strong></h6>
-					<ul>
+					<ul style="margin-left:10px">
 						<li>
-							@textInfo.ToTitleCase(hojaDeVida.EduTecnico.strCarreraTecnico.ToLower()) - 
-							@textInfo.ToTitleCase(hojaDeVida.EduTecnico.strCenEstudioTecnico.ToLower())
+							@textInfo.ToTitleCase(HojaDeVida.EduTecnico.strCarreraTecnico.ToLower()) -
+							@textInfo.ToTitleCase(HojaDeVida.EduTecnico.strCenEstudioTecnico.ToLower())
 						</li>
 					</ul>
 
 				</p>
 			}
-			@if (hojaDeVida.EduNoUniversitaria.strConcluidoNoUni.Equals("1"))
+			@if (HojaDeVida.EduNoUniversitaria.strConcluidoNoUni.Equals("1"))
 			{
 				<p>
 					<h6><strong>Estudios no Universitarios concluidos:</strong></h6>
-					<ul>
+					<ul style="margin-left:10px">
 						<li>
-							@textInfo.ToTitleCase(hojaDeVida.EduNoUniversitaria.strCarreraNoUni.ToLower()) - 
-							@textInfo.ToTitleCase(hojaDeVida.EduNoUniversitaria.strCentroEstudioNoUni.ToLower())
+							@textInfo.ToTitleCase(HojaDeVida.EduNoUniversitaria.strCarreraNoUni.ToLower()) -
+							@textInfo.ToTitleCase(HojaDeVida.EduNoUniversitaria.strCentroEstudioNoUni.ToLower())
 						</li>
 					</ul>
 
 				</p>
 			}
-			@if (hojaDeVida.EduUniversitaria.Any(x => x.strConcluidoEduUni.Equals("1")))
+			@if (HojaDeVida.EduUniversitaria.Any(x => x.strConcluidoEduUni.Equals("1")))
 			{
 				<h6><strong>Estudios Universitarios concluidos:</strong></h6>
 			}
 			<p>
-				<ul>
-					@foreach (var item in hojaDeVida.EduUniversitaria)
+				<ul style="margin-left:10px">
+					@foreach (var item in HojaDeVida.EduUniversitaria)
 					{
 						if (item.strConcluidoEduUni.Equals("1"))
 						{
 
-					<li>
-						@textInfo.ToTitleCase(item.strCarreraUni.ToLower()) -
-						@textInfo.ToTitleCase(item.strUniversidad.ToLower())
-						@if (!string.IsNullOrEmpty(item.strAnioBachiller))
-						{
-							@($" ({@item.strAnioBachiller})")
-						}
-						else if (!string.IsNullOrEmpty(item.strAnioTitulo))
-						{
-							@($" ({@item.strAnioTitulo})")
-						}
-					</li>
+							<li>
+								@textInfo.ToTitleCase(item.strCarreraUni.ToLower()) -
+								@textInfo.ToTitleCase(item.strUniversidad.ToLower())
+								@if (!string.IsNullOrEmpty(item.strAnioBachiller))
+								{
+									@($" ({@item.strAnioBachiller})")
+								}
+								else if (!string.IsNullOrEmpty(item.strAnioTitulo))
+								{
+									@($" ({@item.strAnioTitulo})")
+								}
+							</li>
 
 						}
 					}
 				</ul>
 
 			</p>
-			@if (hojaDeVida.EduPosgrado.strConcluidoPosgrado.Equals("1"))
+			@if (HojaDeVida.EduPosgrado.strConcluidoPosgrado.Equals("1"))
 			{
 				<p>
 					<h6><strong>Estudios de Postgrado concluidos:</strong></h6>
-					<ul>
+					<ul style="margin-left:10px">
 						<li>
-							@textInfo.ToTitleCase(hojaDeVida.EduPosgrado.strEspecialidadPosgrado.ToLower()) - 
-							@textInfo.ToTitleCase(hojaDeVida.EduPosgrado.strCenEstudioPosgrado.ToLower())
+							@textInfo.ToTitleCase(HojaDeVida.EduPosgrado.strEspecialidadPosgrado.ToLower()) -
+							@textInfo.ToTitleCase(HojaDeVida.EduPosgrado.strCenEstudioPosgrado.ToLower())
 						</li>
 					</ul>
 
 				</p>
 			}
 
-			<hr>
+		</div>
 
-			<h5>II. Experiencia laboral</h5>
+		<hr>
+
+		<h5>
+			III. Experiencia laboral
+			@for (int i = 0; i < Math.Min(WorkScore(), 5); i++)
+			{
+				@((MarkupString)$"&#9733;")
+			}
+		</h5>
+
+		<button @onclick="HideShowWork"
+				style="background-color:aliceblue;border-radius:5px">
+			@(hideWork ? "Mostrar":"Ocultar")
+		</button>
+
+		<div hidden="@hideWork">
+
 			<p>
-				<ul>
-					@foreach (var item in hojaDeVida.ExperienciasLaborales)
+				<ul style="margin-left:10px">
+					@foreach (var item in HojaDeVida.ExperienciasLaborales)
 					{
 						if (item.strTengoExpeLaboral.Equals("1"))
 						{
 							<li>
-								@textInfo.ToTitleCase(item.strOcupacionProfesion.ToLower()) - 
-								@textInfo.ToTitleCase(item.strCentroTrabajo.ToLower()) 
-								(@item.strAnioTrabajoDesde - @(item.strAnioTrabajoHasta.Equals("0000")?"...":item.strAnioTrabajoHasta))
+								@textInfo.ToTitleCase(item.strOcupacionProfesion.ToLower()) -
+								@textInfo.ToTitleCase(item.strCentroTrabajo.ToLower())
+								(@item.strAnioTrabajoDesde - @(item.strAnioTrabajoHasta.Equals("0000") ? "..." : item.strAnioTrabajoHasta))
 							</li>
 						}
 					}
 				</ul>
-			</p>
-
-			<hr>
-
-			<h5>III.  Trayectoria Partidaria y/o Política de dirigente</h5>
-			@if (hojaDeVida.CargoPartidario.Any(x => x.strTengoCargoPartidario.Equals("1")))
-			{
-				<h6><strong>Cargos Partidarios:</strong></h6>
-			}
-			<p>
-				<ul>
-					@foreach (var item in hojaDeVida.CargoPartidario)
-					{
-						if (item.strTengoCargoPartidario.Equals("1"))
-						{
-
-							<li>
-								@textInfo.ToTitleCase(item.strCargoPartidario.ToLower()) - 
-								@textInfo.ToTitleCase(item.strOrgPolCargoPartidario.ToLower()) (@item.strAnioCargoPartiDesde - 
-								@(item.strAnioCargoPartiHasta.Equals("0000")?"...":item.strAnioCargoPartiHasta))
-							</li>
-						}
-					}
-				</ul>
-			</p>
-			@if (hojaDeVida.CargoEleccion.Any(x => x.strCargoEleccion.Equals("1")))
-			{
-				<h6><strong>Cargos de Elección Popular:</strong></h6>
-			}
-			<p>
-				<ul>
-					@foreach (var item in hojaDeVida.CargoEleccion)
-					{
-						if (item.strCargoEleccion.Equals("1"))
-						{
-
-							<li>
-								@textInfo.ToTitleCase(item.strCargoEleccion2.ToLower()) - 
-								@textInfo.ToTitleCase(item.strOrgPolCargoElec.ToLower()) (@item.strAnioCargoElecDesde - 
-								@(item.strAnioCargoElecHasta.Equals("0000")?"...":item.strAnioCargoElecHasta))
-							</li>
-						}
-					}
-				</ul>
-			</p>
-			@if (hojaDeVida.RenunciaOP.Any(x => x.strTengoRenunciaOP.Equals("1")))
-			{
-				<h6><strong>Renuncias efectuadas a otros partidos, movimientos de alcance regional o departamental u organizaciones políticas de alcance provincial y distrital:</strong></h6>
-			}
-			<p>
-				<ul>
-					@foreach (var item in hojaDeVida.RenunciaOP)
-					{
-						if (item.strTengoRenunciaOP.Equals("1"))
-						{
-							<li>
-								@textInfo.ToTitleCase(item.strOrgPolRenunciaOP.ToLower()) - @item.strAnioRenunciaOP
-							</li>
-						}
-					}
-				</ul>
-			</p>
-
-			<hr>
-
-			<h5>IV. Relación de sentencias</h5>
-			@if (hojaDeVida.SentenciaObliga.Any(x => x.strTengoSentenciaObliga.Equals("1")))
-			{
-				<h6><strong>Sentencias condenatorias firmes impuestas por delitos dolosos y la que incluye las sentencias con reserva del fallo condenatorio:</strong></h6>
-			}
-			<p class="Negative">
-				<ul>
-					@foreach (var item in hojaDeVida.SentenciaObliga)
-					{
-						if (item.strTengoSentenciaObliga.Equals("1"))
-						{
-							<li>
-								@item.strMateriaSentencia.ToLower() - @item.strFalloObliga.ToLower()
-							</li>
-						}
-					}
-				</ul>
-			</p>
-			@if (hojaDeVida.SentenciaPenal.Any(x => x.strTengoSentenciaPenal.Equals("1")))
-			{
-				<h6><strong>Sentencias que declaren fundadas las demandas interpuestas contra los candidatos(as) por incumplimiento de obligaciones alimentarias, contractuales, laborales o por incurrir en violencia familiar, que hubieran quedado firmes:</strong></h6>
-			}
-			<p class="Negative">
-				<ul>
-					@foreach (var item in hojaDeVida.SentenciaPenal)
-					{
-						if (item.strTengoSentenciaPenal.Equals("1"))
-						{
-							<li>
-								@item.strDelitoPenal.ToLower() - @item.strFalloPenal.ToLower()
-							</li>
-						}
-					}
-				</ul>
-			</p>
-
-			<hr>
-
-			<h5>V. Ingresos y bienes</h5>
-			<p>
-				Ingresos anuales totales reportados: S/@(hojaDeVida.Ingresos?.decOtroIngresoPrivado + hojaDeVida.Ingresos?.decOtroIngresoPublico +
-							hojaDeVida.Ingresos?.decRemuBrutaPrivado + hojaDeVida.Ingresos?.decRemuBrutaPublico +
-							hojaDeVida.Ingresos?.decRentaIndividualPrivado + hojaDeVida.Ingresos?.decRentaIndividualPublico)
-			</p>
-			<p>
-				Valor total de bienes reportados: S/@(hojaDeVida.BienInmueble?.Where(x=> x.strTengoInmueble.Equals("1")).Sum(x => x.decAutovaluo) +
-										hojaDeVida.BienMueble?.Where(x => x.strTengoBienMueble.Equals("1")).Sum(x => x.decValor) )
 			</p>
 
 		</div>
-	}
+
+		<hr>
+
+		<h5>IV.  Trayectoria Partidaria y/o Política de dirigente</h5>
+		@if (HojaDeVida.CargoPartidario.Any(x => x.strTengoCargoPartidario.Equals("1")))
+		{
+			<h6><strong>Cargos Partidarios:</strong></h6>
+		}
+		<p>
+			<ul style="margin-left:10px">
+				@foreach (var item in HojaDeVida.CargoPartidario)
+				{
+					if (item.strTengoCargoPartidario.Equals("1"))
+					{
+
+						<li>
+							@textInfo.ToTitleCase(item.strCargoPartidario.ToLower()) -
+							@textInfo.ToTitleCase(item.strOrgPolCargoPartidario.ToLower()) (@item.strAnioCargoPartiDesde -
+							@(item.strAnioCargoPartiHasta.Equals("0000") ? "..." : item.strAnioCargoPartiHasta))
+						</li>
+					}
+				}
+			</ul>
+		</p>
+		@if (HojaDeVida.CargoEleccion.Any(x => x.strCargoEleccion.Equals("1")))
+		{
+			<h6><strong>Cargos de Elección Popular:</strong></h6>
+		}
+		<p>
+			<ul style="margin-left:10px">
+				@foreach (var item in HojaDeVida.CargoEleccion)
+				{
+					if (item.strCargoEleccion.Equals("1"))
+					{
+
+						<li>
+							@textInfo.ToTitleCase(item.strCargoEleccion2.ToLower()) -
+							@textInfo.ToTitleCase(item.strOrgPolCargoElec.ToLower()) (@item.strAnioCargoElecDesde -
+							@(item.strAnioCargoElecHasta.Equals("0000") ? "..." : item.strAnioCargoElecHasta))
+						</li>
+					}
+				}
+			</ul>
+		</p>
+		@if (HojaDeVida.RenunciaOP.Any(x => x.strTengoRenunciaOP.Equals("1")))
+		{
+			<h6><strong>Renuncias efectuadas a otros partidos, movimientos de alcance regional o departamental u organizaciones políticas de alcance provincial y distrital:</strong></h6>
+		}
+		<p>
+			<ul style="margin-left:10px">
+				@foreach (var item in HojaDeVida.RenunciaOP)
+				{
+					if (item.strTengoRenunciaOP.Equals("1"))
+					{
+						<li>
+							@textInfo.ToTitleCase(item.strOrgPolRenunciaOP.ToLower()) - @item.strAnioRenunciaOP
+						</li>
+					}
+				}
+			</ul>
+		</p>
+
+		<hr>
+
+		<h5>V. Relación de sentencias</h5>
+		@if (HojaDeVida.SentenciaObliga.Any(x => x.strTengoSentenciaObliga.Equals("1")))
+		{
+			<h6><strong>Sentencias condenatorias firmes impuestas por delitos dolosos y la que incluye las sentencias con reserva del fallo condenatorio:</strong></h6>
+		}
+		<p class="Negative">
+			<ul style="margin-left:10px">
+				@foreach (var item in HojaDeVida.SentenciaObliga)
+				{
+					if (item.strTengoSentenciaObliga.Equals("1"))
+					{
+						<li>
+							@item.strMateriaSentencia.ToLower() - @item.strFalloObliga.ToLower()
+						</li>
+					}
+				}
+			</ul>
+		</p>
+		@if (HojaDeVida.SentenciaPenal.Any(x => x.strTengoSentenciaPenal.Equals("1")))
+		{
+			<h6><strong>Sentencias que declaren fundadas las demandas interpuestas contra los candidatos(as) por incumplimiento de obligaciones alimentarias, contractuales, laborales o por incurrir en violencia familiar, que hubieran quedado firmes:</strong></h6>
+		}
+		<p class="Negative">
+			<ul style="margin-left:10px">
+				@foreach (var item in HojaDeVida.SentenciaPenal)
+				{
+					if (item.strTengoSentenciaPenal.Equals("1"))
+					{
+						<li>
+							@item.strDelitoPenal.ToLower() - @item.strFalloPenal.ToLower()
+						</li>
+					}
+				}
+			</ul>
+		</p>
+
+		<hr>
+
+		<h5>VI. Ingresos y bienes</h5>
+		<p>
+			Ingresos anuales totales reportados: @(PrettyMoney(IngresosTotales()))
+		</p>
+		<p>
+			Valor total de bienes reportados: @(PrettyMoney(BienesTotales()))
+		</p>
+
+	</div>
 }
 else
 {
@@ -255,18 +303,181 @@ else
 
 @code {
 	[Parameter]
-	public string Title { get; set; }
-
-	[Parameter]
 	public CandidatoGeneral Candidate { get; set; }
 
 	[Parameter]
-	public List<HojaDeVida> HojasDeVida { get; set; }
+	public HojaDeVida HojaDeVida { get; set; }
+
+	[Parameter]
+	public UbigeoItemLite Ubigeo { get; set; }
+
+	[Parameter]
+	public double? AgreePercentage { get; set; }
 
 	private TextInfo textInfo;
 
+	private bool hideEdu = true;
+
+	private void HideShowEdu()
+	{
+		hideEdu = !hideEdu;
+	}
+
+	private bool hideWork = true;
+
+	private void HideShowWork()
+	{
+		hideWork = !hideWork;
+	}
+
 	protected override async Task OnInitializedAsync()
 	{
-		textInfo = new CultureInfo("es-PE", false).TextInfo;		
+		textInfo = new CultureInfo("es-PE", false).TextInfo;
+	}
+
+	private decimal IngresosTotales()
+	{
+		if (HojaDeVida != null && HojaDeVida.Ingresos != null)
+		{
+			return HojaDeVida.Ingresos.decOtroIngresoPrivado +
+				HojaDeVida.Ingresos.decOtroIngresoPublico +
+				HojaDeVida.Ingresos.decRemuBrutaPrivado +
+				HojaDeVida.Ingresos.decRemuBrutaPublico +
+				HojaDeVida.Ingresos.decRentaIndividualPrivado +
+				HojaDeVida.Ingresos.decRentaIndividualPublico;
+		}
+		else
+		{
+			return 0;
+		}
+	}
+
+	private decimal BienesTotales()
+	{
+		if (HojaDeVida != null)
+		{
+			decimal result = 0;
+
+			if (HojaDeVida.BienInmueble != null && HojaDeVida.BienInmueble.Count() > 0)
+			{
+				result += HojaDeVida.BienInmueble.Where(x => x.strTengoInmueble.Equals("1")).Sum(x => x.decAutovaluo);
+			}
+			if (HojaDeVida.BienInmueble != null && HojaDeVida.BienInmueble.Count() > 0)
+			{
+				result += HojaDeVida.BienMueble.Where(x => x.strTengoBienMueble.Equals("1")).Sum(x => x.decValor);
+			}
+
+			return result;
+		}
+		else
+		{
+			return 0;
+		}
+	}
+
+	private string PrettyMoney(decimal number)
+	{
+		if (number > 1000000)
+		{
+			return $"S/{number / 1000000:N0} millones";
+		}
+		else
+		{
+			return $"S/{number:N0}";
+		}
+	}
+
+	private int EducationScore()
+	{
+		int score = 0;
+
+		if (HojaDeVida != null)
+		{
+			if (HojaDeVida.EduBasica.strConcluidoEduPrimaria == "1")
+			{
+				score++;
+			}
+			if (HojaDeVida.EduBasica.strConcluidoEduSecundaria == "1")
+			{
+				score++;
+			}
+			if (HojaDeVida.EduTecnico.strConcluidoEduTecnico == "1")
+			{
+				score++;
+			}
+			if (HojaDeVida.EduNoUniversitaria.strConcluidoNoUni == "1")
+			{
+				score++;
+			}
+			if (Candidate.strNombreCompleto.StartsWith("JULIO"))
+			{
+				var STOP = "";
+			}
+			score += HojaDeVida.EduUniversitaria
+				.Where(x => x.strConcluidoEduUni == "1") //finished
+				.Select(x => string.IsNullOrEmpty(x.strAnioBachiller) ? x.strAnioTitulo: x.strAnioBachiller).Distinct() //only one per year to avoid bachiller & titulo meme
+				.Count();
+			if (HojaDeVida.EduPosgrado.strConcluidoPosgrado == "1")
+			{
+				score++;
+			}
+		}
+
+		return score;
+	}
+
+	private string Birthplace()
+	{
+		string result = "";
+
+		if (HojaDeVida != null)
+		{
+			result += "Lugar de nacimiento: ";
+
+			if (!string.IsNullOrEmpty(HojaDeVida.DatosPersonales.strNaciDistrito))
+			{
+				result += textInfo.ToTitleCase(HojaDeVida.DatosPersonales.strNaciDistrito.ToLower());
+				result += ", ";
+			}
+			if (!string.IsNullOrEmpty(HojaDeVida.DatosPersonales.strNaciProvincia)
+				&& HojaDeVida.DatosPersonales.strNaciProvincia != HojaDeVida.DatosPersonales.strNaciDistrito)
+			{
+				result += textInfo.ToTitleCase(HojaDeVida.DatosPersonales.strNaciProvincia.ToLower());
+				result += ", ";
+			}
+			if (!string.IsNullOrEmpty(HojaDeVida.DatosPersonales.strNaciDepartamento)
+				&& HojaDeVida.DatosPersonales.strNaciDepartamento != HojaDeVida.DatosPersonales.strNaciProvincia)
+			{
+				result += textInfo.ToTitleCase(HojaDeVida.DatosPersonales.strNaciDepartamento.ToLower());
+				result += ", ";
+			}
+
+			result += textInfo.ToTitleCase(HojaDeVida.DatosPersonales.strPaisNacimiento.ToLower());
+		}
+
+
+		return result;
+	}
+
+	private int WorkScore()
+	{
+		decimal score = 0;
+
+		if (HojaDeVida != null && Candidate != null)
+		{
+
+			foreach (var item in HojaDeVida.ExperienciasLaborales)
+			{
+				if (item.strTengoExpeLaboral.Equals("1"))
+				{
+					decimal end = item.strAnioTrabajoHasta.Equals("0000") ? 2020 : int.Parse(item.strAnioTrabajoHasta);
+					decimal start = int.Parse(item.strAnioTrabajoDesde);
+					score += ((end - start) * 4) //times otherwise too small numbers
+						/ (Candidate.intEdad - 18m); //only adult life
+				}
+			}
+		}
+
+		return (int)score;
 	}
 }

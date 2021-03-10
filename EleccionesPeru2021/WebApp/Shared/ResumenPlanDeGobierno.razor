@@ -1,6 +1,11 @@
-﻿<h4>@((MarkupString)Title)  <button @onclick="HideShow">@(shown?"Mostrar":"Ocultar") </button>  </h4>
+﻿<h4>@((MarkupString)Title)  
+	<button @onclick="HideShow" 
+			style="background-color:aliceblue;border-radius:5px">
+		@(shown?"Mostrar":"Ocultar") 
+	</button>  
+</h4>
 
-<div hidden="@shown">
+<div hidden="@shown" style="border:solid; border-color:black; border-radius:5px; padding:10px">
 
 	@if (PlanDeGobierno == null)
 	{
@@ -78,7 +83,7 @@
 		{
 			<h5>Propuestas</h5>
 
-			<ul>
+			<ul style="margin-left:10px">
 				@foreach (var item in PlanDeGobierno.ListPTDPropuesta)
 				{
 				<li>@item.strPGProblema.ToLower()</li>

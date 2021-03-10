@@ -13,10 +13,8 @@
 		@foreach (var candidate in candidatesRich)
 		{
 			<div class="ColumnHalf" style="padding:10px">
-				<p>Partido: @candidate.strOrganizacionPolitica</p>
-				<p>Postula a: @candidate.strCargoEleccion @(candidate.idCargoEleccion == 4?$"por {ubigeos.Where(x=>x.strUbigeoDistritoElectoral == candidate.strUbigeoPostula).FirstOrDefault().strDistritoElectoral}":"")</p>
 				
-				<HojaDeVidaComponent Candidate="candidate" HojasDeVida="hojasDeVida"></HojaDeVidaComponent>
+				<HojaDeVidaComponent Candidate="@candidate" HojasDeVida="@hojasDeVida" Ubigeos="@ubigeos"></HojaDeVidaComponent>
 			</div>
 		}
 	</div>

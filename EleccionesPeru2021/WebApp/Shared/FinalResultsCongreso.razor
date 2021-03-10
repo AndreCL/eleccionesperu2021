@@ -50,9 +50,11 @@
 				<div class="ParentColumns">
 					@for (int i = 0; i < winnerResult.Candidato.Count(); i++)
 					{
-						<div class="ColumnHalf" style="padding:10px">
-							<HojaDeVidaComponent Title="@($"Número en lista: {winnerResult.Candidato[i].intPosicion} <br/> Cumple tus criterios: {winnerResult.AgreePercentage[i]:0.##}%")"
-												 Candidate="@winnerResult.Candidato[i]" HojasDeVida="@winnerResult.HojasDeVida" />
+						<div class="ColumnHalf" style="padding:10px; border:solid">
+							<HojaDeVidaComponent AgreePercentage="@winnerResult.AgreePercentage[i]"
+												 Candidate="@winnerResult.Candidato[i]" 
+												 Ubigeo="@Ubigeos?.Where(x=>x.strUbigeoDistritoElectoral == winnerResult.Candidato[i].strUbigeoPostula).FirstOrDefault()"
+												 HojaDeVida="@winnerResult.HojasDeVida.Where(x => x?.DatosPersonales?.idHojaVida == winnerResult?.Candidato[i]?.idHojaVida)?.FirstOrDefault()" />
 						</div>
 					}
 				</div>
@@ -144,6 +146,9 @@
 	[Parameter]
 	public List<PlanDeGobierno> planesDeGobierno { get; set; }
 
+	[Parameter]
+	public UbigeoItemLite[] Ubigeos { get; set; }
+
 	/// <summary>
 	/// Ignored if 100%
 	/// </summary>
@@ -212,7 +217,7 @@
 				{
 					var existing = PartyResults.Where(x => x.Partido.idOrganizacionPolitica == partido.idOrganizacionPolitica).FirstOrDefault();
 
-					if ((Results[i].AgreePercentage > 75 && existing.Candidato.Count() < MaxCandidatesPerParty) 
+					if ((Results[i].AgreePercentage > 75 && existing.Candidato.Count() < MaxCandidatesPerParty)
 						|| Results[i].AgreePercentage == 100)
 					{
 						existing.Candidato.Add(candidate);
@@ -222,7 +227,7 @@
 				}
 				else
 				{
-					if ((Results[i].AgreePercentage > 75 && PartyResults.Count() < MaxParties) 
+					if ((Results[i].AgreePercentage > 75 && PartyResults.Count() < MaxParties)
 						|| Results[i].AgreePercentage == 100)
 					{
 						var party = new Party
