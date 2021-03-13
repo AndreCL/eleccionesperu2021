@@ -1,5 +1,5 @@
 ﻿
-@if (Candidate != null || HojaDeVida != null)
+@if (Candidate != null && HojaDeVida != null)
 {
 	<h4>@((MarkupString)textInfo.ToTitleCase(@Candidate.strCargoEleccion.ToLower()))</h4>
 
@@ -401,7 +401,8 @@ else
 			{
 				score++;
 			}
-			if (HojaDeVida.EduTecnico.strConcluidoEduTecnico == "1")
+			if (HojaDeVida.EduTecnico != null && HojaDeVida.EduTecnico.strConcluidoEduTecnico != null 
+				&& HojaDeVida.EduTecnico.strConcluidoEduTecnico == "1")
 			{
 				score++;
 			}
