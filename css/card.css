@@ -1,0 +1,90 @@
+﻿@import url('https://fonts.googleapis.com/css?family=Roboto|Sriracha&display=swap');
+
+* {
+	margin: 0;
+	padding: 0;
+	box-sizing: border-box;
+}
+
+#card-container {
+	display: flex;
+	justify-content: center;
+	align-items: start;
+	height: 80%;
+	/*height: 100vh;*/
+	font-family: "Roboto", arial, sans-serif;
+	color: #222
+}
+
+#card-content {
+	height: 80%; /*400px;*/
+	width: 80%;
+	padding: 10px;
+	border-radius: 5px;
+	background: #fffffb;
+	position: relative;
+	box-shadow: 5px 5px 10px rgba(0,0,0,0.5);
+}
+
+.parent {
+	display: flex;
+}
+
+.narrow {
+	width: 20px;
+	margin-top: 5px;
+}
+
+.wide {
+	flex: 1;
+}
+
+.cardTitle {
+	font-family: 'Sriracha', arial, sans-serif;
+	text-align: center;
+	margin-bottom: 10px;
+	color: #ad1005;
+}
+
+.description {
+	margin-bottom: 10px;
+}
+
+.questionButton {
+	width: 80%;
+	height: 80px;
+	font-size: 2rem;
+	margin: 15px 5% 0 5%;
+	color: #fffffb;
+	border: none;
+	box-shadow: 5px 5px 10px rgba(0,0,0,0.5);
+	border-radius: 5px;
+	background: linear-gradient(45deg, #ff6b6c, #ad1005, #ad1005, #ff6b6c);
+	background-size: 300% 300%;
+	outline: none;
+	transition: all 200ms ease-in-out;
+}
+
+.questionButton:disabled{
+	background-color:dimgray
+}
+
+@-webkit-keyframes gradientBG {
+	0% {
+		background-position: 0% 50%;
+	}
+
+	100% {
+		background-position: 100% 50%;
+	}
+}
+
+@keyframes gradientBG {
+	0% {
+		background-position: 0% 50%;
+	}
+
+	100% {
+		background-position: 100% 50%;
+	}
+}
